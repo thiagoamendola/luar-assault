@@ -7,6 +7,7 @@
 #include "bn_string.h"
 #include "bn_log.h"
 #include "bn_math.h"
+#include "bn_memory.h" // <-- Only import when debugging
 
 #include "fr_camera_3d.h"
 #include "fr_point_3d.h"
@@ -61,6 +62,9 @@ void hud_manager::statics_update(int static_count)
     if (_controller->is_debug_text_enabled())
     {
         _text_generator.generate(-7 * 16, -60, "Static Objs: " + bn::to_string<64>(static_count), _text_sprites);
+        // _text_generator.generate(-7 * 16, -48, "IWRAM stack: " + bn::to_string<64>(bn::memory::used_stack_iwram()), _text_sprites);
+        // _text_generator.generate(-7 * 16, -36, "IWRAM static: " + bn::to_string<64>(bn::memory::used_static_iwram()), _text_sprites);
+        // _text_generator.generate(-7 * 16, -24, "EWRAM: " + bn::to_string<64>(bn::memory::used_static_ewram()), _text_sprites);
     }
 }
 
