@@ -105,7 +105,6 @@ class player_ship
     int damage_cooldown = 0;
     bn::fixed_point target_position;
 
-    bool _check_dynamic_enemy_collision(enemy_manager& enemies);
 };
 
 #endif
