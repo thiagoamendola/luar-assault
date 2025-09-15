@@ -5,8 +5,8 @@
 base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      scene_colors_generator::color_mapping_handler *color_mapping,
                                      stage_section_list_ptr sections, size_t sections_count)
-    : _sections(sections), _sections_count(sections_count), _player_ship(&_controller, &_camera, &_models),
-      _enemy_manager(&_models, &_controller), _hud_manager(&_controller, &_camera, &_player_ship), _prepare_to_leave(false)
+        : _sections(sections), _sections_count(sections_count), _player_ship(&_controller, &_camera, &_models),
+            _enemy_manager(&_models, &_controller, &_player_ship), _hud_manager(&_controller, &_camera, &_player_ship), _prepare_to_leave(false)
 {
     // Initialize camera position.
     _camera.set_position(fr::point_3d(0, 1040, 0));
@@ -38,6 +38,7 @@ bool base_game_scene::update()
         _player_ship.update();
 
         // - Enemies
+        _enemy_manager.process_section_enemies(_sections, _sections_count, _camera.position().y());
         _enemy_manager.update();
     }
 

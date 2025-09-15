@@ -10,7 +10,8 @@
 #include "colliders.h"
 #include "controller.h"
 #include "player_laser.h"
-#include "enemy_manager.h"
+
+class enemy_manager; // Forward declaration
 
 // - Constants
 
@@ -47,8 +48,8 @@ class player_ship
 
     void update();
 
-    void collision_update(const fr::model_3d_item **static_model_items, size_t static_items_count,
-      enemy_manager enemies);
+        void collision_update(const fr::model_3d_item **static_model_items, size_t static_items_count,
+            enemy_manager& enemies);
 
     int statics_render(const fr::model_3d_item **static_model_items,
                        int static_count);
@@ -68,6 +69,11 @@ class player_ship
         return health;
     }
 
+    sphere_collider_set<fr::model_3d_items::ship_colliders_count>& collider_set()
+    {
+        return _sphere_collider_set;
+    }
+
     void set_target_position(const bn::fixed_point target_pos)
     {
         target_position.set_x(target_pos.x());
@@ -75,7 +81,7 @@ class player_ship
     }
 
     // - Movement
-    const bn::fixed MANEUVER_SPEED = 3;
+    const bn::fixed MANEUVER_SPEED = 3.5;
     const bn::fixed FORWARD_SPEED = 2.5;
     const bn::fixed FOCUS_DISTANCE = 200;
     
@@ -98,6 +104,8 @@ class player_ship
     int health = 3;
     int damage_cooldown = 0;
     bn::fixed_point target_position;
+
+    bool _check_dynamic_enemy_collision(enemy_manager& enemies);
 };
 
 #endif

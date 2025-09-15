@@ -20,6 +20,7 @@ asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::asteroid1_full);
     _model->set_position(position);
+    _model->set_palette(fr::model_3d_items::asteroid1_colors);
 
 }
 

@@ -10,8 +10,6 @@
 #include "fr_model_3d_item.h"
 #include "fr_models_3d.h"
 
-#include "stage_section.h"
-
 void stage_section_renderer::render_single_section(
     const stage_section *section, fr::models_3d &models,
     const fr::model_3d_item **static_model_items)
@@ -69,6 +67,7 @@ int stage_section_renderer::manage_section_render(
     fr::camera_3d &camera, const fr::model_3d_item **static_model_items)
 {
 
+    // <-- Let's not pass this entire camera, just its Y position
     const bn::fixed camera_position = camera.position().y();
     // BN_LOG("CAMERA POS: " + bn::to_string<32>(camera_position));
 

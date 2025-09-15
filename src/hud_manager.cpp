@@ -73,7 +73,7 @@ void hud_manager::_move_target()
     // Get raw input vector
     bn::fixed_point dir_input = _controller->get_smooth_directional();
 
-    BN_LOG("[target] dir_input: " + bn::to_string<64>(dir_input.x()) + ", " + bn::to_string<64>(dir_input.y()));
+    // BN_LOG("[target] dir_input: " + bn::to_string<64>(dir_input.x()) + ", " + bn::to_string<64>(dir_input.y()));
 
     bn::fixed_point target_pos;
 

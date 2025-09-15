@@ -6,8 +6,6 @@
 #include "fr_models_3d.h"
 #include "stage_section.h"
 
-#include "stage_section.h"
-
 class stage_section_renderer
 {
   public:

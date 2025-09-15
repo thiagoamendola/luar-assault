@@ -173,7 +173,7 @@ void player_ship::update()
 }
 
 void player_ship::collision_update(const fr::model_3d_item **static_model_items,
-    size_t static_items_count, enemy_manager enemies)
+    size_t static_items_count, enemy_manager& enemies)
 {
     {
         if (damage_cooldown > 0)
@@ -197,8 +197,8 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
             health--;
             return;
         }
-        // - Collision with dynamics
-        else if (_sphere_collider_set.colliding_with_dynamic(enemies._asteroid.get_collider())) // <-- Improve
+        // - Collision with dynamic enemies
+        else if(_check_dynamic_enemy_collision(enemies))
         {
             _model->set_palette(fr::model_3d_items::hurt_colors);
             bn::sound_items::player_damage.play();
@@ -211,6 +211,11 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
         }
     }
 
+}
+
+bool player_ship::_check_dynamic_enemy_collision(enemy_manager& enemies)
+{
+    return enemies.check_collision_with_enemies();
 }
 
 int player_ship::statics_render(const fr::model_3d_item **static_model_items,
