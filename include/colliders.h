@@ -147,7 +147,8 @@ template <size_t ColliderCount> class sphere_collider_set
         return false;
     }
 
-    bool colliding_with_dynamic(sphere_collider_set* target)
+    template <size_t OtherCount>
+    bool colliding_with_dynamic(sphere_collider_set<OtherCount>* target)
     {
         // BN_LOG("[collision] STARTING ----------------- ");
 
