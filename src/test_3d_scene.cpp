@@ -1,5 +1,6 @@
 #include "test_3d_scene.h"
-#include "test_3d_scene_defs.h"
+// #include "test_3d_scene_defs.h"
+#include "test_automated_scene_defs.h"
 
 #include "bn_bg_palettes_actions.h"
 #include "bn_regular_bg_animate_actions.h"
@@ -63,7 +64,6 @@ bn::optional<scene_type> test_3d_scene::update()
 {
     bn::optional<scene_type> result;
 
-    // <-- move
     _anim_bg_action.update();
 
     bool change_scene = _base_game_scene.update();

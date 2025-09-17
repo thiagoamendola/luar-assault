@@ -1,0 +1,252 @@
+{
+  "name": "test_automated_scene",
+  "version": 2,
+  "palette": [
+      "debug_collider",
+      "laser",
+      "shot",
+      "hurt",
+      "player_ship_02",
+      "bush",
+      "asteroid1"
+  ],
+  "sections": [
+    {
+      "id": 1,
+      "range": {
+        "start": 1050,
+        "end": 200
+      },
+      "staticModels": [
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": 30,
+            "y": 750,
+            "z": 40
+          },
+          "rotation": 16000,
+          "paletteOverride": "shot"
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": -30,
+            "y": 750,
+            "z": 40
+          },
+          "rotation": 0
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": 30,
+            "y": 350,
+            "z": 40
+          },
+          "rotation": 16000
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": -30,
+            "y": 250,
+            "z": 40
+          },
+          "rotation": 0
+        }
+      ],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -20,
+            "y": 600,
+            "z": 0
+          },
+          "rotation": 800
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 400,
+            "z": 20
+          },
+          "rotation": 200
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "range": {
+        "start": 750,
+        "end": -150
+      },
+      "staticModels": [
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": 50,
+            "y": 50,
+            "z": 0
+          },
+          "rotation": 16000,
+          "paletteOverride": "shot"
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": 50,
+            "y": -50,
+            "z": 0
+          },
+          "rotation": 16000,
+          "paletteOverride": "shot"
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": 50,
+            "y": -150,
+            "z": 0
+          },
+          "rotation": 16000,
+          "paletteOverride": "shot"
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": 50,
+            "y": -250,
+            "z": 0
+          },
+          "rotation": 16000
+        }
+      ],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -35,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": 800
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 20,
+            "y": 400,
+            "z": 0
+          },
+          "rotation": 600
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 30,
+            "y": 100,
+            "z": 20
+          },
+          "rotation": 200
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "range": {
+        "start": 350,
+        "end": -700
+      },
+      "staticModels": [
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": -30,
+            "y": -350,
+            "z": -15
+          },
+          "rotation": 16000
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": -30,
+            "y": -450,
+            "z": -15
+          },
+          "rotation": 16000
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": -30,
+            "y": -550,
+            "z": -15
+          },
+          "rotation": 16000
+        },
+        {
+          "model": "bush_full",
+          "enabled": true,
+          "position": {
+            "x": -30,
+            "y": -650,
+            "z": -15
+          },
+          "rotation": 16000
+        }
+      ],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -35,
+            "y": -100,
+            "z": 0
+          },
+          "rotation": 800
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 20,
+            "y": -400,
+            "z": 0
+          },
+          "rotation": 600
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 30,
+            "y": -500,
+            "z": 20
+          },
+          "rotation": 200
+        }
+      ]
+    }
+  ]
+}

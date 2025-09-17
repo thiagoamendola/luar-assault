@@ -33,7 +33,7 @@ BUILD       	:=  build
 LIBBUTANO   	:=  ../butano/butano
 PYTHON      	:=  python
 SOURCES     	:=  src src/fr_lib ../butano/common/src
-INCLUDES    	:=  include include/fr_lib ../butano/common/include
+INCLUDES    	:=  include include/fr_lib include/stage_defs ../butano/common/include
 DATA        	:=
 GRAPHICS    	:=  graphics ../butano/common/graphics graphics/shape_group_textures
 AUDIO       	:=  audio ../butano/common/audio
@@ -49,7 +49,7 @@ USERLIBS    	:=
 DEFAULTLIBS 	:=  
 STACKTRACE		:=	
 USERBUILD   	:=  
-EXTTOOL     	:=  
+EXTTOOL     	:=  @$(PYTHON) -B ./tools/precompile.py
 
 #---------------------------------------------------------------------------------------------------------------------
 # Export absolute butano path:
