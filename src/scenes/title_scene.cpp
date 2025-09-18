@@ -1,3 +1,4 @@
+#include "title_scene.h"
 
 #include "bn_bg_palettes_actions.h"
 #include "bn_colors.h"
@@ -17,7 +18,6 @@
 
 #include "scene_type.h"
 #include "test_3d_scene_defs.h"
-#include "title_scene.h"
 
 #include "models/player_ship_02.h"
 #include "models/shot.h"

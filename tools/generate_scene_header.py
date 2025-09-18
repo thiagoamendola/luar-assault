@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """
-generate_scene_header.py
-
 Reads a scene JSON description and generates a corresponding C++ header for that scene.
 
 Usage (PowerShell):
@@ -10,7 +8,7 @@ Usage (PowerShell):
   python tools/generate_scene_header.py stages/test_automated_scene.json include/test_automated_scene_defs.h
 
 If output path is omitted it writes the header to:
-  include/stage_defs/<scene_name>_defs.h
+  include/game_scene_defs/<scene_name>_defs.h
 """
 
 import json
@@ -255,7 +253,7 @@ def _process_one(in_path: Path, explicit_out: Path | None = None) -> Path:
         out_path = explicit_out
         out_path.parent.mkdir(parents=True, exist_ok=True)
     else:
-        out_dir = Path('include') / 'stage_defs'
+        out_dir = Path('include') / 'game_scene_defs'
         out_dir.mkdir(parents=True, exist_ok=True)
         out_path = out_dir / f"{scene['name']}_defs.h"
     header_text = generate_header(scene)
