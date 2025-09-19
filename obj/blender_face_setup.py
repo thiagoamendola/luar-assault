@@ -52,65 +52,20 @@ class MESH_PT_face_attribute_setter(bpy.types.Panel):
             box.label(text="Switch to Edit Mode.", icon='ERROR')
             return
         bm = bmesh.from_edit_mesh(obj.data)
+        # Check if attribute exists first
+        attr_layer = bm.faces.layers.int.get("engine_brightness")
+        if not attr_layer:
+            box.label(text="Run Initialization first.", icon='ERROR')
+            return
+
         selected_faces = [f for f in bm.faces if f.select]
         if not selected_faces:
             box.label(text="Select at least one face.", icon='ERROR')
             return
-        # When exactly one face is selected the IntProperty getter will
-        # transparently show the face attribute value (if present) without
-        # mutating data from draw().
+        # When exactly one face is selected the IntProperty getter shows the face value.
+        # Changing the value now auto-applies to selected faces.
         box.prop(context.scene, "fa_attr_value")
-        box.operator("mesh.set_face_attribute", text="Set Engine Brightness")
 
-class MESH_OT_set_face_attribute(bpy.types.Operator):
-    bl_idname = "mesh.set_face_attribute"
-    bl_label = "Set Face Attribute"
-    bl_options = {'REGISTER', 'UNDO'}
-
-    def execute(self, context):
-        obj = context.active_object
-        if obj is None or obj.type != 'MESH':
-            self.report({'ERROR'}, "Select a mesh object.")
-            return {'CANCELLED'}
-
-        attr_name = "engine_brightness"
-        value = context.scene.fa_attr_value
-
-        # Must be in edit mode for bmesh
-        if bpy.context.object.mode != 'EDIT':
-            self.report({'ERROR'}, "Switch to Edit Mode.")
-            return {'CANCELLED'}
-
-        bm = bmesh.from_edit_mesh(obj.data)
-
-        # Ensure bmesh integer layer exists for faces (safeguard even if no faces selected)
-        attr_layer = bm.faces.layers.int.get(attr_name)
-        created_layer = False
-        if not attr_layer:
-            attr_layer = bm.faces.layers.int.new(attr_name)
-            created_layer = True
-
-        selected_faces = [f for f in bm.faces if f.select]
-        if not selected_faces:
-            # If we just created the layer let the user know, but still require selection
-            if created_layer:
-                self.report({'ERROR'}, f"Created '{attr_name}' layer. Now select at least one face and run again.")
-            else:
-                self.report({'ERROR'}, "Select at least one face.")
-            return {'CANCELLED'}
-
-        # Clamp value to 0-7
-        value = max(0, min(7, value))
-
-        # Set value for selected faces
-        count = 0
-        for face in selected_faces:
-            face[attr_layer] = value
-            count += 1
-
-        bmesh.update_edit_mesh(obj.data)
-        self.report({'INFO'}, f"Set '{attr_name}' to {value} for {count} selected faces.")
-        return {'FINISHED'}
 
 class MESH_OT_initialize_file(bpy.types.Operator):
     bl_idname = "mesh.initialize_face_brightness_file"
@@ -182,7 +137,6 @@ class MESH_OT_initialize_file(bpy.types.Operator):
 def register():
     bpy.utils.register_class(MESH_PT_face_attribute_setter)
     bpy.utils.register_class(MESH_OT_initialize_file)
-    bpy.utils.register_class(MESH_OT_set_face_attribute)
     # Hidden storage for the last user-entered value (used when multiple faces selected)
     bpy.types.Scene.fa_attr_value_storage_internal = bpy.props.IntProperty(
         default=1, options={'HIDDEN'})
@@ -219,9 +173,26 @@ def register():
         return self.fa_attr_value_storage_internal
 
     def _set_fa_attr_value(self, value):
-        # Clamp and just store; applying to faces happens via the operator
-        self.fa_attr_value_storage_internal = max(0, min(7, int(value)))
+        new_val = max(0, min(7, int(value)))
+        self.fa_attr_value_storage_internal = new_val
         self.fa_attr_value_manual_override = True
+        # Live-apply to selected faces if possible
+        obj = bpy.context.active_object
+        if obj and obj.type == 'MESH' and obj.mode == 'EDIT':
+            try:
+                bm = bmesh.from_edit_mesh(obj.data)
+            except Exception:
+                return
+            layer = bm.faces.layers.int.get("engine_brightness")
+            if not layer:
+                return
+            changed = 0
+            for f in bm.faces:
+                if f.select:
+                    f[layer] = new_val
+                    changed += 1
+            if changed:
+                bmesh.update_edit_mesh(obj.data, loop_triangles=False, destructive=False)
 
     bpy.types.Scene.fa_attr_value = bpy.props.IntProperty(
         name="Engine Brightness",
@@ -233,7 +204,6 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(MESH_PT_face_attribute_setter)
-    bpy.utils.unregister_class(MESH_OT_set_face_attribute)
     bpy.utils.unregister_class(MESH_OT_initialize_file)
     del bpy.types.Scene.fa_attr_value
     del bpy.types.Scene.fa_attr_value_storage_internal
