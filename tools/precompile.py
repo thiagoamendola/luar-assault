@@ -1,14 +1,20 @@
 
 import generate_scene_header
+import batch_import_models
 
 
 def task_generate_scenes() -> int:
     return generate_scene_header.main([])
 
 
+def task_import_models() -> int:
+    return batch_import_models.main([])
+
+
 # Precompile steps: (name, function)
 TASKS = [
     ("scene header generation", task_generate_scenes),
+    ("model importer", task_import_models),
 ]
 
 
