@@ -8,6 +8,7 @@ enum class scene_type
     BUTANO_INTRO,
     TEST_BUTANO,
     TEST_3D,
+    MODEL_VIEWER,
     TITLE,
 };
 

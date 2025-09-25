@@ -106,7 +106,7 @@ bn::optional<scene_type> title_scene::update()
         // <-- Can be moved to pre-destroy???
         _bgs_fade_out_action->update();
         _sprites_fade_out_action->update();
-        result = scene_type::TEST_3D;
+        result = _target_scene;
     }
     else if (_bgs_fade_out_action)
     {
@@ -127,7 +127,16 @@ bn::optional<scene_type> title_scene::update()
     }
     else if (bn::keypad::start_pressed())
     {
-        // Start scene transition
+        // Transition to gameplay (TEST_3D)
+        _target_scene = scene_type::TEST_3D;
+        bn::sound_items::menu_confirm.play();
+        _bgs_fade_out_action.emplace(60, 1);
+        _sprites_fade_out_action.emplace(60, 1);
+    }
+    else if (bn::keypad::select_pressed())
+    {
+        // Transition to model viewer
+        _target_scene = scene_type::MODEL_VIEWER;
         bn::sound_items::menu_confirm.play();
         _bgs_fade_out_action.emplace(60, 1);
         _sprites_fade_out_action.emplace(60, 1);
