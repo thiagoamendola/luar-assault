@@ -34,7 +34,7 @@ void model_viewer_scene::_load_palette() { /* unused: per-model palette loading 
 void model_viewer_scene::_create_model()
 {
     _destroy_model();
-    const auto& entry = _entries[_current_index];
+    const auto& entry = model_viewer_defs::entries[_current_index];
     const fr::model_3d_item& item = *entry.item;
 
     // Per-model palette: clear previous colors, then load only required colors.
@@ -83,9 +83,9 @@ void model_viewer_scene::_show_model_name()
     bn::string<48> text("MODEL ");
     text.append(bn::to_string<4>(_current_index + 1));
     text.push_back('/');
-    text.append(bn::to_string<4>(_models_count));
+    text.append(bn::to_string<4>(model_viewer_defs::models_count));
     text.append(": ");
-    text.append(_entries[_current_index].name);
+    text.append(model_viewer_defs::entries[_current_index].name);
 
     _text_generator.set_center_alignment();
     _text_generator.generate(0, 70, text, _text_sprites);
@@ -120,14 +120,14 @@ bn::optional<scene_type> model_viewer_scene::update()
         }
         else if (bn::keypad::a_pressed())
         {
-            _current_index = (_current_index + 1) % _models_count;
+            _current_index = (_current_index + 1) % model_viewer_defs::models_count;
             bn::sound_items::menu_focus.play();
             _create_model();
             _show_model_name();
         }
         else if (bn::keypad::b_pressed())
         {
-            _current_index = (_current_index + _models_count - 1) % _models_count;
+            _current_index = (_current_index + model_viewer_defs::models_count - 1) % model_viewer_defs::models_count;
             bn::sound_items::menu_focus.play();
             _create_model();
             _show_model_name();

@@ -33,16 +33,13 @@ public:
     ~model_viewer_scene();
 
     [[nodiscard]] bn::optional<scene_type> update() final;
-
-private:
     struct model_entry
     {
         const fr::model_3d_item* item;
         const char* name;
     };
 
-    static constexpr int _models_count = 5; // update if adding more entries
-    static const model_entry _entries[_models_count];
+private:
 
     int _current_index = 0;
 
@@ -63,5 +60,13 @@ private:
     void _destroy_model();
     void _show_model_name();
 };
+
+// Runtime model list is auto-generated in model_viewer_scene_defs.h.
+// We expose it via a lightweight namespace to avoid polluting the scene class
+// with static member declarations.
+namespace model_viewer_defs {
+    extern const int models_count;                     // defined inline in *_defs.h
+    extern const model_viewer_scene::model_entry entries[]; // defined inline in *_defs.h
+}
 
 #endif // MODEL_VIEWER_SCENE_H
