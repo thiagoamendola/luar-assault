@@ -4,6 +4,7 @@
 #include "bn_keypad.h"
 #include "bn_log.h"
 #include "bn_string.h"
+#include "bn_sound_items.h"
 
 #include "fr_constants_3d.h"
 #include "fr_model_3d_item.h"
@@ -12,17 +13,50 @@
 player_laser::player_laser()
     : laser_full(laser_vertices, laser_faces, fr::model_3d_items::laser_colors)
 {
+    laser_duration_count = 0;
 }
 
-void player_laser::handle_player_laser()
+void player_laser::update()
 {
-    render_laser = false;
-    if (bn::keypad::a_held())
+    switch (state)
     {
+    case laser_state::PAUSED:
+        // We can start the laser    
+        if (bn::keypad::a_held())
+        {
+            // Ready to shoot
+            render_laser = true;
+            laser_duration_count = LASER_DURATION;
+            state = laser_state::SHOOTING;
+            bn::sound_items::player_laser.play();
+
+            // <-- Also check for collision
+        }
+        break;
+    case laser_state::SHOOTING:
+        // Continue laser render    
         render_laser = true;
-        // <-- Move the laser sound here
-        // <-- We can also do some smarter checks for laser cadency
-        // <-- Also check for collision
+        break;
+    case laser_state::COOLDOWN:
+        // Don't render laser  
+        render_laser = false;
+        break;
+    }
+
+    if (laser_duration_count > 0)
+    {
+        laser_duration_count--;
+
+        if (laser_duration_count <= 0) {
+            if (state == laser_state::SHOOTING) {
+                state = laser_state::COOLDOWN;
+                laser_duration_count = COOLDOWN_DURATION;
+                render_laser = false;
+            } else if (state == laser_state::COOLDOWN) {
+                state = laser_state::PAUSED;
+                render_laser = false;
+            }
+        }
     }
 }
 
@@ -35,6 +69,7 @@ int player_laser::render_player_laser(
         int phi_raw = phi.right_shift_integer();
         int psi_raw = psi.right_shift_integer();
 
+        // <-- Maybe create the trajectory above? I'll just render here.
         // Calculate laser trajectory.
         fr::point_3d forward_vec = fr::point_3d(0, -200, 0); // <-- magic number
         // use magnitude instead???

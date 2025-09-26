@@ -15,13 +15,21 @@ constexpr inline bn::color laser_colors[] = {
 
 }
 
+// Laser state machine
+enum class laser_state {
+    PAUSED,
+    SHOOTING,
+    COOLDOWN
+};
+
+
 class player_laser
 {
   public:
     player_laser();
 
     // Calculates wether laser is being used, collision and so on.
-    void handle_player_laser();
+    void update();
 
     // Controls laser mesh render as a static model (at the end of update)
     int render_player_laser(fr::point_3d player_ship_pos, bn::fixed psi,
@@ -55,7 +63,13 @@ class player_laser
 
     fr::model_3d_item laser_full;
 
+    const int LASER_DURATION = 5;
+    const int COOLDOWN_DURATION = 3;
+
     bool render_laser = false;
+    // Current state (starts paused)
+    laser_state state = laser_state::PAUSED;
+    int laser_duration_count = 0;
 };
 
 #endif

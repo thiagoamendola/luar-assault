@@ -83,6 +83,7 @@ void player_ship::update()
         // _model->set_phi(YAW_MAX * dir_input.x());
         // _model->set_psi(16383 + -PITCH_MAX * dir_input.y());
 
+        // <-- Move this to its own method
         // > Point ship to target position
         constexpr int focal_length_shift = fr::constants_3d::focal_length_shift;
         bn::fixed depth_position = _model->position().y() - FOCUS_DISTANCE; // Setup distance in front of ship
@@ -144,7 +145,7 @@ void player_ship::update()
 
     {
         // - Player Laser
-        _player_laser.handle_player_laser();
+        _player_laser.update();
     }
 
     {
