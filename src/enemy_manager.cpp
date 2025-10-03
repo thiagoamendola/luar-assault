@@ -91,7 +91,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
     }
 }
 
-bool enemy_manager::check_collision_with_enemies()
+bool enemy_manager::check_collision()
 {
     auto& player_collider = _player->collider_set();
     for(int i = 0; i < max_asteroids; ++i)

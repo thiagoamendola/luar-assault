@@ -33,7 +33,7 @@ public:
   };
 
   // Returns true if player collides with any active enemy collider
-  bool check_collision_with_enemies();
+  bool check_collision();
 
 private:
   asteroid_slot _asteroids[max_asteroids];

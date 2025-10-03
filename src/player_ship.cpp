@@ -26,7 +26,8 @@
 player_ship::player_ship(controller *controller, fr::camera_3d *camera,
                          fr::models_3d *models)
     : _controller(controller), _camera(camera), _models(models),
-      _sphere_collider_set(fr::model_3d_items::ship_colliders)
+    _sphere_collider_set(fr::model_3d_items::ship_colliders),
+    _player_laser(this)
 {
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::player_ship_02_full);
@@ -199,7 +200,7 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
             return;
         }
         // - Collision with dynamic enemies
-        else if(enemies.check_collision_with_enemies())
+        else if(enemies.check_collision())
         {
             _model->set_palette(fr::model_3d_items::hurt_colors);
             bn::sound_items::player_damage.play();
@@ -224,7 +225,6 @@ int player_ship::statics_render(const fr::model_3d_item **static_model_items,
 
     // Render laser model
     int current_static_count = _player_laser.render_player_laser(
-        get_model()->position(), _model->psi(), _model->phi(),
         static_model_items, static_count);
 
 #if LOG_STATIC_RENDER_STEPS
