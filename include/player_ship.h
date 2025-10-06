@@ -89,6 +89,9 @@ class player_ship
     const int DAMAGE_COOLDOWN = 60; // 1 second
 
   private:
+
+    bool check_collision_with_enemies(enemy_manager& enemies);
+
     controller *_controller;
     fr::camera_3d *_camera;
 

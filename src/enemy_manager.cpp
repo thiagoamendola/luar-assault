@@ -17,7 +17,7 @@ enemy_manager::enemy_manager(fr::models_3d *models, controller *controller, play
 
 void enemy_manager::destroy()
 {
-    for(int i = 0; i < max_asteroids; ++i)
+    for(int i = 0; i < MAX_ENEMIES; ++i)
     {
         if(_asteroids[i].used && _asteroids[i].ptr)
         {
@@ -31,7 +31,7 @@ void enemy_manager::destroy()
 
 void enemy_manager::update()
 {
-    for(int i = 0; i < max_asteroids; ++i)
+    for(int i = 0; i < MAX_ENEMIES; ++i)
     {
         if(_asteroids[i].used && _asteroids[i].ptr)
         {
@@ -43,7 +43,7 @@ void enemy_manager::update()
 int enemy_manager::statics_render(const fr::model_3d_item **static_model_items, int static_count)
 {
     int current = static_count;
-    for(int i = 0; i < max_asteroids; ++i)
+    for(int i = 0; i < MAX_ENEMIES; ++i)
     {
         if(_asteroids[i].used && _asteroids[i].ptr)
         {
@@ -61,6 +61,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
         if (camera_y <= section->starting_pos() && camera_y > section->ending_pos() &&
            section->starting_pos() < _last_section_start_y)
         {
+            // Instantiate enemies in this section
             _last_section_start_y = section->starting_pos();
 
             for (int e = 0; e < section->enemies_count(); ++e)
@@ -70,7 +71,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                 if(enemy.type == enemy_type::ASTEROID)
                 {
                     // <-- Separate this into its own method
-                    for(int slot = 0; slot < max_asteroids; ++slot)
+                    for(int slot = 0; slot < MAX_ENEMIES; ++slot)
                     {
                         if(!_asteroids[slot].used)
                         {
@@ -89,20 +90,4 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
             }
         }
     }
-}
-
-bool enemy_manager::check_collision()
-{
-    auto& player_collider = _player->collider_set();
-    for(int i = 0; i < max_asteroids; ++i)
-    {
-        if(_asteroids[i].used && _asteroids[i].ptr)
-        {
-            if(player_collider.colliding_with_dynamic(_asteroids[i].ptr->get_collider()))
-            {
-                return true;
-            }
-        }
-    }
-    return false;
 }

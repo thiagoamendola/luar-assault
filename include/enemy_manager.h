@@ -9,6 +9,14 @@
 #include "colliders.h"
 #include "player_ship.h"
 
+
+// <-- Change to generic enemy
+struct asteroid_slot {
+  bool used = false;
+  asteroid *ptr = nullptr; // dynamically created via models
+  const enemy_descriptor *source = nullptr; // descriptor origin
+};
+
 class enemy_manager
 {
 public:
@@ -24,19 +32,16 @@ public:
   // Basic section enemy processing: given current camera Y and all sections, print enemies in active sections.
   void process_section_enemies(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
 
-  static constexpr int max_asteroids = 12;
+  asteroid_slot* get_enemies()
+  {
+    return _asteroids;
+  }
 
-  struct asteroid_slot {
-    bool used = false;
-    asteroid *ptr = nullptr; // dynamically created via models
-    const enemy_descriptor *source = nullptr; // descriptor origin
-  };
-
-  // Returns true if player collides with any active enemy collider
-  bool check_collision();
+  static constexpr int MAX_ENEMIES = 12;
 
 private:
-  asteroid_slot _asteroids[max_asteroids];
+  // <-- Change to generic enemy
+  asteroid_slot _asteroids[MAX_ENEMIES];
 
   fr::models_3d *_models;
   controller *_controller;
