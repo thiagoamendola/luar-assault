@@ -48,8 +48,8 @@ class player_ship
 
     void update();
 
-        void collision_update(const fr::model_3d_item **static_model_items, size_t static_items_count,
-            enemy_manager& enemies);
+    void collision_update(const fr::model_3d_item **static_model_items, size_t static_items_count,
+        enemy_manager& enemies);
 
     int statics_render(const fr::model_3d_item **static_model_items,
                        int static_count);

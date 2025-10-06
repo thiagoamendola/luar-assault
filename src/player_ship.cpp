@@ -145,11 +145,6 @@ void player_ship::update()
     }
 
     {
-        // - Player Laser
-        _player_laser.update();
-    }
-
-    {
         // - Sound test // <-- Remove later
         // if (bn::keypad::b_pressed())
         // {
@@ -178,6 +173,13 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
     size_t static_items_count, enemy_manager& enemies)
 {
     {
+        // - Player Laser
+        _player_laser.update(enemies);
+    }
+
+    {
+        // Player ship collision
+
         if (damage_cooldown > 0)
         {
             damage_cooldown--;

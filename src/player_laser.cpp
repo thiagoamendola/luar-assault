@@ -11,6 +11,7 @@
 #include "fr_sin_cos.h"
 
 #include "player_ship.h"
+#include "enemy_manager.h"
 
 player_laser::player_laser(player_ship *player_ship)
     : laser_full(laser_vertices, laser_faces, fr::model_3d_items::laser_colors),
@@ -19,7 +20,7 @@ player_laser::player_laser(player_ship *player_ship)
     laser_duration_count = 0;
 }
 
-void player_laser::update()
+void player_laser::update(enemy_manager& enemies)
 {
     switch (state)
     {
@@ -34,7 +35,7 @@ void player_laser::update()
             bn::sound_items::player_laser.play();
 
             // Check for collision
-            raycast_laser();
+            raycast_laser(enemies);
         }
         break;
     case laser_state::SHOOTING:
@@ -64,7 +65,7 @@ void player_laser::update()
     }
 }
 
-void player_laser::raycast_laser()
+void player_laser::raycast_laser(enemy_manager& enemies)
 {
     fr::point_3d player_ship_pos = _player_ship->get_position();
     bn::fixed psi = _player_ship->get_model()->psi();
@@ -86,10 +87,24 @@ void player_laser::raycast_laser()
         laser_vec += player_ship_pos;
     }
 
-    // <-- CONTINUE
-    // Check against static models only?
-    // If hit, apply damage to object (if applicable) and stop laser at hit point
-    // If no hit, laser goes full distance
+    {
+        // Check against static models only?
+        // If hit, apply damage to object (if applicable) and stop laser at hit point
+        // If no hit, laser goes full distance
+        
+        asteroid_slot* enemy_slots = enemies.get_enemies();
+        for(int i = 0; i < enemy_manager::MAX_ENEMIES; ++i)
+        {
+            if(enemy_slots[i].used && enemy_slots[i].ptr)
+            {
+                // <-- Figure out this OtherCount number
+                // sphere_collider_set<OtherCount>* target = enemy_slots[i].ptr->get_collider();
+
+
+
+            }
+        }
+    }
 }
 
 int player_laser::render_player_laser(

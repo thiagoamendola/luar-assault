@@ -7,6 +7,7 @@
 #include "fr_model_colors.h"
 
 class player_ship; // Forward declaration
+class enemy_manager; // Forward declaration
 
 namespace fr::model_3d_items
 {
@@ -31,9 +32,9 @@ class player_laser
     player_laser(player_ship *player_ship);
 
     // Calculates wether laser is being used, collision and so on.
-    void update();
+    void update(enemy_manager& enemies);
 
-    void raycast_laser();
+    void raycast_laser(enemy_manager& enemies);
 
     // Controls laser mesh render as a static model (at the end of update)
     int render_player_laser(const fr::model_3d_item **static_model_items,
