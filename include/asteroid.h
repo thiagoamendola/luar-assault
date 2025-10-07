@@ -40,6 +40,8 @@ class asteroid
     int statics_render(const fr::model_3d_item **static_model_items,
       int static_count);
 
+    void handle_laser_hit();
+
     fr::model_3d *get_model()
     {
       return _model;
@@ -52,6 +54,7 @@ class asteroid
 
     const bn::fixed MOVEMENT_SPEED = 3;
     const bn::fixed ROTATION_SPEED = 2.5;
+    const int DAMAGE_COOLDOWN = 3;
 
   private:
     fr::point_3d _position;
@@ -60,6 +63,8 @@ class asteroid
     fr::models_3d *_models;
     fr::model_3d *_model;
     controller *_controller;
+
+    int damage_cooldown = 0;
 
     sphere_collider_set<fr::model_3d_items::asteroid_colliders_count>
         _sphere_collider_set;

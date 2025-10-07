@@ -60,7 +60,7 @@ class player_laser
     fr::model_3d_item laser_full;
     player_ship *_player_ship;
 
-    const int LASER_DURATION = 5;
+    const int LASER_DURATION = 3;
     const int COOLDOWN_DURATION = 3;
     const int LASER_DISTANCE = 200;
 
