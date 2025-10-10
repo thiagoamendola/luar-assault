@@ -18,7 +18,7 @@ constexpr inline bn::color asteroid_hit_colors[] = {
 };
 
 constexpr const sphere_collider asteroid_colliders[] = {
-    sphere_collider(fr::point_3d(0, 0, 0), 8)
+    sphere_collider(fr::point_3d(3, 0, 5), 15)
     
 };
 

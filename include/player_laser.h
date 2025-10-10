@@ -62,13 +62,13 @@ class player_laser
 
     const int LASER_DURATION = 3;
     const int COOLDOWN_DURATION = 3;
-    const int LASER_DISTANCE = 200;
+    const int LASER_DISTANCE = 300;
 
     bool render_laser = false;
     laser_state state = laser_state::PAUSED;
     int laser_duration_count = 0;
 
-    fr::point_3d laser_vec = fr::point_3d(0, 0, 0);
+    fr::point_3d laser_target = fr::point_3d(0, 0, 0);
 };
 
 #endif
