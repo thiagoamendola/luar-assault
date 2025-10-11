@@ -180,11 +180,11 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
     {
         // Player ship collision
 
-        if (damage_cooldown > 0)
+        if (_damage_cooldown > 0)
         {
-            damage_cooldown--;
+            _damage_cooldown--;
             // Blink ship
-            if (damage_cooldown % 6 < 3) {
+            if (_damage_cooldown % 6 < 3) { // <-- MAGIC NUMBER
                 _model->set_palette(fr::model_3d_items::hurt_colors);
             } else {
                 _model->set_palette(fr::model_3d_items::player_ship_02_colors);
@@ -197,7 +197,7 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
         {
             _model->set_palette(fr::model_3d_items::hurt_colors);
             bn::sound_items::player_damage.play();
-            damage_cooldown = DAMAGE_COOLDOWN;
+            _damage_cooldown = DAMAGE_COOLDOWN;
             health--;
             return;
         }
@@ -206,7 +206,7 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
         {
             _model->set_palette(fr::model_3d_items::hurt_colors);
             bn::sound_items::player_damage.play();
-            damage_cooldown = DAMAGE_COOLDOWN;
+            _damage_cooldown = DAMAGE_COOLDOWN;
             health--;
         }
         else

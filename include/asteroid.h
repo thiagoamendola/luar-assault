@@ -42,6 +42,8 @@ class asteroid
 
     void handle_laser_hit();
 
+    bool is_destroyed() const { return _destroyed; }
+
     fr::model_3d *get_model()
     {
       return _model;
@@ -55,6 +57,7 @@ class asteroid
     const bn::fixed MOVEMENT_SPEED = 3;
     const bn::fixed ROTATION_SPEED = 2.5;
     const int DAMAGE_COOLDOWN = 3;
+    const int MAX_HEALTH = 3;
 
   private:
     fr::point_3d _position;
@@ -64,7 +67,9 @@ class asteroid
     fr::model_3d *_model;
     controller *_controller;
 
-    int damage_cooldown = 0;
+    int _damage_cooldown = 0;
+    int _health = MAX_HEALTH;
+    bool _destroyed = false;
 
     sphere_collider_set<fr::model_3d_items::asteroid_colliders_count>
         _sphere_collider_set;

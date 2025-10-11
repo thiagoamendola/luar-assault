@@ -28,16 +28,21 @@ asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *
 
 void asteroid::destroy()
 {
+    if(_destroyed)
+    {
+        return; // already destroyed
+    }
     _models->destroy_dynamic_model(*_model);
+    _destroyed = true;
 }
 
 void asteroid::update()
 {
     // Handle cooldown.
-    if (damage_cooldown > 0)
+    if (_damage_cooldown > 0)
     {
-       damage_cooldown--;
-        if (damage_cooldown <= 0) {
+       _damage_cooldown--;
+        if (_damage_cooldown <= 0) {
             _model->set_palette(fr::model_3d_items::asteroid1_colors);
         }
     }   
@@ -64,11 +69,25 @@ int asteroid::statics_render(const fr::model_3d_item **static_model_items,
     return current_static_count;
 }
 
-// damage_cooldown = DAMAGE_COOLDOWN;
 void asteroid::handle_laser_hit()
 {
-    _model->set_palette(fr::model_3d_items::laser_colors);
-    damage_cooldown = DAMAGE_COOLDOWN;
+    if(_destroyed)
+    {
+        return;
+    }
+
+    // Apply hit feedback palette and cooldown only if still alive after hit
+    if(_health > 0)
+    {
+        _health -= 1;
+        if(_health <= 0)
+        {
+            // Final destruction
+            destroy();
+            return;
+        }
+        _model->set_palette(fr::model_3d_items::laser_colors);
+        _damage_cooldown = DAMAGE_COOLDOWN;
+    }
     // bn::sound_items::asteroid_hit.play(); // <-- Get asteroid hit sound
-    // <-- Lower health or destroy asteroid
 }
