@@ -20,27 +20,10 @@ using namespace scene_colors_generator;
 
 // --- Sections
 
-constexpr auto _s1_model_1 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(30, 750, 40), 16000, fr::model_3d_items::shot_colors);
-constexpr auto _s1_model_2 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(-30, 750, 40), 0);
-constexpr auto _s1_model_3 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(30, 350, 40), 16000);
-constexpr auto _s1_model_4 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(-30, 250, 40), 0);
 
-constexpr auto _section_1_static_model_items = {
-    _s1_model_1.item(),
-    _s1_model_2.item(),
-    _s1_model_3.item(),
-    _s1_model_4.item()
-};
+constexpr std::initializer_list<fr::model_3d_item> _section_1_static_model_items = {};
 
-constexpr auto _section_1_enemies = {
+constexpr std::initializer_list<enemy_descriptor> _section_1_enemies = {
     enemy_descriptor(fr::point_3d(-20, 600, 0), 800, enemy_type::ASTEROID),
     enemy_descriptor(fr::point_3d(0, 400, 20), 200, enemy_type::ASTEROID)
 };
@@ -51,27 +34,10 @@ constexpr int _section_1_end = 200;
 constexpr stage_section section_1(_section_1_start, _section_1_end,
                                   _section_1_static_model_items, _section_1_enemies);
 
-constexpr auto _s2_model_1 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(50, 50, 0), 16000, fr::model_3d_items::shot_colors);
-constexpr auto _s2_model_2 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(50, -50, 0), 16000, fr::model_3d_items::shot_colors);
-constexpr auto _s2_model_3 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(50, -150, 0), 16000, fr::model_3d_items::shot_colors);
-constexpr auto _s2_model_4 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(50, -250, 0), 16000);
 
-constexpr auto _section_2_static_model_items = {
-    _s2_model_1.item(),
-    _s2_model_2.item(),
-    _s2_model_3.item(),
-    _s2_model_4.item()
-};
+constexpr std::initializer_list<fr::model_3d_item> _section_2_static_model_items = {};
 
-constexpr auto _section_2_enemies = {
+constexpr std::initializer_list<enemy_descriptor> _section_2_enemies = {
     enemy_descriptor(fr::point_3d(-35, 0, 0), 800, enemy_type::ASTEROID),
     enemy_descriptor(fr::point_3d(20, 400, 0), 600, enemy_type::ASTEROID),
     enemy_descriptor(fr::point_3d(30, 100, 20), 200, enemy_type::ASTEROID)
@@ -83,27 +49,10 @@ constexpr int _section_2_end = -150;
 constexpr stage_section section_2(_section_2_start, _section_2_end,
                                   _section_2_static_model_items, _section_2_enemies);
 
-constexpr auto _s3_model_1 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(-30, -350, -15), 16000);
-constexpr auto _s3_model_2 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(-30, -450, -15), 16000);
-constexpr auto _s3_model_3 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(-30, -550, -15), 16000);
-constexpr auto _s3_model_4 =
-    static_model_3d_item<fr::model_3d_items::bush_full>(
-        fr::point_3d(-30, -650, -15), 16000);
 
-constexpr auto _section_3_static_model_items = {
-    _s3_model_1.item(),
-    _s3_model_2.item(),
-    _s3_model_3.item(),
-    _s3_model_4.item()
-};
+constexpr std::initializer_list<fr::model_3d_item> _section_3_static_model_items = {};
 
-constexpr auto _section_3_enemies = {
+constexpr std::initializer_list<enemy_descriptor> _section_3_enemies = {
     enemy_descriptor(fr::point_3d(-35, -100, 0), 800, enemy_type::ASTEROID),
     enemy_descriptor(fr::point_3d(20, -400, 0), 600, enemy_type::ASTEROID),
     enemy_descriptor(fr::point_3d(30, -500, 20), 200, enemy_type::ASTEROID)

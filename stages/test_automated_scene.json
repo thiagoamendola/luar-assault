@@ -20,7 +20,7 @@
       "staticModels": [
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": 30,
             "y": 750,
@@ -31,7 +31,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": -30,
             "y": 750,
@@ -41,7 +41,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": 30,
             "y": 350,
@@ -51,7 +51,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": -30,
             "y": 250,
@@ -92,7 +92,7 @@
       "staticModels": [
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": 50,
             "y": 50,
@@ -103,7 +103,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": 50,
             "y": -50,
@@ -114,7 +114,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": 50,
             "y": -150,
@@ -125,7 +125,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": 50,
             "y": -250,
@@ -176,7 +176,7 @@
       "staticModels": [
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": -30,
             "y": -350,
@@ -186,7 +186,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": -30,
             "y": -450,
@@ -196,7 +196,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": -30,
             "y": -550,
@@ -206,7 +206,7 @@
         },
         {
           "model": "bush_full",
-          "enabled": true,
+          "enabled": false,
           "position": {
             "x": -30,
             "y": -650,

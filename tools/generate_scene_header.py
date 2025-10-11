@@ -182,15 +182,20 @@ def generate_header(scene: Dict[str, Any]) -> str:
         section_src = []
         section_src.extend(model_const_lines)
         section_src.append("")
-        section_src.append(f"constexpr auto _section_{sid}_static_model_items = {{")
+        # Explicitly type initializer_lists so empty lists compile (no deduction failure)
         if model_items_lines:
+            section_src.append(f"constexpr std::initializer_list<fr::model_3d_item> _section_{sid}_static_model_items = {{")
             section_src.extend(model_items_lines)
-        section_src.append("};")
+            section_src.append("};")
+        else:
+            section_src.append(f"constexpr std::initializer_list<fr::model_3d_item> _section_{sid}_static_model_items = {{}};")
         section_src.append("")
-        section_src.append(f"constexpr auto _section_{sid}_enemies = {{")
         if enemy_lines:
+            section_src.append(f"constexpr std::initializer_list<enemy_descriptor> _section_{sid}_enemies = {{")
             section_src.extend(enemy_lines)
-        section_src.append("};")
+            section_src.append("};")
+        else:
+            section_src.append(f"constexpr std::initializer_list<enemy_descriptor> _section_{sid}_enemies = {{}};")
         section_src.append("")
         section_src.append(f"constexpr int _section_{sid}_start = {start};")
         section_src.append(f"constexpr int _section_{sid}_end = {end};")
