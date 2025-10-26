@@ -4,6 +4,7 @@
 #include "bn_fixed.h"
 
 #include "fr_models_3d.h"
+#include "fr_sprite_3d_item.h"
 
 #include "colliders.h"
 #include "controller.h"
@@ -70,6 +71,10 @@ class asteroid
     int _damage_cooldown = 0;
     int _health = MAX_HEALTH;
     bool _destroyed = false;
+    int _crash_frames = 0;
+    fr::sprite_3d_item _explosion_sprite_3d_item;
+    fr::sprite_3d* _explosion_sprite = nullptr;
+
 
     sphere_collider_set<fr::model_3d_items::asteroid_colliders_count>
         _sphere_collider_set;

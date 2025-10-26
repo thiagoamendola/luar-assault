@@ -94,7 +94,7 @@ bn::fixed_point controller::get_smooth_directional()
 void controller::update()
 {
 // Toggle collider visibility
-#if SHOW_COLLIDERS_PLAYER
+#if SHOW_COLLIDERS
     if (bn::keypad::select_pressed())
     {
         enable_collider_display = !enable_collider_display;

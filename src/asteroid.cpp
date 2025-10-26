@@ -11,13 +11,17 @@
 
 #include "player_laser.h"
 
+#include "bn_sprite_items_explosion1.h"
 #include "models/asteroid1.h"
 
 // <-- Implement definition from header
 
+constexpr int crash_frames = 64; // <-- move to header
+
 asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller)
     : _position(position), _movement(movement), _models(models), _controller(controller),
-      _sphere_collider_set(fr::model_3d_items::asteroid_colliders)
+      _sphere_collider_set(fr::model_3d_items::asteroid_colliders), 
+      _explosion_sprite_3d_item(bn::sprite_items::explosion1, 0)
 {
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::asteroid1_full);
@@ -33,6 +37,12 @@ void asteroid::destroy()
         return; // already destroyed
     }
     _models->destroy_dynamic_model(*_model);
+    // <-- destroy explosion sprite if exists
+    // if(_explosion_sprite)
+    // {
+    //     _models.destroy_sprite(*_explosion_sprite);
+    //     _explosion_sprite = nullptr;
+    // }
     _destroyed = true;
 }
 
@@ -83,7 +93,15 @@ void asteroid::handle_laser_hit()
         if(_health <= 0)
         {
             // Final destruction
-            destroy();
+            // <-- Move to own method
+            // destroy(); // <-- only destroy when explostion sprite ended
+
+            _crash_frames = crash_frames;
+            _explosion_sprite = &_models->create_sprite(_explosion_sprite_3d_item);
+            _explosion_sprite->set_position(_position);
+            _explosion_sprite->set_theta(40000);
+            _explosion_sprite->set_scale(1); // + ((1 - fade_intensity).unsafe_multiplication(bn::fixed(0.6))));
+
             return;
         }
         _model->set_palette(fr::model_3d_items::laser_colors);
