@@ -55,15 +55,6 @@ int enemy_manager::statics_render(const fr::model_3d_item **static_model_items, 
     {
         if(_asteroids[i].used && _asteroids[i].ptr)
         {
-            // Skip and cleanup destroyed asteroids
-            if(_asteroids[i].ptr->is_destroyed())
-            {
-                delete _asteroids[i].ptr;
-                _asteroids[i].ptr = nullptr;
-                _asteroids[i].used = false;
-                _asteroids[i].source = nullptr;
-                continue;
-            }
             current = _asteroids[i].ptr->statics_render(static_model_items, current);
         }
     }

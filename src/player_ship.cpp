@@ -257,7 +257,7 @@ bool player_ship::check_collision_with_enemies(enemy_manager& enemies)
     {
         if(enemy_slots[i].used && enemy_slots[i].ptr)
         {
-            if(player_collider.colliding_with_dynamic(enemy_slots[i].ptr->get_collider()))
+            if(!enemy_slots[i].ptr->is_killed() && player_collider.colliding_with_dynamic(enemy_slots[i].ptr->get_collider()))
             {
                 return true;
             }

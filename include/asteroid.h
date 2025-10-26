@@ -2,12 +2,22 @@
 #define ASTEROID_H
 
 #include "bn_fixed.h"
+#include "bn_sprite_animate_actions.h"
 
 #include "fr_models_3d.h"
 #include "fr_sprite_3d_item.h"
 
 #include "colliders.h"
 #include "controller.h"
+
+// <-- Move to a general place for enemies
+
+enum class enemy_state {
+    IDLE,
+    ACTIVE,
+    DESTROYING,
+    DESTROYED
+};
 
 // - Constants
 
@@ -35,6 +45,7 @@ class asteroid
     asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller);
     
     void destroy();
+    bool is_destroyed() const { return _state == enemy_state::DESTROYED; }
 
     void update(); // <-- receive player?
 
@@ -43,7 +54,8 @@ class asteroid
 
     void handle_laser_hit();
 
-    bool is_destroyed() const { return _destroyed; }
+    void kill();
+    bool is_killed() const { return _state != enemy_state::ACTIVE; }
 
     fr::model_3d *get_model()
     {
@@ -59,6 +71,7 @@ class asteroid
     const bn::fixed ROTATION_SPEED = 2.5;
     const int DAMAGE_COOLDOWN = 3;
     const int MAX_HEALTH = 3;
+    const int TOTAL_CRASH_FRAMES = 10;
 
   private:
     fr::point_3d _position;
@@ -68,13 +81,13 @@ class asteroid
     fr::model_3d *_model;
     controller *_controller;
 
+    enemy_state _state = enemy_state::IDLE;
     int _damage_cooldown = 0;
     int _health = MAX_HEALTH;
-    bool _destroyed = false;
     int _crash_frames = 0;
     fr::sprite_3d_item _explosion_sprite_3d_item;
     fr::sprite_3d* _explosion_sprite = nullptr;
-
+    bn::optional<bn::sprite_animate_action<8>> _explosion_sprite_action;
 
     sphere_collider_set<fr::model_3d_items::asteroid_colliders_count>
         _sphere_collider_set;
