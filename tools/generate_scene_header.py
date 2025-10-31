@@ -153,13 +153,18 @@ def generate_header(scene: Dict[str, Any]) -> str:
                 # Validate palette symbol existence by heuristics: we only know built-in ones if present in palette list
                 if palette_override in palette:
                     use_palette = True
+            # Interpret input JSON static model positions as LOCAL section space.
+            # Section start Y is the world-space anchor; convert local y -> world y.
+            section_start_y = start  # world-space Y where this section begins rendering
+            local_y = pos['y']
+            world_y = section_start_y + local_y
             if use_palette:
                 palette_symbol = f"fr::model_3d_items::{palette_override}_colors"
                 ctor = (f"static_model_3d_item<fr::model_3d_items::{symbol}>(\n"
-                        f"        fr::point_3d({pos['x']}, {pos['y']}, {pos['z']}), {param_value}, {palette_symbol})")
+                        f"        fr::point_3d({pos['x']}, {world_y}, {pos['z']}), {param_value}, {palette_symbol})")
             else:
                 ctor = (f"static_model_3d_item<fr::model_3d_items::{symbol}>(\n"
-                        f"        fr::point_3d({pos['x']}, {pos['y']}, {pos['z']}), {param_value})")
+                        f"        fr::point_3d({pos['x']}, {world_y}, {pos['z']}), {param_value})")
             model_const_lines.append(f"constexpr auto {const_id} =\n    {ctor};")
             model_items_lines.append(f"    {const_id}.item(),")
 
@@ -174,8 +179,10 @@ def generate_header(scene: Dict[str, Any]) -> str:
             pos = e['position']
             spawn_offset = e.get('rotation', 0)  # reused field
             etype = e['type']
+            # Enemies now also interpret JSON y as LOCAL section space.
+            world_enemy_y = start + pos['y']
             enemy_lines.append(
-                f"    enemy_descriptor(fr::point_3d({pos['x']}, {pos['y']}, {pos['z']}), {spawn_offset}, enemy_type::{etype}),")
+                f"    enemy_descriptor(fr::point_3d({pos['x']}, {world_enemy_y}, {pos['z']}), {spawn_offset}, enemy_type::{etype}),")
         if enemy_lines:
             enemy_lines[-1] = enemy_lines[-1].rstrip(',')
 
