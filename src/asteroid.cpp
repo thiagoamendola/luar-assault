@@ -103,9 +103,9 @@ void asteroid::update()
 
             // const bn::sprite_tiles_item& tiles_item = bn::sprite_items::explosion1.tiles_item();
             // bn::sprite_tiles_ptr& explosion_tiles = _explosion_sprite_3d_item.tiles();
-            // int explosion_graphics_index = (_crash_frames) % 8; // <-- DO SOMETHING SMARTER HERE //((fade_crash_frames - crash_frames) * 9) / fade_crash_frames;
             // BN_LOG("Asteroid crash frames: " + bn::to_string<64>(_crash_frames) + ", explosion graphics index: " + bn::to_string<64>(explosion_graphics_index));
             // explosion_tiles.set_tiles_ref(tiles_item, explosion_graphics_index);
+
         }
 
         break;
@@ -162,20 +162,16 @@ void asteroid::kill()
     }
 
     _state = enemy_state::DESTROYING;
-
-    // Final destruction
-
     _crash_frames = TOTAL_CRASH_FRAMES;
 
     // Set explosion vfx
+    // _explosion_sprite_3d_item.tiles_id(861); // <-- Does not work
     _explosion_sprite = &_models->create_sprite(_explosion_sprite_3d_item);
     _explosion_sprite->set_position(_position); // + fr::model_3d_items::asteroid_colliders[0].position);
     _explosion_sprite->set_theta(40000);
     _explosion_sprite->set_scale(1.5); // + ((1 - fade_intensity).unsafe_multiplication(bn::fixed(0.6))));
     // <-- DOESN'T ACCEPT sprite_3d_item AS PARAMETER!!! I need to find a way around it
     // <-- CENTRALIZE ASTEROID MODEL IN BLENDER 
-    // _explosion_sprite_action = bn::create_sprite_animate_action_forever(
-    //     _explosion_sprite, 64, bn::sprite_items::explosion1.tiles_item(), 0, 1, 2, 3, 4, 5, 6, 7);
 
     // Remove asteroid model
     _models->destroy_dynamic_model(*_model);

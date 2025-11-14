@@ -6,6 +6,9 @@
 #ifndef FR_SPRITE_3D_ITEM_H
 #define FR_SPRITE_3D_ITEM_H
 
+#include "bn_log.h"
+#include "bn_string.h"
+
 #include "bn_sprite_item.h"
 #include "bn_sprite_tiles_ptr.h"
 #include "bn_sprite_palette_ptr.h"
@@ -19,7 +22,8 @@ class sprite_3d_item
 
 public:
     sprite_3d_item(const bn::sprite_item& item, int graphics_index) :
-        _tiles(item.tiles_item().create_tiles(graphics_index)),
+        _tiles_item(item.tiles_item()),
+        _tiles(_tiles_item.create_tiles(graphics_index)),
         _palette(item.palette_item().create_palette()),
         _affine_mat(bn::sprite_affine_mat_ptr::create())
     {
@@ -75,10 +79,20 @@ public:
         return _affine_mat_id;
     }
 
+    void update_sprite(int id)
+    {
+        // Set set_tiles_ref
+        _tiles.set_tiles_ref(_tiles_item, id);
+
+
+        _tiles_id = _tiles.id(); // <-- NECESSARY?
+    }
+
 private:
     int _tiles_id;
     int _palette_id;
     int _affine_mat_id;
+    const bn::sprite_tiles_item& _tiles_item;
     bn::sprite_tiles_ptr _tiles;
     bn::sprite_palette_ptr _palette;
     bn::sprite_affine_mat_ptr _affine_mat;
