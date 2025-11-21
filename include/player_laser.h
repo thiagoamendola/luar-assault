@@ -25,7 +25,6 @@ enum class laser_state {
     COOLDOWN
 };
 
-
 class player_laser
 {
   public:
@@ -62,7 +61,7 @@ class player_laser
 
     const int LASER_DURATION = 3;
     const int COOLDOWN_DURATION = 3;
-    const int LASER_DISTANCE = 300;
+    const int LASER_DISTANCE = 400;
 
     bool render_laser = false;
     laser_state state = laser_state::PAUSED;
