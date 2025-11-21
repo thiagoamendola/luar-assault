@@ -70,7 +70,7 @@ class asteroid
     const bn::fixed MOVEMENT_SPEED = 3;
     const bn::fixed ROTATION_SPEED = 2.5;
     const int DAMAGE_COOLDOWN = 3;
-    const int MAX_HEALTH = 3;
+    const int MAX_HEALTH = 1;
     const int TOTAL_CRASH_FRAMES = 10;
 
   private:
@@ -85,9 +85,9 @@ class asteroid
     int _damage_cooldown = 0;
     int _health = MAX_HEALTH;
     int _crash_frames = 0;
+
     fr::sprite_3d_item _explosion_sprite_3d_item;
     fr::sprite_3d* _explosion_sprite = nullptr;
-    bn::optional<bn::sprite_animate_action<8>> _explosion_sprite_action;
 
     sphere_collider_set<fr::model_3d_items::asteroid_colliders_count>
         _sphere_collider_set;

@@ -21,7 +21,7 @@
 asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller)
     : _position(position), _movement(movement), _models(models), _controller(controller),
       _sphere_collider_set(fr::model_3d_items::asteroid_colliders), 
-      _explosion_sprite_3d_item(bn::sprite_items::explosion1, 0)
+      _explosion_sprite_3d_item(bn::sprite_items::explosion1, {0,4}) // 2 sprites are ok so far
 {
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::asteroid1_full);
@@ -49,11 +49,7 @@ void asteroid::destroy()
         _models->destroy_sprite(*_explosion_sprite);
         _explosion_sprite = nullptr;
     }
-    // Remove action.
-    if (_explosion_sprite_action)
-    {
-        _explosion_sprite_action.reset();
-    }
+
     _state = enemy_state::DESTROYED;
 }
 
@@ -91,21 +87,14 @@ void asteroid::update()
         }
         else
         {
-            if (_explosion_sprite_action)
-            {
-                _explosion_sprite_action->update();
-            }
-
             // Update explosion sprite scale and fade
-            // bn::fixed fade_intensity = bn::fixed(_crash_frames).division(bn::fixed(TOTAL_CRASH_FRAMES));
-            // _explosion_sprite->set_scale(bn::fixed(1) + ((bn::fixed(1) - fade_intensity).unsafe_multiplication(bn::fixed(0.6))));
+            bn::fixed fade_intensity = bn::fixed(_crash_frames).division(bn::fixed(TOTAL_CRASH_FRAMES));
+            _explosion_sprite->set_scale(bn::fixed(1) + ((bn::fixed(1) - fade_intensity).unsafe_multiplication(bn::fixed(0.6))));
             // _explosion_sprite->set_alpha(fade_intensity);
 
-            // const bn::sprite_tiles_item& tiles_item = bn::sprite_items::explosion1.tiles_item();
-            // bn::sprite_tiles_ptr& explosion_tiles = _explosion_sprite_3d_item.tiles();
-            // BN_LOG("Asteroid crash frames: " + bn::to_string<64>(_crash_frames) + ", explosion graphics index: " + bn::to_string<64>(explosion_graphics_index));
-            // explosion_tiles.set_tiles_ref(tiles_item, explosion_graphics_index);
-
+            // Update explosion graphics frame
+            int explosion_graphics_index = (-(_crash_frames/4) % 8) + 7; // <-- DO SOMETHING SMARTER HERE //((fade_crash_frames - crash_frames) * 9) / fade_crash_frames;
+            _explosion_sprite_3d_item.update_sprite(explosion_graphics_index);
         }
 
         break;
@@ -170,6 +159,7 @@ void asteroid::kill()
     _explosion_sprite->set_position(_position); // + fr::model_3d_items::asteroid_colliders[0].position);
     _explosion_sprite->set_theta(40000);
     _explosion_sprite->set_scale(1.5); // + ((1 - fade_intensity).unsafe_multiplication(bn::fixed(0.6))));
+    // _explosion_sprite->set_alpha(1.0);
     // <-- DOESN'T ACCEPT sprite_3d_item AS PARAMETER!!! I need to find a way around it
     // <-- CENTRALIZE ASTEROID MODEL IN BLENDER 
 
