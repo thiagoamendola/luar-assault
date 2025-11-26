@@ -112,6 +112,7 @@ bn::optional<scene_type> butano_intro_scene::update()
                         bn::sprite_palettes::set_fade(bn::color(0, 0, 0), 0);
                         bn::bg_palettes::set_fade(bn::color(0, 0, 0), 0);
                         result = scene_type::TITLE;
+                        // result = scene_type::TEST_BUTANO;
                     }
                 }
                 else
