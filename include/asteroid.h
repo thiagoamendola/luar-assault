@@ -3,12 +3,13 @@
 
 #include "bn_fixed.h"
 #include "bn_sprite_animate_actions.h"
+#include "bn_optional.h"
 
 #include "fr_models_3d.h"
-#include "fr_sprite_3d_item.h"
 
 #include "colliders.h"
 #include "controller.h"
+#include "explosion_effect.h"
 
 // <-- Move to a general place for enemies
 
@@ -86,8 +87,7 @@ class asteroid
     int _health = MAX_HEALTH;
     int _crash_frames = 0;
 
-    fr::sprite_3d_item _explosion_sprite_3d_item;
-    fr::sprite_3d* _explosion_sprite = nullptr;
+    bn::optional<explosion_effect> _explosion;
 
     sphere_collider_set<fr::model_3d_items::asteroid_colliders_count>
         _sphere_collider_set;
