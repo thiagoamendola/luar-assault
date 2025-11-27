@@ -13,8 +13,8 @@ def task_import_models() -> int:
 
 # Precompile steps: (name, function)
 TASKS = [
-    ("scene header generation", task_generate_scenes),
     ("model importer", task_import_models),
+    ("scene header generation", task_generate_scenes),
 ]
 
 
