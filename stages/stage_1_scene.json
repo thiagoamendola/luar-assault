@@ -1,0 +1,135 @@
+{
+  "name": "stage_1_scene",
+  "version": 2,
+  "palette": [
+      "debug_collider",
+      "laser",
+      "hurt",
+      "player_ship_02",
+      "asteroid1"
+  ],
+  "sections": [
+    {
+      "id": 1,
+      "comment": "Initial asteroids for simple laser practice",
+      "range": {
+        "start": 1050,
+        "end": 250
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -20,
+            "y": -850,
+            "z": -20
+          },
+          "rotation": 800
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "range": {
+        "start": 750,
+        "end": -150
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 20,
+            "y": -750,
+            "z": 20
+          },
+          "rotation": 200
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "comment": "Initial asteroid fleet targetting",
+      "range": {
+        "start":450,
+        "end": -350
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -10,
+            "y": -880,
+            "z": 20
+          },
+          "rotation": 100
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 30,
+            "y": -865,
+            "z": 15
+          },
+          "rotation": 300
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 70,
+            "y": -850,
+            "z": 10
+          },
+          "rotation": 500
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "range": {
+        "start":-50,
+        "end": -850
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": -880,
+            "z": -20
+          },
+          "rotation": 100
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -40,
+            "y": -865,
+            "z": -15
+          },
+          "rotation": 300
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -80,
+            "y": -850,
+            "z": -10
+          },
+          "rotation": 500
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 #include "test_3d_scene.h"
 // #include "test_3d_scene_defs.h"
-#include "test_automated_scene_defs.h"
+// #include "test_automated_scene_defs.h"
+#include "stage_1_scene_defs.h"
 
 #include "bn_bg_palettes_actions.h"
 #include "bn_regular_bg_animate_actions.h"
@@ -14,6 +15,7 @@
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_actions.h"
+#include "bn_sound_items.h"
 
 #include "fr_model_3d_item.h"
 #include "fr_model_colors.h"
@@ -56,7 +58,7 @@ test_3d_scene::test_3d_scene()
     // _test_sprite = &_models.create_sprite(_test_sprite_sprite_3d_item);
     // _test_sprite->set_position(fr::point_3d(0, 760, -20));
     // _test_sprite->set_theta(32000);
-
+    // bn::sound_items::dialog_test1.play(1);
 
 }
 
