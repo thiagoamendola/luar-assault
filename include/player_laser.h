@@ -61,7 +61,7 @@ class player_laser
 
     const int LASER_DURATION = 3;
     const int COOLDOWN_DURATION = 3;
-    const int LASER_DISTANCE = 400;
+    const int LASER_DISTANCE = 500;
 
     bool render_laser = false;
     laser_state state = laser_state::PAUSED;
