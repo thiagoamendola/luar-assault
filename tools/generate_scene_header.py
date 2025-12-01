@@ -15,6 +15,7 @@ import json
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Set
+from termcolor import colored
 
 # Core always-needed structural includes (edit here if structural dependencies change)
 STRUCTURAL_INCLUDES = [
@@ -295,7 +296,7 @@ def main(argv: List[str]) -> int:
             try:
                 _process_one(jf)
             except Exception as exc:  # pragma: no cover
-                print(f"Failed: {jf}: {exc}", file=sys.stderr)
+                print(f"{colored("Failed", 'red', attrs=["reverse", "blink", "bold"])}: {jf}: {exc}", file=sys.stderr)
         return 0
 
     if len(argv) > 3:
