@@ -2,6 +2,8 @@
 import generate_scene_header
 import batch_import_models
 
+from termcolor import colored
+
 
 def task_generate_scenes() -> int:
     return generate_scene_header.main([])
@@ -20,12 +22,12 @@ TASKS = [
 
 def main() -> int:
     for label, func in TASKS:
-        print(f"[precompile] Running {label} ...")
+        print(f"{colored("[precompile]", 'cyan')} Running {colored(label, 'light_blue')} ...")
         code = func()
         if code != 0:
-            print(f"[precompile] {label} failed (exit {code})", file=sys.stderr)
+            print(f"{colored("[precompile]", 'cyan')} {label} failed (exit {code})", file=sys.stderr)
             return code
-    print("[precompile] All tasks complete.")
+    print(f"{colored("[precompile]", 'cyan')} {colored("All tasks complete. Starting compilation.", 'green')}")
     return 0
 
 
