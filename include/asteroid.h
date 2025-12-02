@@ -71,7 +71,7 @@ class asteroid
     const bn::fixed MOVEMENT_SPEED = 3;
     const bn::fixed ROTATION_SPEED = 2.5;
     const int DAMAGE_COOLDOWN = 3;
-    const int MAX_HEALTH = 3;
+    const int MAX_HEALTH = 2;
     const int TOTAL_CRASH_FRAMES = 10;
 
   private:
