@@ -100,6 +100,29 @@ def convert_wavefront(obj_path: str, out_path: str, modelname: str, modelscale: 
         except Exception as e:
             print(f"Warning: failed to load metadata '{metadata_path}': {e}")
 
+    # Parse materials first to build name->index mapping
+    material_name_to_index = {}
+    for x in range(len(wavemtldata)):
+        if wavemtldata[x].startswith('newmtl '):
+            mat_name = wavemtldata[x][7:].strip()
+            # Look ahead for Kd line
+            for y in range(x+1, min(x+10, len(wavemtldata))):
+                if wavemtldata[y].startswith('Kd '):
+                    kd_value = wavemtldata[y][3:].strip()
+                    if kd_value not in wavecolours:
+                        material_name_to_index[mat_name] = len(wavecolours)
+                        wavecolours.append(kd_value)
+                        wavematerialnames.append(mat_name)
+                    else:
+                        material_name_to_index[mat_name] = wavecolours.index(kd_value)
+                    break
+            else:
+                # No Kd found, create entry anyway with default color
+                if mat_name not in material_name_to_index:
+                    material_name_to_index[mat_name] = len(wavecolours)
+                    wavecolours.append('0 0 0')
+                    wavematerialnames.append(mat_name)
+
     # First pass: gather vertices
     for line in waveobjdata:
         if line.startswith('v '):
@@ -119,19 +142,12 @@ def convert_wavefront(obj_path: str, out_path: str, modelname: str, modelscale: 
             wavefacels.append(face_idx)
             wavematerialindices.append(max(0, wavematerialcurrent))
         elif line.startswith('usemtl '):
-            if wavematerialnames and line[7:] in wavematerialnames and wavematerialnames.index(line[7:]) < len(wavematerialnames):
-                pass
+            mat_name = line[7:].strip()
+            if mat_name in material_name_to_index:
+                wavematerialcurrent = material_name_to_index[mat_name]
             else:
-                wavematerialcurrent += 1
-
-    # Materials / colors
-    for x in range(len(wavemtldata)):
-        if wavemtldata[x].startswith('Kd '):
-            if wavemtldata[x][3::] not in wavecolours:
-                wavecolours.append(wavemtldata[x][3::])
-                rgb = wavemtldata[x][3::].split()
-                # store as tuple for later writing
-                wavematerialnames.append(wavemtldata[x-3][7::] if x >=3 and wavemtldata[x-3].startswith('newmtl ') else f'colour_{len(wavecolours)-1}')
+                # Material not found in MTL, use default
+                wavematerialcurrent = 0
 
     # Auto normals if requested or absent
     if recalcvertexnorms or (not wavevertexnorms and wavefacels):
