@@ -77,7 +77,7 @@ void player_laser::raycast_laser(enemy_manager& enemies)
         int psi_raw = psi.right_shift_integer();
 
         // Build oriented beam. Forward is -Y. We rotate a base vector (0, -LASER_DISTANCE, 0)
-        // using horizontal angles (phi, psi). We keep squared length later (no sqrt needed).
+        // using horizontal angles (phi, psi). We keep squared length later (no sqrt needed here).
         laser_target = fr::point_3d(0, -LASER_DISTANCE, 0);
         // We intentionally avoid normalizing or using magnitude (would need sqrt on GBA).
         laser_target.set_x(-laser_target.y() * fr::sin(phi_raw));
@@ -97,10 +97,6 @@ void player_laser::raycast_laser(enemy_manager& enemies)
         fr::point_3d laser_origin = player_ship_pos;
         fr::point_3d laser_vec = laser_target - laser_origin; // segment vector
         // bn::fixed laser_len2 = laser_vec.dot_product(laser_vec);   // squared length (|laser_vec|^2)
-        // if(laser_len2 <= 0)
-        // {
-        //     return; // Invalid laser
-        // }
 
         // === Integer preparation ===
         int lvx = laser_vec.x().integer();
@@ -134,7 +130,8 @@ void player_laser::raycast_laser(enemy_manager& enemies)
             {
                 const sphere_collider& sc = collider_list[c];
                 fr::point_3d col_position = target_origin + sc.position;
-                int col_radius = sc.radius;
+                int col_radius = sc.radius + LASER_SNAP_DISTANCE; // Adding to radius so laser "snaps" to closer target.
+                // <-- Might still require a direction snap
                 int64_t col_radius2 = int64_t(col_radius) * col_radius; // Also power of 2 to avoid sqrt.
 
                 // Get collider location translated to laser origin.
