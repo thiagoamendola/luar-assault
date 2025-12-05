@@ -66,6 +66,8 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
     for (size_t i = 0; i < sections_count; ++i)
     {
         const stage_section *section = sections[i];
+        
+        // Instantiate enemies when entering a new section
         if (camera_y <= section->starting_pos() && camera_y > section->ending_pos() &&
            section->starting_pos() < _last_section_start_y)
         {
@@ -96,6 +98,38 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                     }
                 }
             }
+        }
+        
+        // Deinstantiate enemies from sections that the camera has passed
+        // Only destroy if: camera passed the end AND we haven't destroyed this section yet
+        if (camera_y <= section->ending_pos() && section->ending_pos() < _last_section_end_y)
+        {
+            // This section needs cleanup - destroy its enemies
+            for (int slot = 0; slot < MAX_ENEMIES; ++slot)
+            {
+                if(_asteroids[slot].used && _asteroids[slot].ptr && _asteroids[slot].source)
+                {
+                    // Check if this enemy belongs to the current section by comparing its descriptor
+                    // against all enemies in this section
+                    for (int e = 0; e < section->enemies_count(); ++e)
+                    {
+                        if(_asteroids[slot].source == &section->enemies()[e])
+                        {
+                            // This enemy belongs to this section, destroy it
+                            _asteroids[slot].ptr->destroy();
+                            delete _asteroids[slot].ptr;
+                            _asteroids[slot].ptr = nullptr;
+                            _asteroids[slot].used = false;
+                            _asteroids[slot].source = nullptr;
+                            BN_LOG("[DESTROY] Section enemy destroyed at ending_pos=" + bn::to_string<64>(int(section->ending_pos())));
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Update the tracker to this section's ending pos
+            _last_section_end_y = section->ending_pos();
         }
     }
 }

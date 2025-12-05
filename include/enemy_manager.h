@@ -50,6 +50,7 @@ private:
   player_ship* _player;
 
   bn::fixed _last_section_start_y = bn::fixed(32767);
+  bn::fixed _last_section_end_y = bn::fixed(32767);
     
 };
 
