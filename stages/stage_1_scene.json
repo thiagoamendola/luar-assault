@@ -22,7 +22,7 @@
           "type": "ASTEROID",
           "enabled": true,
           "position": {
-            "x": -20,
+            "x": 20,
             "y": -850,
             "z": -20
           },
@@ -42,9 +42,9 @@
           "type": "ASTEROID",
           "enabled": true,
           "position": {
-            "x": 20,
+            "x": -50,
             "y": -750,
-            "z": 20
+            "z": 30
           },
           "rotation": 200
         }
@@ -54,8 +54,8 @@
       "id": 3,
       "comment": "Initial asteroid fleet targetting",
       "range": {
-        "start":450,
-        "end": -350
+        "start":650,
+        "end": -150
       },
       "staticModels": [],
       "enemies": [
@@ -63,7 +63,7 @@
           "type": "ASTEROID",
           "enabled": true,
           "position": {
-            "x": -10,
+            "x": -20,
             "y": -880,
             "z": 20
           },
@@ -73,7 +73,7 @@
           "type": "ASTEROID",
           "enabled": true,
           "position": {
-            "x": 30,
+            "x": 20,
             "y": -865,
             "z": 15
           },
@@ -83,7 +83,7 @@
           "type": "ASTEROID",
           "enabled": true,
           "position": {
-            "x": 70,
+            "x": 60,
             "y": -850,
             "z": 10
           },
@@ -94,8 +94,8 @@
     {
       "id": 4,
       "range": {
-        "start":-50,
-        "end": -850
+        "start":350,
+        "end": -450
       },
       "staticModels": [],
       "enemies": [
@@ -126,6 +126,127 @@
             "x": -80,
             "y": -850,
             "z": -10
+          },
+          "rotation": 500
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "comment": "Beginning of random asteroids",
+      "range": {
+        "start":-50,
+        "end": -850
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": -800,
+            "z": -10
+          },
+          "rotation": 100
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 40,
+            "y": -900,
+            "z": -35
+          },
+          "rotation": 300
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -80,
+            "y": -1000,
+            "z": 30
+          },
+          "rotation": 500
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "range": {
+        "start":-250,
+        "end": -1050
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -40,
+            "y": -800,
+            "z": -5
+          },
+          "rotation": 100
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -40,
+            "y": -900,
+            "z": -35
+          },
+          "rotation": 300
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 70,
+            "y": -1000,
+            "z": -25
+          },
+          "rotation": 500
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "range": {
+        "start":-550,
+        "end": -1250
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": -800,
+            "z": -10
+          },
+          "rotation": 100
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": 40,
+            "y": -900,
+            "z": -35
+          },
+          "rotation": 300
+        },
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -80,
+            "y": -1000,
+            "z": 30
           },
           "rotation": 500
         }
