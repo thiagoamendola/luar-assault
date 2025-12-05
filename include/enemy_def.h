@@ -7,7 +7,7 @@
 
 #include "enemy_type.h"
 
-struct enemy_descriptor
+struct enemy_def
 {
     fr::point_3d position;
     bn::fixed theta;

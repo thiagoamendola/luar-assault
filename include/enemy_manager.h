@@ -15,7 +15,7 @@
 struct asteroid_slot {
   bool used = false;
   asteroid *ptr = nullptr; // dynamically created via models
-  const enemy_descriptor *source = nullptr; // descriptor origin
+  const enemy_def *source = nullptr; // descriptor origin
 };
 
 class enemy_manager

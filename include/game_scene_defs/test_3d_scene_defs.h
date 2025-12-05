@@ -85,8 +85,8 @@ constexpr auto _section_1_static_model_items = {
 };
 
 constexpr auto _section_1_enemies = {
-    enemy_descriptor(fr::point_3d(-20, 600, 0), 800, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(0, 400, 20), 200, enemy_type::ASTEROID)
+    enemy_def(fr::point_3d(-20, 600, 0), 800, enemy_type::ASTEROID),
+    enemy_def(fr::point_3d(0, 400, 20), 200, enemy_type::ASTEROID)
 
 };
 
@@ -137,10 +137,10 @@ constexpr auto _section_2_static_model_items = {
 };
 
 constexpr auto _section_2_enemies = {
-    enemy_descriptor(fr::point_3d(-35, 0, 0), 800, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(20, 400, 0), 600, enemy_type::ASTEROID),
-    // enemy_descriptor(fr::point_3d(-20, 200, 0), 400, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(30, 100, 20), 200, enemy_type::ASTEROID)
+    enemy_def(fr::point_3d(-35, 0, 0), 800, enemy_type::ASTEROID),
+    enemy_def(fr::point_3d(20, 400, 0), 600, enemy_type::ASTEROID),
+    // enemy_def(fr::point_3d(-20, 200, 0), 400, enemy_type::ASTEROID),
+    enemy_def(fr::point_3d(30, 100, 20), 200, enemy_type::ASTEROID)
 
 };
 
@@ -191,10 +191,10 @@ constexpr auto _section_3_static_model_items = {
 };
 
 constexpr auto _section_3_enemies = {
-    enemy_descriptor(fr::point_3d(-35, -100, 0), 800, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(20, -400, 0), 600, enemy_type::ASTEROID),
-    // enemy_descriptor(fr::point_3d(-20, 200, 0), 400, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(30, -500, 20), 200, enemy_type::ASTEROID)
+    enemy_def(fr::point_3d(-35, -100, 0), 800, enemy_type::ASTEROID),
+    enemy_def(fr::point_3d(20, -400, 0), 600, enemy_type::ASTEROID),
+    // enemy_def(fr::point_3d(-20, 200, 0), 400, enemy_type::ASTEROID),
+    enemy_def(fr::point_3d(30, -500, 20), 200, enemy_type::ASTEROID)
 
 };
 

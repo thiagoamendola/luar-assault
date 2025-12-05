@@ -183,7 +183,7 @@ def generate_header(scene: Dict[str, Any]) -> str:
             # Enemies now also interpret JSON y as LOCAL section space.
             world_enemy_y = start + pos['y']
             enemy_lines.append(
-                f"    enemy_descriptor(fr::point_3d({pos['x']}, {world_enemy_y}, {pos['z']}), {spawn_offset}, enemy_type::{etype}),")
+                f"    enemy_def(fr::point_3d({pos['x']}, {world_enemy_y}, {pos['z']}), {spawn_offset}, enemy_type::{etype}),")
         if enemy_lines:
             enemy_lines[-1] = enemy_lines[-1].rstrip(',')
 
@@ -199,11 +199,11 @@ def generate_header(scene: Dict[str, Any]) -> str:
             section_src.append(f"constexpr std::initializer_list<fr::model_3d_item> _section_{sid}_static_model_items = {{}};")
         section_src.append("")
         if enemy_lines:
-            section_src.append(f"constexpr std::initializer_list<enemy_descriptor> _section_{sid}_enemies = {{")
+            section_src.append(f"constexpr std::initializer_list<enemy_def> _section_{sid}_enemies = {{")
             section_src.extend(enemy_lines)
             section_src.append("};")
         else:
-            section_src.append(f"constexpr std::initializer_list<enemy_descriptor> _section_{sid}_enemies = {{}};")
+            section_src.append(f"constexpr std::initializer_list<enemy_def> _section_{sid}_enemies = {{}};")
         section_src.append("")
         section_src.append(f"constexpr int _section_{sid}_start = {start};")
         section_src.append(f"constexpr int _section_{sid}_end = {end};")

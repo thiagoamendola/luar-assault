@@ -76,7 +76,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
 
             for (int e = 0; e < section->enemies_count(); ++e)
             {
-                const enemy_descriptor& enemy = section->enemies()[e];
+                const enemy_def& enemy = section->enemies()[e];
                 // <-- Make switch case
                 if(enemy.type == enemy_type::ASTEROID)
                 {
