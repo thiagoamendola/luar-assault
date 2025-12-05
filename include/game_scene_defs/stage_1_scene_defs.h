@@ -48,13 +48,13 @@ constexpr stage_section section_2(_section_2_start, _section_2_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_3_static_model_items = {};
 
 constexpr std::initializer_list<enemy_descriptor> _section_3_enemies = {
-    enemy_descriptor(fr::point_3d(-20, -230, 20), 100, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(20, -215, 15), 300, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(60, -200, 10), 500, enemy_type::ASTEROID)
+    enemy_descriptor(fr::point_3d(-20, -430, 20), 100, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(20, -415, 15), 300, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(60, -400, 10), 500, enemy_type::ASTEROID)
 };
 
-constexpr int _section_3_start = 650;
-constexpr int _section_3_end = -150;
+constexpr int _section_3_start = 450;
+constexpr int _section_3_end = -350;
 
 constexpr stage_section section_3(_section_3_start, _section_3_end,
                                   _section_3_static_model_items, _section_3_enemies);
@@ -63,13 +63,13 @@ constexpr stage_section section_3(_section_3_start, _section_3_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_4_static_model_items = {};
 
 constexpr std::initializer_list<enemy_descriptor> _section_4_enemies = {
-    enemy_descriptor(fr::point_3d(0, -530, -20), 100, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(-40, -515, -15), 300, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(-80, -500, -10), 500, enemy_type::ASTEROID)
+    enemy_descriptor(fr::point_3d(0, -830, -20), 100, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(-40, -815, -15), 300, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(-80, -800, -10), 500, enemy_type::ASTEROID)
 };
 
-constexpr int _section_4_start = 350;
-constexpr int _section_4_end = -450;
+constexpr int _section_4_start = 50;
+constexpr int _section_4_end = -750;
 
 constexpr stage_section section_4(_section_4_start, _section_4_end,
                                   _section_4_static_model_items, _section_4_enemies);
@@ -78,13 +78,13 @@ constexpr stage_section section_4(_section_4_start, _section_4_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_5_static_model_items = {};
 
 constexpr std::initializer_list<enemy_descriptor> _section_5_enemies = {
-    enemy_descriptor(fr::point_3d(0, -850, -10), 100, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(40, -950, -35), 300, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(-80, -1050, 30), 500, enemy_type::ASTEROID)
+    enemy_descriptor(fr::point_3d(0, -1150, -10), 100, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(40, -1250, -35), 300, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(-80, -1350, 30), 500, enemy_type::ASTEROID)
 };
 
-constexpr int _section_5_start = -50;
-constexpr int _section_5_end = -850;
+constexpr int _section_5_start = -350;
+constexpr int _section_5_end = -1250;
 
 constexpr stage_section section_5(_section_5_start, _section_5_end,
                                   _section_5_static_model_items, _section_5_enemies);
@@ -93,13 +93,13 @@ constexpr stage_section section_5(_section_5_start, _section_5_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_6_static_model_items = {};
 
 constexpr std::initializer_list<enemy_descriptor> _section_6_enemies = {
-    enemy_descriptor(fr::point_3d(-40, -1050, -5), 100, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(-40, -1150, -35), 300, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(70, -1250, -25), 500, enemy_type::ASTEROID)
+    enemy_descriptor(fr::point_3d(-40, -1350, -5), 100, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(-40, -1450, -35), 300, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(70, -1550, -25), 500, enemy_type::ASTEROID)
 };
 
-constexpr int _section_6_start = -250;
-constexpr int _section_6_end = -1050;
+constexpr int _section_6_start = -550;
+constexpr int _section_6_end = -1450;
 
 constexpr stage_section section_6(_section_6_start, _section_6_end,
                                   _section_6_static_model_items, _section_6_enemies);
@@ -108,13 +108,13 @@ constexpr stage_section section_6(_section_6_start, _section_6_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_7_static_model_items = {};
 
 constexpr std::initializer_list<enemy_descriptor> _section_7_enemies = {
-    enemy_descriptor(fr::point_3d(0, -1350, -10), 100, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(40, -1450, -35), 300, enemy_type::ASTEROID),
-    enemy_descriptor(fr::point_3d(-80, -1550, 30), 500, enemy_type::ASTEROID)
+    enemy_descriptor(fr::point_3d(0, -1650, -10), 100, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(40, -1750, -35), 300, enemy_type::ASTEROID),
+    enemy_descriptor(fr::point_3d(80, -1850, 30), 500, enemy_type::ASTEROID)
 };
 
-constexpr int _section_7_start = -550;
-constexpr int _section_7_end = -1250;
+constexpr int _section_7_start = -850;
+constexpr int _section_7_end = -1750;
 
 constexpr stage_section section_7(_section_7_start, _section_7_end,
                                   _section_7_static_model_items, _section_7_enemies);
