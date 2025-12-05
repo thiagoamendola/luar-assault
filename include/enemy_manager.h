@@ -2,6 +2,7 @@
 #define ENEMY_MANAGER_H
 
 #include "fr_models_3d.h"
+#include "fr_constants_3d.h"
 
 #include "controller.h"
 #include "asteroid.h"
@@ -37,7 +38,8 @@ public:
     return _asteroids;
   }
 
-  static constexpr int MAX_ENEMIES = 12;
+  // <-- Definitely needs to revamp this shortly!
+  static constexpr int MAX_ENEMIES = fr::constants_3d::max_dynamic_models - 1;
 
 private:
   // <-- Change to generic enemy
