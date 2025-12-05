@@ -28,7 +28,7 @@
 #
 # All directories are specified relative to the project directory where the makefile is found.
 #---------------------------------------------------------------------------------------------------------------------
-TARGET      	:=  $(notdir $(CURDIR))
+TARGET      	:=  luar-assault-v0.4
 BUILD       	:=  build
 LIBBUTANO   	:=  ../butano/butano
 PYTHON      	:=  python
@@ -38,7 +38,7 @@ DATA        	:=
 GRAPHICS    	:=  graphics ../butano/common/graphics graphics/shape_group_textures
 AUDIO       	:=  audio ../butano/common/audio
 DMGAUDIO    	:=  dmg_audio ../butano/common/dmg_audio
-ROMTITLE    	:=  GBA JAM 2024
+ROMTITLE    	:=  LUAR-ASSAULT
 ROMCODE     	:=  SBTP
 USERFLAGS   	:=  
 USERCXXFLAGS	:=  
