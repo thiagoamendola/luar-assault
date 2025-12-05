@@ -1,13 +1,13 @@
 #include "hud_manager.h"
 
+#include "bn_log.h"
+#include "bn_math.h"
+#include "bn_memory.h" // <-- Only import when debugging
 #include "bn_sprite_actions.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_string.h"
-#include "bn_log.h"
-#include "bn_math.h"
-#include "bn_memory.h" // <-- Only import when debugging
 
 #include "fr_camera_3d.h"
 #include "fr_point_3d.h"
@@ -34,7 +34,7 @@ void hud_manager::destroy()
     _target_growth_action.reset();
 }
 
-void hud_manager::update()
+void hud_manager::update(fr::models_3d *models)
 {
     // Clear texts.
     _text_sprites.clear();
@@ -45,6 +45,10 @@ void hud_manager::update()
     if (_controller->is_debug_text_enabled())
     {
         _text_generator.generate(-7 * 16, -72, "Location (Y): " + bn::to_string<64>(int(_camera->position().y())),
+                                 _text_sprites);
+        _text_generator.generate(-7 * 16, -60,
+                                 "Dynamic Objs: " + bn::to_string<64>(models->dynamic_models_count()) + "/" +
+                                     bn::to_string<64>(models->dynamic_models_max_count()),
                                  _text_sprites);
     }
     else
@@ -61,10 +65,11 @@ void hud_manager::statics_update(int static_count)
     // Display static count debug text.
     if (_controller->is_debug_text_enabled())
     {
-        _text_generator.generate(-7 * 16, -60, "Static Objs: " + bn::to_string<64>(static_count), _text_sprites);
-        // _text_generator.generate(-7 * 16, -48, "IWRAM stack: " + bn::to_string<64>(bn::memory::used_stack_iwram()), _text_sprites);
-        // _text_generator.generate(-7 * 16, -36, "IWRAM static: " + bn::to_string<64>(bn::memory::used_static_iwram()), _text_sprites);
-        // _text_generator.generate(-7 * 16, -24, "EWRAM: " + bn::to_string<64>(bn::memory::used_static_ewram()), _text_sprites);
+        // _text_generator.generate(-7 * 16, -60, "Static Objs: " + bn::to_string<64>(static_count), _text_sprites);
+        // _text_generator.generate(-7 * 16, -48, "IWRAM stack: " + bn::to_string<64>(bn::memory::used_stack_iwram()),
+        // _text_sprites); _text_generator.generate(-7 * 16, -36, "IWRAM static: " +
+        // bn::to_string<64>(bn::memory::used_static_iwram()), _text_sprites); _text_generator.generate(-7 * 16, -24,
+        // "EWRAM: " + bn::to_string<64>(bn::memory::used_static_ewram()), _text_sprites);
     }
 }
 
@@ -93,4 +98,3 @@ void hud_manager::_move_target()
 
     _target_growth_action->update();
 }
-

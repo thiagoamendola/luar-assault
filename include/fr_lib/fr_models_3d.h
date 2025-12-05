@@ -70,6 +70,16 @@ class models_3d
 
     void update(const camera_3d &camera);
 
+    int dynamic_models_count() const
+    {
+        return _dynamic_models_list.size();
+    }
+
+    int dynamic_models_max_count() const
+    {
+        return _dynamic_models_pool.max_size();
+    }
+
   private:
     static constexpr int _max_models =
         constants_3d::max_static_models + constants_3d::max_dynamic_models;

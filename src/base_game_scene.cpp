@@ -32,7 +32,7 @@ bool base_game_scene::update()
     else
     {
         // - UI
-        _hud_manager.update();
+        _hud_manager.update(&_models);
 
         // - Player
         _player_ship.update();

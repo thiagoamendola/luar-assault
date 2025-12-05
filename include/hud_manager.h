@@ -10,6 +10,7 @@
 #include "bn_fixed.h"
 
 #include "fr_camera_3d.h"
+#include "fr_models_3d.h"
 
 #include "controller.h"
 #include "player_ship.h"
@@ -21,7 +22,7 @@ public:
 
     void destroy();
 
-    void update(); 
+    void update(fr::models_3d *models); 
     void statics_update(int static_count);
 
     // Neutral stick threshold
