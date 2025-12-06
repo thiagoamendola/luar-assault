@@ -65,13 +65,11 @@ struct sphere_collider
     }
 };
 
-template <size_t ColliderCount> class sphere_collider_set
+class sphere_collider_set
 {
   public:
-    constexpr sphere_collider_set(
-        const bn::span<const sphere_collider> &sphere_colliders)
-        : _sphere_collider_list(sphere_colliders), 
-        _sphere_collider_debuggers()
+    sphere_collider_set(const bn::span<const sphere_collider> &sphere_colliders)
+        : _sphere_collider_list(sphere_colliders)
     {
     }
 
@@ -80,44 +78,56 @@ template <size_t ColliderCount> class sphere_collider_set
         _origin_pos = origin_pos;
     }
 
-    const fr::point_3d get_origin()
+    const fr::point_3d get_origin() const
     {
         return _origin_pos;
     }
 
-    const bn::span<const sphere_collider> get_sphere_collider_list()
+    const bn::span<const sphere_collider> get_sphere_collider_list() const
     {
         return _sphere_collider_list;
     }
 
-    size_t get_sphere_collider_count()
+    size_t get_sphere_collider_count() const
     {
-        return ColliderCount;
+        return _sphere_collider_list.size();
     }
 
     int debug_collider(const fr::model_3d_item **static_model_items,
                        int static_count)
     {
-        for (size_t i = 0; i < ColliderCount; i++)
+        size_t collider_count = _sphere_collider_list.size();
+        
+        // Ensure we don't exceed array size
+        if (collider_count > _sphere_collider_debuggers.size())
+        {
+            BN_LOG("[debug_collider] Too many colliders: " + 
+                bn::to_string<32>(collider_count) + " (max: " + 
+                bn::to_string<32>(_sphere_collider_debuggers.size()) + ")");
+            collider_count = _sphere_collider_debuggers.size();
+        }
+        
+        for (size_t i = 0; i < collider_count; i++)
         {
             auto collider = _sphere_collider_list[i];
+            auto& debugger = _sphere_collider_debuggers[i];
 
             // Calc vertices
-            _sphere_collider_debuggers[i].debug_vertices[0].reset(
+            debugger.debug_vertices[0].reset(
                 _origin_pos + collider.position + fr::point_3d(collider.radius, 0, 0));
-            _sphere_collider_debuggers[i].debug_vertices[1].reset(
+            debugger.debug_vertices[1].reset(
                 _origin_pos + collider.position + fr::point_3d(0, 0, collider.radius));
-            _sphere_collider_debuggers[i].debug_vertices[2].reset(
+            debugger.debug_vertices[2].reset(
                 _origin_pos + collider.position + fr::point_3d(-collider.radius, 0, 0));
-            _sphere_collider_debuggers[i].debug_vertices[3].reset(
+            debugger.debug_vertices[3].reset(
                 _origin_pos + collider.position + fr::point_3d(0, 0, -collider.radius));
 
             // Calc faces
-            _sphere_collider_debuggers[i].debug_faces[0].reset(
-                _sphere_collider_debuggers[i].debug_vertices, fr::vertex_3d(0, 1, 0), 2, 1,
+            debugger.debug_faces[0].reset(
+                debugger.debug_vertices, fr::vertex_3d(0, 1, 0), 2, 1,
                 0, 0, 7);
-            _sphere_collider_debuggers[i].debug_faces[1].reset(
-                _sphere_collider_debuggers[i].debug_vertices, fr::vertex_3d(0, 1, 0), 0, 3,
+            debugger.debug_faces[1].reset(
+                debugger.debug_vertices, fr::vertex_3d(0, 1, 0), 0, 3,
                 2, 0, 7);
 
             // Add mesh as static object
@@ -127,7 +137,7 @@ template <size_t ColliderCount> class sphere_collider_set
                     bn::to_string<64>(fr::constants_3d::max_static_models));
                 return static_count;
             }
-            static_model_items[static_count] = &_sphere_collider_debuggers[i].debug_model;
+            static_model_items[static_count] = &debugger.debug_model;
             static_count += 1;
         }
 
@@ -147,12 +157,13 @@ template <size_t ColliderCount> class sphere_collider_set
         return false;
     }
 
-    template <size_t OtherCount>
-    bool colliding_with_dynamic(sphere_collider_set<OtherCount>* target)
+    bool colliding_with_dynamic(sphere_collider_set* target)
     {
         // BN_LOG("[collision] STARTING ----------------- ");
 
-        for (size_t i = 0; i < ColliderCount; i++)
+        size_t collider_count = _sphere_collider_list.size();
+        
+        for (size_t i = 0; i < collider_count; i++)
         {
             auto this_collider = _sphere_collider_list[i];
 
@@ -196,12 +207,14 @@ template <size_t ColliderCount> class sphere_collider_set
 
   private:
     const bn::span<const sphere_collider> _sphere_collider_list;
-    bn::array<sphere_collider_debugger, ColliderCount> _sphere_collider_debuggers;
+    bn::array<sphere_collider_debugger, 8> _sphere_collider_debuggers;  // Max 8 colliders per entity
     fr::point_3d _origin_pos;
     
     bool colliding_with_point(fr::point_3d point)
     {
-        for (size_t i = 0; i < ColliderCount; i++)
+        size_t collider_count = _sphere_collider_list.size();
+        
+        for (size_t i = 0; i < collider_count; i++)
         {
             auto collider = _sphere_collider_list[i];
             

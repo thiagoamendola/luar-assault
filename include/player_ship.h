@@ -69,7 +69,7 @@ class player_ship
         return health;
     }
 
-    sphere_collider_set<fr::model_3d_items::ship_colliders_count>& collider_set()
+    sphere_collider_set& collider_set()
     {
         return _sphere_collider_set;
     }
@@ -101,8 +101,7 @@ class player_ship
 
     player_laser _player_laser;
 
-    sphere_collider_set<fr::model_3d_items::ship_colliders_count>
-        _sphere_collider_set;
+    sphere_collider_set _sphere_collider_set;
 
     int health = 3;
     int _damage_cooldown = 0;

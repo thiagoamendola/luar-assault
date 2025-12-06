@@ -93,7 +93,7 @@ void player_laser::raycast_laser(enemy_manager& enemies)
         // If no hit, laser goes full distance.
         // <-- Check against static models?
         
-        asteroid_slot* enemy_slots = enemies.get_enemies();
+        enemy_slot* enemy_slots = enemies.get_enemies();
         fr::point_3d laser_origin = player_ship_pos;
         fr::point_3d laser_vec = laser_target - laser_origin; // segment vector
         // bn::fixed laser_len2 = laser_vec.dot_product(laser_vec);   // squared length (|laser_vec|^2)
@@ -210,8 +210,6 @@ void player_laser::raycast_laser(enemy_manager& enemies)
 
         if(found_hit)
         {
-            // <-- Check what to do and how to optimize here
-            // --- Truncate beam cleanly using a scaled fraction ---
             // We want t = clamped_closest_proj_dist / laser_len2  (0..1) in fixed.
             // Instead of iterative shifting, compute a high-precision fraction first:
             // Use 8 fractional bits (scale 256) matching bn::fixed internal granularity.

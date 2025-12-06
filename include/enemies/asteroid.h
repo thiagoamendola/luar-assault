@@ -4,16 +4,14 @@
 #include "base_enemy.h"
 
 #include "bn_fixed.h"
-#include "bn_sprite_animate_actions.h"
 #include "bn_optional.h"
+#include "bn_sprite_animate_actions.h"
 
 #include "fr_models_3d.h"
 
 #include "colliders.h"
 #include "controller.h"
 #include "explosion_effect.h"
-
-
 
 // - Constants
 
@@ -39,26 +37,25 @@ class asteroid : public base_enemy
 {
   public:
     asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller);
-    
+
     void destroy() override;
 
     void update() override;
 
-    int statics_render(const fr::model_3d_item **static_model_items,
-      int static_count) override;
-
-    void handle_laser_hit();
+    int statics_render(const fr::model_3d_item **static_model_items, int static_count) override;
 
     void kill() override;
 
     fr::model_3d *get_model()
     {
-      return _model;
+        return _model;
     };
 
-    sphere_collider_set<fr::model_3d_items::asteroid_colliders_count> *get_collider()
+    void handle_laser_hit();
+
+    sphere_collider_set *get_collider() override
     {
-      return &_sphere_collider_set;
+        return &_sphere_collider_set;
     }
 
     const bn::fixed MOVEMENT_SPEED = 3;
@@ -81,10 +78,7 @@ class asteroid : public base_enemy
 
     bn::optional<explosion_effect> _explosion;
 
-    sphere_collider_set<fr::model_3d_items::asteroid_colliders_count>
-        _sphere_collider_set;
-
+    sphere_collider_set _sphere_collider_set;
 };
-
 
 #endif

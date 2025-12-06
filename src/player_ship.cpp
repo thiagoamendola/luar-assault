@@ -20,7 +20,6 @@
 #include "models/shot.h"
 // #include "models/player_ship_01.h"
 #include "models/player_ship_02.h"
-#include "models/asteroid1.h"
 
 
 player_ship::player_ship(controller *controller, fr::camera_3d *camera,
@@ -252,7 +251,7 @@ int player_ship::statics_render(const fr::model_3d_item **static_model_items,
 bool player_ship::check_collision_with_enemies(enemy_manager& enemies)
 {
     auto& player_collider = collider_set();
-    asteroid_slot* enemy_slots = enemies.get_enemies();
+    enemy_slot* enemy_slots = enemies.get_enemies();
     for(int i = 0; i < enemy_manager::MAX_ENEMIES; ++i)
     {
         if(enemy_slots[i].used && enemy_slots[i].ptr)
