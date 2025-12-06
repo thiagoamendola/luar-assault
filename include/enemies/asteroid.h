@@ -1,6 +1,8 @@
 #ifndef ASTEROID_H
 #define ASTEROID_H
 
+#include "base_enemy.h"
+
 #include "bn_fixed.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_optional.h"
@@ -11,14 +13,7 @@
 #include "controller.h"
 #include "explosion_effect.h"
 
-// <-- Move to a general place for enemies
 
-enum class enemy_state {
-    IDLE,
-    ACTIVE,
-    DESTROYING,
-    DESTROYED
-};
 
 // - Constants
 
@@ -40,23 +35,21 @@ constexpr size_t asteroid_colliders_count = sizeof(asteroid_colliders) / sizeof(
 
 // - Main class
 
-class asteroid
+class asteroid : public base_enemy
 {
   public:
     asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller);
     
-    void destroy();
-    bool is_destroyed() const { return _state == enemy_state::DESTROYED; }
+    void destroy() override;
 
-    void update(); // <-- receive player?
+    void update() override;
 
     int statics_render(const fr::model_3d_item **static_model_items,
-      int static_count);
+      int static_count) override;
 
     void handle_laser_hit();
 
-    void kill();
-    bool is_killed() const { return _state != enemy_state::ACTIVE; }
+    void kill() override;
 
     fr::model_3d *get_model()
     {
@@ -82,7 +75,6 @@ class asteroid
     fr::model_3d *_model;
     controller *_controller;
 
-    enemy_state _state = enemy_state::IDLE;
     int _damage_cooldown = 0;
     int _health = MAX_HEALTH;
     int _crash_frames = 0;
