@@ -12,6 +12,7 @@
 #include "player_laser.h"
 #include "player_ship.h"
 #include "models/asteroid1.h"
+#include "models/moon_oyster.h"
 #include "models/player_ship_02.h"
 
 using namespace scene_colors_generator;
@@ -22,7 +23,7 @@ using namespace scene_colors_generator;
 constexpr std::initializer_list<fr::model_3d_item> _section_1_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_1_enemies = {
-    enemy_def(fr::point_3d(20, 200, -20), 800, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(20, 200, -20), 800, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_1_start = 1050;
@@ -35,7 +36,7 @@ constexpr stage_section section_1(_section_1_start, _section_1_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_2_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_2_enemies = {
-    enemy_def(fr::point_3d(-50, 0, 30), 200, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(-50, 0, 30), 200, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_2_start = 750;
@@ -48,9 +49,9 @@ constexpr stage_section section_2(_section_2_start, _section_2_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_3_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_3_enemies = {
-    enemy_def(fr::point_3d(-20, -430, 20), 100, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(20, -415, 15), 300, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(60, -400, 10), 500, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(-20, -430, 20), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(20, -415, 15), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(60, -400, 10), 500, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_3_start = 450;
@@ -63,9 +64,9 @@ constexpr stage_section section_3(_section_3_start, _section_3_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_4_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_4_enemies = {
-    enemy_def(fr::point_3d(0, -830, -20), 100, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(-40, -815, -15), 300, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(-80, -800, -10), 500, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(0, -830, -20), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-40, -815, -15), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-80, -800, -10), 500, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_4_start = 50;
@@ -78,9 +79,9 @@ constexpr stage_section section_4(_section_4_start, _section_4_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_5_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_5_enemies = {
-    enemy_def(fr::point_3d(0, -1150, -10), 100, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(40, -1250, -35), 300, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(-80, -1350, 30), 500, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(0, -1150, -10), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(40, -1250, -35), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-80, -1350, 30), 500, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_5_start = -350;
@@ -93,9 +94,9 @@ constexpr stage_section section_5(_section_5_start, _section_5_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_6_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_6_enemies = {
-    enemy_def(fr::point_3d(-40, -1350, -5), 100, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(-40, -1450, -35), 300, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(70, -1550, -25), 500, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(-40, -1350, -5), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-40, -1450, -35), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(70, -1550, -25), 500, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_6_start = -550;
@@ -108,9 +109,9 @@ constexpr stage_section section_6(_section_6_start, _section_6_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_7_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_7_enemies = {
-    enemy_def(fr::point_3d(0, -1650, -10), 100, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(40, -1750, -35), 300, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(80, -1850, 30), 500, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(0, -1650, -10), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(40, -1750, -35), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(80, -1850, 30), 500, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_7_start = -850;
@@ -118,6 +119,21 @@ constexpr int _section_7_end = -1750;
 
 constexpr stage_section section_7(_section_7_start, _section_7_end,
                                   _section_7_static_model_items, _section_7_enemies);
+
+
+constexpr oyster_properties _s8_enemy_1_props = {-500};
+
+constexpr std::initializer_list<fr::model_3d_item> _section_8_static_model_items = {};
+
+constexpr std::initializer_list<enemy_def> _section_8_enemies = {
+    enemy_def{fr::point_3d(0, -1950, -30), 100, enemy_type::OYSTER, &_s8_enemy_1_props}
+};
+
+constexpr int _section_8_start = -1150;
+constexpr int _section_8_end = -2050;
+
+constexpr stage_section section_8(_section_8_start, _section_8_end,
+                                  _section_8_static_model_items, _section_8_enemies);
 
 // # Sections List
 
@@ -129,6 +145,7 @@ constexpr const auto sections_full = {
     &section_5,
     &section_6,
     &section_7,
+    &section_8,
 };
 
 constexpr stage_section_list_ptr sections = sections_full.begin();
@@ -141,7 +158,8 @@ constexpr const auto raw_scene_colors = {
     bn::span<const bn::color>(fr::model_3d_items::laser_colors),
     bn::span<const bn::color>(fr::model_3d_items::hurt_colors),
     bn::span<const bn::color>(fr::model_3d_items::player_ship_02_colors),
-    bn::span<const bn::color>(fr::model_3d_items::asteroid1_colors)
+    bn::span<const bn::color>(fr::model_3d_items::asteroid1_colors),
+    bn::span<const bn::color>(fr::model_3d_items::moon_oyster_colors)
 };
 
 constexpr size_t model_palette_count = raw_scene_colors.size();

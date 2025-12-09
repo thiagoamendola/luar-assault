@@ -9,6 +9,8 @@
 #include "controller.h"
 #include "stage_section.h"
 #include "player_ship.h"
+#include "asteroid.h"
+#include "oyster.h"
 
 enemy_manager::enemy_manager(fr::models_3d *models, controller *controller, player_ship* player)
     : _models(models), _controller(controller), _player(player)
@@ -91,6 +93,25 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                             _enemies[slot].used = true;
                             _enemies[slot].source = &enemy;
                             BN_LOG("[SPAWN] ASTEROID: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
+                                   " x=" + bn::to_string<64>(int(enemy.position.x())) +
+                                   " z=" + bn::to_string<64>(int(enemy.position.z())));
+                            break;
+                        }
+                    }
+                }
+                else if(enemy.type == enemy_type::OYSTER)
+                {
+                    // <-- Separate this into its own method
+                    for(int slot = 0; slot < MAX_ENEMIES; ++slot)
+                    {
+                        if(!_enemies[slot].used)
+                        {
+                            fr::point_3d movement(0, 25, 0); // placeholder movement
+                            // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
+                            _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller); // <-- Convert to a proper object pool later
+                            _enemies[slot].used = true;
+                            _enemies[slot].source = &enemy;
+                            BN_LOG("[SPAWN] OYSTER: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
                                    " x=" + bn::to_string<64>(int(enemy.position.x())) +
                                    " z=" + bn::to_string<64>(int(enemy.position.z())));
                             break;

@@ -6,6 +6,7 @@
 enum class enemy_type
 {
     ASTEROID,
+    OYSTER,
     NAIAH,
 };
 

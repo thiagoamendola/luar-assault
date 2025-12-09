@@ -173,7 +173,9 @@ def generate_header(scene: Dict[str, Any]) -> str:
             # remove last comma for neatness (optional)
             model_items_lines[-1] = model_items_lines[-1].rstrip(',')
 
+        enemy_property_const_lines: List[str] = []
         enemy_lines: List[str] = []
+        enemy_index = 1
         for e in enemies:
             if not e.get('enabled', True):
                 continue
@@ -182,14 +184,44 @@ def generate_header(scene: Dict[str, Any]) -> str:
             etype = e['type']
             # Enemies now also interpret JSON y as LOCAL section space.
             world_enemy_y = start + pos['y']
+            
+            # Check for enemy-specific optional properties
+            props_ptr = "nullptr"
+            if etype == 'OYSTER':
+                player_distance = e.get('playerDistance')
+                if player_distance is not None:
+                    props_const_name = f"_s{sid}_enemy_{enemy_index}_props"
+                    enemy_property_const_lines.append(
+                        f"constexpr oyster_properties {props_const_name} = {{{player_distance}}};")
+                    props_ptr = f"&{props_const_name}"
+            elif etype == 'ASTEROID':
+                # Add asteroid property parsing here when needed
+                # Example:
+                # rotation_speed = e.get('rotationSpeed')
+                # if rotation_speed is not None:
+                #     props_const_name = f"_s{sid}_enemy_{enemy_index}_props"
+                #     enemy_property_const_lines.append(
+                #         f"constexpr asteroid_properties {props_const_name} = {{{rotation_speed}}};")
+                #     props_ptr = f"&{props_const_name}"
+                pass
+            elif etype == 'NAIAH':
+                # Add naiah property parsing here when needed
+                pass
+            # For any other enemy type or if no properties are set, props_ptr remains nullptr
+            
             enemy_lines.append(
-                f"    enemy_def(fr::point_3d({pos['x']}, {world_enemy_y}, {pos['z']}), {spawn_offset}, enemy_type::{etype}),")
+                f"    enemy_def{{fr::point_3d({pos['x']}, {world_enemy_y}, {pos['z']}), {spawn_offset}, enemy_type::{etype}, {props_ptr}}},")
+            enemy_index += 1
+            
         if enemy_lines:
             enemy_lines[-1] = enemy_lines[-1].rstrip(',')
 
         section_src = []
         section_src.extend(model_const_lines)
         section_src.append("")
+        section_src.extend(enemy_property_const_lines)
+        if enemy_property_const_lines:
+            section_src.append("")
         # Explicitly type initializer_lists so empty lists compile (no deduction failure)
         if model_items_lines:
             section_src.append(f"constexpr std::initializer_list<fr::model_3d_item> _section_{sid}_static_model_items = {{")

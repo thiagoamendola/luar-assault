@@ -6,7 +6,8 @@
       "laser",
       "hurt",
       "player_ship_02",
-      "asteroid1"
+      "asteroid1",
+      "moon_oyster"
   ],
   "sections": [
     {
@@ -249,6 +250,27 @@
             "z": 30
           },
           "rotation": 500
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "range": {
+        "start":-1150,
+        "end": -2050
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "OYSTER",
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": -800,
+            "z": -30
+          },
+          "rotation": 100,
+          "playerDistance": -500
         }
       ]
     }

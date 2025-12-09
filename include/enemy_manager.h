@@ -5,7 +5,6 @@
 #include "fr_constants_3d.h"
 
 #include "controller.h"
-#include "asteroid.h"
 #include "base_enemy.h"
 #include "stage_section.h"
 #include "colliders.h"

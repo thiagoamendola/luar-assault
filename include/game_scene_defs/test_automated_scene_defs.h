@@ -24,8 +24,8 @@ using namespace scene_colors_generator;
 constexpr std::initializer_list<fr::model_3d_item> _section_1_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_1_enemies = {
-    enemy_def(fr::point_3d(-20, 600, 0), 800, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(0, 400, 20), 200, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(-20, 600, 0), 800, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(0, 400, 20), 200, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_1_start = 1050;
@@ -38,9 +38,9 @@ constexpr stage_section section_1(_section_1_start, _section_1_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_2_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_2_enemies = {
-    enemy_def(fr::point_3d(-35, 0, 0), 800, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(20, 150, 0), 600, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(30, 100, 20), 200, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(-35, 0, 0), 800, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(20, 150, 0), 600, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(30, 100, 20), 200, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_2_start = 750;
@@ -53,9 +53,9 @@ constexpr stage_section section_2(_section_2_start, _section_2_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_3_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_3_enemies = {
-    enemy_def(fr::point_3d(-35, -300, 0), 800, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(20, -400, 0), 600, enemy_type::ASTEROID),
-    enemy_def(fr::point_3d(30, -500, 20), 200, enemy_type::ASTEROID)
+    enemy_def{fr::point_3d(-35, -300, 0), 800, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(20, -400, 0), 600, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(30, -500, 20), 200, enemy_type::ASTEROID, nullptr}
 };
 
 constexpr int _section_3_start = 350;
