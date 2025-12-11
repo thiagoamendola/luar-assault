@@ -62,7 +62,7 @@ class asteroid : public base_enemy
     const bn::fixed ROTATION_SPEED = 2.5;
     const int DAMAGE_COOLDOWN = 3;
     const int MAX_HEALTH = 3;
-    const int TOTAL_CRASH_FRAMES = 10;
+    const int TOTAL_EXPLODE_FRAMES = 10;
 
   private:
     fr::point_3d _position;
@@ -74,7 +74,7 @@ class asteroid : public base_enemy
 
     int _damage_cooldown = 0;
     int _health = MAX_HEALTH;
-    int _crash_frames = 0;
+    int _explode_frames = 0;
 
     bn::optional<explosion_effect> _explosion;
 

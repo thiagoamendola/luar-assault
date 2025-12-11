@@ -58,7 +58,6 @@ void asteroid::update()
     {
     case enemy_state::ACTIVE:
         // Handle cooldown.
-
         if (_damage_cooldown > 0)
         {
            _damage_cooldown--;
@@ -77,10 +76,9 @@ void asteroid::update()
 
     case enemy_state::DESTROYING:
         // Handle destruction animation.
+        _explode_frames -= 1;
 
-        _crash_frames -= 1;
-
-        if (_crash_frames <= 0)
+        if (_explode_frames <= 0)
         {
             destroy();
         }
@@ -144,7 +142,7 @@ void asteroid::kill()
     }
 
     _state = enemy_state::DESTROYING;
-    _crash_frames = TOTAL_CRASH_FRAMES;
+    _explode_frames = TOTAL_EXPLODE_FRAMES;
 
     // Create explosion effect
     _explosion.emplace(_position, _models);
