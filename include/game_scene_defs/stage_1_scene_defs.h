@@ -121,16 +121,16 @@ constexpr stage_section section_7(_section_7_start, _section_7_end,
                                   _section_7_static_model_items, _section_7_enemies);
 
 
-constexpr oyster_properties _s8_enemy_1_props = {-500};
+constexpr oyster_properties _s8_enemy_1_props = {300};
 
 constexpr std::initializer_list<fr::model_3d_item> _section_8_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_8_enemies = {
-    enemy_def{fr::point_3d(0, -1950, -30), 100, enemy_type::OYSTER, &_s8_enemy_1_props}
+    enemy_def{fr::point_3d(-50, -2150, -30), 100, enemy_type::OYSTER, &_s8_enemy_1_props}
 };
 
-constexpr int _section_8_start = -1150;
-constexpr int _section_8_end = -2050;
+constexpr int _section_8_start = -1350;
+constexpr int _section_8_end = -3250;
 
 constexpr stage_section section_8(_section_8_start, _section_8_end,
                                   _section_8_static_model_items, _section_8_enemies);

@@ -2,7 +2,9 @@
 #define BASE_ENEMY_H
 
 #include "fr_models_3d.h"
+
 #include "colliders.h"
+#include "player_ship.h"
 
 enum class enemy_state {
     IDLE,
@@ -17,7 +19,7 @@ public:
     base_enemy() = default;
 
     virtual void destroy() = 0;
-    virtual void update() = 0;
+    virtual void update(player_ship* player) = 0;
     
     virtual int statics_render(const fr::model_3d_item **static_model_items,
         int static_count) = 0;

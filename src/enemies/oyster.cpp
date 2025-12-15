@@ -18,10 +18,15 @@
 #include "models/moon_oyster.h"
 
 
-oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller)
+oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller, const oyster_properties* props)
     : _position(position), _movement(movement), _models(models), _controller(controller),
       _sphere_collider_set(fr::model_3d_items::oyster_colliders)
 {
+    if(props)
+    {
+        _player_distance = props->player_distance;
+    }
+    
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::moon_oyster_full);
     _model->set_position(position);
@@ -52,35 +57,20 @@ void oyster::destroy()
     _state = enemy_state::DESTROYED;
 }
 
-void oyster::update()
+void oyster::update(player_ship* player)
 {
     switch (_state)
     {
     case enemy_state::ACTIVE:
-        // Handle cooldown.
-
-        if (_damage_cooldown > 0)
-        {
-           _damage_cooldown--;
-            if (_damage_cooldown <= 0) {
-                _model->set_palette(fr::model_3d_items::moon_oyster_colors);
-            }
-        }   
-    
-        // Rotate.
-        _model->set_phi(_model->phi() + 400); // <-- Magic number
-    
-        // Update colliders.
-        _sphere_collider_set.set_origin(get_model()->position());
-
+        update_active(player);
         break;
 
     case enemy_state::DESTROYING:
         // Handle destruction animation.
 
-        _crash_frames -= 1;
+        _explode_frames -= 1;
 
-        if (_crash_frames <= 0)
+        if (_explode_frames <= 0)
         {
             destroy();
         }
@@ -95,6 +85,76 @@ void oyster::update()
     default:
         break;
     }
+
+}
+
+void oyster::update_active(player_ship* player)
+{
+    // Handle laser hit cooldown.
+
+    if (_damage_cooldown > 0)
+    {
+        _damage_cooldown--;
+        if (_damage_cooldown <= 0) {
+            _model->set_palette(fr::model_3d_items::moon_oyster_colors);
+        }
+    }   
+
+    switch (_behavior_state)
+    {
+    case oyster_behavior_state::APPROACHING:
+    {
+        // Move // <-- or not
+
+        // Transition to ATTACKING state based on distance to player (and save Y location)
+        const bn::fixed distance_to_player_y = bn::abs(player->get_position().y() - _model->position().y());
+        BN_LOG("[oyster] Proximity check. "+ 
+                bn::to_string<64>(distance_to_player_y) + " < " + 
+                bn::to_string<64>(_player_distance) + ")");
+        if (distance_to_player_y < _player_distance)
+        {
+            _behavior_state = oyster_behavior_state::ATTACKING;
+            _initial_attacking_distance = player->get_position().y();
+            BN_LOG("[oyster] Proximity reached, switching to ATTACKING state.");
+        }
+
+        break;
+    }
+    
+    case oyster_behavior_state::ATTACKING:
+    {
+        // Maintain distance from player
+        _position.set_y(player->get_position().y() - _player_distance);
+        _model->set_position(_position);
+
+        // Handle attack by shooting projectile
+
+        // Transition to FLEEING state based on Y distance (decrease = forward)
+        if (player->get_position().y() < _initial_attacking_distance - _fleeing_threshold)
+        {
+            _behavior_state = oyster_behavior_state::FLEEING;
+            BN_LOG("[oyster] Threshold reached, switching to FLEEING state.");
+        }
+        break;
+    }
+    
+    case oyster_behavior_state::FLEEING:
+    {
+        // Move away from center
+
+        // Call destroy when out of bounds
+
+        break;
+    }
+    default:
+        break;
+    }
+
+    // Rotate.
+    _model->set_phi(_model->phi() + 400); // <-- Magic number
+
+    // Update colliders.
+    _sphere_collider_set.set_origin(get_model()->position());
 
 }
 
@@ -144,7 +204,7 @@ void oyster::kill()
     }
 
     _state = enemy_state::DESTROYING;
-    _crash_frames = TOTAL_CRASH_FRAMES;
+    _explode_frames = TOTAL_EXPLODE_FRAMES;
 
     // Create explosion effect
     _explosion.emplace(_position, _models);

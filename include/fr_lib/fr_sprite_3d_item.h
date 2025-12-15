@@ -42,10 +42,10 @@ public:
         _palette_id = _palette.id();
         _affine_mat_id = _affine_mat.id();
 
-        BN_LOG("[sprite_3d_item] created (single frame). tiles_id: " +
-            bn::to_string<128>(_tiles_id) + 
-            ", palette_id: " + bn::to_string<128>(_palette_id) +
-            ", affine_mat_id: " + bn::to_string<128>(_affine_mat_id));
+        // BN_LOG("[sprite_3d_item] created (single frame). tiles_id: " +
+        //     bn::to_string<128>(_tiles_id) + 
+        //     ", palette_id: " + bn::to_string<128>(_palette_id) +
+        //     ", affine_mat_id: " + bn::to_string<128>(_affine_mat_id));
     }
 
     // Multi-frame constructor: preload all provided graphics indices into VRAM

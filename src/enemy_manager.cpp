@@ -11,6 +11,7 @@
 #include "player_ship.h"
 #include "asteroid.h"
 #include "oyster.h"
+#include "enemy_def.h"
 
 enemy_manager::enemy_manager(fr::models_3d *models, controller *controller, player_ship* player)
     : _models(models), _controller(controller), _player(player)
@@ -37,7 +38,7 @@ void enemy_manager::update()
     {
         if(_enemies[i].used && _enemies[i].ptr)
         {
-            _enemies[i].ptr->update();
+            _enemies[i].ptr->update(_player);
             // Cleanup if enemy destroyed itself this frame
             if(_enemies[i].ptr->is_destroyed())
             {
@@ -107,8 +108,16 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                         if(!_enemies[slot].used)
                         {
                             fr::point_3d movement(0, 25, 0); // placeholder movement
+                            
+                            // Get oyster-specific properties if available
+                            const oyster_properties* props = nullptr;
+                            if(enemy.properties)
+                            {
+                                props = get_enemy_properties<oyster_properties>(enemy);
+                            }
+                            
                             // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
-                            _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller); // <-- Convert to a proper object pool later
+                            _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller, props); // <-- Convert to a proper object pool later
                             _enemies[slot].used = true;
                             _enemies[slot].source = &enemy;
                             BN_LOG("[SPAWN] OYSTER: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +

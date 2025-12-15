@@ -223,7 +223,7 @@ void player_laser::raycast_laser(enemy_manager& enemies)
             fr::point_3d hit_offset = laser_vec * t;
             laser_target = laser_origin + hit_offset;
 
-            BN_LOG("Laser hit: enemy=" + bn::to_string<64>(best_enemy_index) + " t=" + bn::to_string<64>(t));
+            // BN_LOG("Laser hit: enemy=" + bn::to_string<64>(best_enemy_index) + " t=" + bn::to_string<64>(t));
             enemy_slots[best_enemy_index].ptr->handle_laser_hit();
         }
     }

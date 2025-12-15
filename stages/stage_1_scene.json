@@ -256,8 +256,8 @@
     {
       "id": 8,
       "range": {
-        "start":-1150,
-        "end": -2050
+        "start":-1350,
+        "end": -3250
       },
       "staticModels": [],
       "enemies": [
@@ -265,12 +265,12 @@
           "type": "OYSTER",
           "enabled": true,
           "position": {
-            "x": 0,
+            "x": -50,
             "y": -800,
             "z": -30
           },
           "rotation": 100,
-          "playerDistance": -500
+          "playerDistance": 300
         }
       ]
     }

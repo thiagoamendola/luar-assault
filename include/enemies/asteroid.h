@@ -12,6 +12,7 @@
 #include "colliders.h"
 #include "controller.h"
 #include "explosion_effect.h"
+#include "player_ship.h"
 
 // - Constants
 
@@ -40,7 +41,7 @@ class asteroid : public base_enemy
 
     void destroy() override;
 
-    void update() override;
+    void update(player_ship* player) override;
 
     int statics_render(const fr::model_3d_item **static_model_items, int static_count) override;
 

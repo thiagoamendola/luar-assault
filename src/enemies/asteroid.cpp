@@ -11,6 +11,7 @@
 #include "fr_point_3d.h"
 
 #include "player_laser.h"
+#include "player_ship.h"
 #include "explosion_effect.h"
 
 #include "bn_sprite_items_explosion1.h"
@@ -52,12 +53,12 @@ void asteroid::destroy()
     _state = enemy_state::DESTROYED;
 }
 
-void asteroid::update()
+void asteroid::update(player_ship* player)
 {
     switch (_state)
     {
     case enemy_state::ACTIVE:
-        // Handle cooldown.
+        // Handle laser hit cooldown.
         if (_damage_cooldown > 0)
         {
            _damage_cooldown--;
