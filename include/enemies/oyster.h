@@ -14,6 +14,10 @@
 #include "explosion_effect.h"
 #include "enemy_def.h"
 
+// - Forward declaration
+
+class enemy_manager;
+
 // - Enums
 
 enum class oyster_behavior_state {
@@ -45,7 +49,7 @@ constexpr size_t oyster_colliders_count = sizeof(oyster_colliders) / sizeof(oyst
 class oyster : public base_enemy
 {
   public:
-    oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller, const oyster_properties* props = nullptr);
+    oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller, enemy_manager *enemy_manager, const oyster_properties* props = nullptr);
 
     void destroy() override;
 
@@ -74,6 +78,8 @@ class oyster : public base_enemy
     const int MAX_HEALTH = 4;
     const int TOTAL_EXPLODE_FRAMES = 10;
 
+    const int BULLET_COOLDOWN = 120; // 4 second
+
   private:
     fr::point_3d _position;
     fr::point_3d _movement;
@@ -81,6 +87,7 @@ class oyster : public base_enemy
     fr::models_3d *_models;
     fr::model_3d *_model;
     controller *_controller;
+    enemy_manager *_enemy_manager;
 
     oyster_behavior_state _behavior_state = oyster_behavior_state::APPROACHING;
 
@@ -88,6 +95,8 @@ class oyster : public base_enemy
     int _damage_cooldown = 0;
     int _explode_frames = 0;
     bn::optional<explosion_effect> _explosion;
+
+    int _bullet_cooldown = 0;
     
     sphere_collider_set _sphere_collider_set;
 

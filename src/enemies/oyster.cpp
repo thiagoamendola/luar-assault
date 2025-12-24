@@ -12,14 +12,15 @@
 
 #include "player_laser.h"
 #include "explosion_effect.h"
+#include "enemy_manager.h"
 
 #include "bn_sprite_items_explosion1.h"
 #include "bn_sprite_items_boom.h"
 #include "models/moon_oyster.h"
 
 
-oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller, const oyster_properties* props)
-    : _position(position), _movement(movement), _models(models), _controller(controller),
+oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller, enemy_manager *enemy_manager, const oyster_properties* props)
+    : _position(position), _movement(movement), _models(models), _controller(controller), _enemy_manager(enemy_manager),
       _sphere_collider_set(fr::model_3d_items::oyster_colliders)
 {
     if(props)
@@ -115,6 +116,7 @@ void oyster::update_active(player_ship* player)
         {
             _behavior_state = oyster_behavior_state::ATTACKING;
             _initial_attacking_distance = player->get_position().y();
+            _bullet_cooldown = BULLET_COOLDOWN;
             BN_LOG("[oyster] Proximity reached, switching to ATTACKING state.");
         }
 
@@ -128,6 +130,24 @@ void oyster::update_active(player_ship* player)
         _model->set_position(_position);
 
         // Handle attack by shooting projectile
+        if (_bullet_cooldown > 0)
+        {
+            _bullet_cooldown--;
+        }
+        else
+        {
+            // Fire bullet
+            fr::point_3d bullet_position = _model->position();
+            bullet_position.set_x(bullet_position.x());
+            bullet_position.set_y(bullet_position.y() + 10); // Slightly in front
+            bullet_position.set_z(bullet_position.z());
+
+            _enemy_manager->create_bullet(bullet_position);
+
+            BN_LOG("[oyster] Fired bullet at y=" + bn::to_string<64>(int(bullet_position.y())));
+
+            _bullet_cooldown = BULLET_COOLDOWN;
+        }
 
         // Transition to FLEEING state based on Y distance (decrease = forward)
         if (player->get_position().y() < _initial_attacking_distance - _fleeing_threshold)
