@@ -13,6 +13,7 @@
 #include "player_laser.h"
 #include "player_ship.h"
 #include "explosion_effect.h"
+#include "base_enemy.h"
 
 #include "bn_sprite_items_explosion1.h"
 #include "bn_sprite_items_boom.h"
@@ -20,9 +21,10 @@
 
 
 asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller)
-    : _position(position), _movement(movement), _models(models), _controller(controller),
+    : _movement(movement), _models(models), _controller(controller),
       _sphere_collider_set(fr::model_3d_items::asteroid_colliders)
 {
+    _position = position;
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::asteroid1_full);
     _model->set_position(position);

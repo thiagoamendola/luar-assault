@@ -20,7 +20,7 @@
 
 
 oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller, enemy_manager *enemy_manager, const oyster_properties* props)
-    : _position(position), _movement(movement), _models(models), _controller(controller), _enemy_manager(enemy_manager),
+    : _movement(movement), _models(models), _controller(controller), _enemy_manager(enemy_manager),
       _sphere_collider_set(fr::model_3d_items::oyster_colliders)
 {
     if(props)
@@ -28,6 +28,7 @@ oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *mode
         _player_distance = props->player_distance;
     }
     
+    _position = position;
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::moon_oyster_full);
     _model->set_position(position);
@@ -109,9 +110,7 @@ void oyster::update_active(player_ship* player)
 
         // Transition to ATTACKING state based on distance to player (and save Y location)
         const bn::fixed distance_to_player_y = bn::abs(player->get_position().y() - _model->position().y());
-        BN_LOG("[oyster] Proximity check. "+ 
-                bn::to_string<64>(distance_to_player_y) + " < " + 
-                bn::to_string<64>(_player_distance) + ")");
+        
         if (distance_to_player_y < _player_distance)
         {
             _behavior_state = oyster_behavior_state::ATTACKING;
@@ -160,9 +159,9 @@ void oyster::update_active(player_ship* player)
     
     case oyster_behavior_state::FLEEING:
     {
-        // Move away from center
+        // <-- Move away from center
 
-        // Call destroy when out of bounds
+        // <-- Call destroy when out of bounds
 
         break;
     }

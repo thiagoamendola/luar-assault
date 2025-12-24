@@ -163,7 +163,25 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
         }
     }
 
-    // <-- Clean up bullets since they're not associated with sections
+    // Clean up refless objects such as bullets
+    for (int slot = 0; slot < MAX_ENEMIES; ++slot)
+    {
+        if (_enemies[slot].used && _enemies[slot].ptr && !_enemies[slot].source)
+        {
+            // This is a refless object, check if it's past the player. // <-- only checking past Y now
+            if (_enemies[slot].ptr->get_position().y() > camera_y + bn::fixed(100)) // <-- Magic number
+            {
+                // Out of bounds, destroy it.
+                _enemies[slot].ptr->destroy();
+                delete _enemies[slot].ptr;
+                _enemies[slot].ptr = nullptr;
+                _enemies[slot].used = false;
+                _enemies[slot].source = nullptr;
+                BN_LOG("[DESTROY] Refless object destroyed at y=" + bn::to_string<64>(int(camera_y)));
+            }
+        }
+    }
+
 }
 
 void enemy_manager::create_bullet(fr::point_3d position)

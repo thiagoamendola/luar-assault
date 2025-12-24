@@ -81,7 +81,6 @@ class oyster : public base_enemy
     const int BULLET_COOLDOWN = 120; // 4 second
 
   private:
-    fr::point_3d _position;
     fr::point_3d _movement;
 
     fr::models_3d *_models;
