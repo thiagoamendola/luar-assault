@@ -75,9 +75,11 @@ class enemy_bullet : public base_enemy
     int _health = MAX_HEALTH;
     int _explode_frames = 0;
 
-    bn::optional<explosion_effect> _explosion;
+    bn::optional<explosion_effect> _explosion; // <-- Remove
 
     sphere_collider_set _sphere_collider_set;
+
+    bn::fixed angle_phi;
 };
 
 #endif

@@ -54,6 +54,12 @@ enemy_bullet::enemy_bullet(fr::point_3d position, fr::point_3d target, fr::model
     // Add the ship movement to ensure bullet intercepts it.
     _movement.set_y(_movement.y() - player_ship::FORWARD_SPEED); // <-- If speed varies, we'll maybe need to update this.
 
+    // Calculate shot rotation towards target
+    bn::fixed angle_phi_degrees = bn::degrees_atan2(distance_target.x().integer(), -distance_target.y().integer());
+
+    bn::rule_of_three_approximation rotation_units(360, 65536); // <-- Reutilize this for entire project
+    angle_phi = rotation_units.calculate(angle_phi_degrees);
+
     // Update model
     _model = &_models->create_dynamic_model(fr::model_3d_items::shot_full);
     _model->set_position(position);
@@ -109,11 +115,10 @@ void enemy_bullet::update(player_ship* player)
         _model->set_position(_position);
     
         // Rotate.
-        // <-- Add rotation towards target
         _model->set_phi(0); // Avoid gimbal lock
         _model->set_psi(_model->psi() + 600); // Bullet twisting// <-- Magic number
-        _model->set_phi(16383); // <-- Magic number
-    
+        _model->set_phi(-16383 + angle_phi);  // Model front + towards target // <-- Magic number
+
         // Update colliders.
         _sphere_collider_set.set_origin(get_model()->position());
 
@@ -174,7 +179,7 @@ void enemy_bullet::handle_laser_hit()
             // kill();
             return;
         }
-        _model->set_palette(fr::model_3d_items::laser_colors);
+        // _model->set_palette(fr::model_3d_items::laser_colors);
         _damage_cooldown = DAMAGE_COOLDOWN;
     }
     // bn::sound_items::bullet_hit.play(); // <-- Get bullet hit sound
