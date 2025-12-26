@@ -31,7 +31,6 @@ player_ship::player_ship(controller *controller, fr::camera_3d *camera,
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::player_ship_02_full);
     // x, y (back/forward), z (down/up)
-    _model->set_position(fr::point_3d(0, 860, 0));
     _model->set_psi(16383); // 90 degrees // <-- Magic number
 }
 

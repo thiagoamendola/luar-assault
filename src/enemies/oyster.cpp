@@ -137,11 +137,8 @@ void oyster::update_active(player_ship* player)
         {
             // Fire bullet
             fr::point_3d bullet_position = _model->position();
-            bullet_position.set_x(bullet_position.x());
             bullet_position.set_y(bullet_position.y() + 10); // Slightly in front
-            bullet_position.set_z(bullet_position.z());
-
-            _enemy_manager->create_bullet(bullet_position);
+            _enemy_manager->create_bullet(bullet_position, player->get_position());
 
             BN_LOG("[oyster] Fired bullet at y=" + bn::to_string<64>(int(bullet_position.y())));
 

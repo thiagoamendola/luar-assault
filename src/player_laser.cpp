@@ -15,17 +15,17 @@
 
 player_laser::player_laser(player_ship *player_ship)
     : laser_full(laser_vertices, laser_faces, fr::model_3d_items::laser_colors),
-    _player_ship(player_ship)
+      _player_ship(player_ship)
 {
     laser_duration_count = 0;
 }
 
-void player_laser::update(enemy_manager& enemies)
+void player_laser::update(enemy_manager &enemies)
 {
     switch (state)
     {
     case laser_state::PAUSED:
-        // We can start the laser    
+        // We can start the laser
         if (bn::keypad::a_held())
         {
             // Ready to shoot
@@ -39,11 +39,11 @@ void player_laser::update(enemy_manager& enemies)
         }
         break;
     case laser_state::SHOOTING:
-        // Continue laser render    
+        // Continue laser render
         render_laser = true;
         break;
     case laser_state::COOLDOWN:
-        // Don't render laser  
+        // Don't render laser
         render_laser = false;
         break;
     }
@@ -52,12 +52,16 @@ void player_laser::update(enemy_manager& enemies)
     {
         laser_duration_count--;
 
-        if (laser_duration_count <= 0) {
-            if (state == laser_state::SHOOTING) {
+        if (laser_duration_count <= 0)
+        {
+            if (state == laser_state::SHOOTING)
+            {
                 state = laser_state::COOLDOWN;
                 laser_duration_count = COOLDOWN_DURATION;
                 render_laser = false;
-            } else if (state == laser_state::COOLDOWN) {
+            }
+            else if (state == laser_state::COOLDOWN)
+            {
                 state = laser_state::PAUSED;
                 render_laser = false;
             }
@@ -65,7 +69,7 @@ void player_laser::update(enemy_manager& enemies)
     }
 }
 
-void player_laser::raycast_laser(enemy_manager& enemies)
+void player_laser::raycast_laser(enemy_manager &enemies)
 {
     fr::point_3d player_ship_pos = _player_ship->get_position();
     bn::fixed psi = _player_ship->get_model()->psi();
@@ -92,8 +96,8 @@ void player_laser::raycast_laser(enemy_manager& enemies)
         // If hit, apply damage to object (if applicable) and stop laser at hit point
         // If no hit, laser goes full distance.
         // <-- Check against static models?
-        
-        enemy_slot* enemy_slots = enemies.get_enemies();
+
+        enemy_slot *enemy_slots = enemies.get_enemies();
         fr::point_3d laser_origin = player_ship_pos;
         fr::point_3d laser_vec = laser_target - laser_origin; // segment vector
         // bn::fixed laser_len2 = laser_vec.dot_product(laser_vec);   // squared length (|laser_vec|^2)
@@ -104,8 +108,8 @@ void player_laser::raycast_laser(enemy_manager& enemies)
         int lvz = laser_vec.z().integer();
         // <-- Should I create a helper for method below?
         // We're holding length squared in 64-bit to avoid overflow while skipping sqrt for the incoming calculations.
-        int64_t laser_len2 = int64_t(lvx)*lvx + int64_t(lvy)*lvy + int64_t(lvz)*lvz; // 64-bit to avoid overflow
-        if(laser_len2 <= 0)
+        int64_t laser_len2 = int64_t(lvx) * lvx + int64_t(lvy) * lvy + int64_t(lvz) * lvz; // 64-bit to avoid overflow
+        if (laser_len2 <= 0)
         {
             return; // Invalid laser
         }
@@ -115,20 +119,25 @@ void player_laser::raycast_laser(enemy_manager& enemies)
         int best_enemy_index = -1; // <-- replace with ptr to enemy
         // bool best_is_endpoint = false;       // distinguishes interior vs endpoint intersection
 
-        for(int i = 0; i < enemy_manager::MAX_ENEMIES; ++i)
+        for (int i = 0; i < enemy_manager::MAX_ENEMIES; ++i)
         {
-            if(!(enemy_slots[i].used && enemy_slots[i].ptr))
+            if (!(enemy_slots[i].used && enemy_slots[i].ptr))
             {
                 continue;
             }
-            auto* target = enemy_slots[i].ptr->get_collider();
+            auto *target = enemy_slots[i].ptr->get_collider();
+            if (!target)
+            {
+                continue;
+            }
+
             auto target_origin = target->get_origin();
             auto collider_list = target->get_sphere_collider_list();
             size_t collider_count = target->get_sphere_collider_count();
 
-            for(size_t c = 0; c < collider_count; ++c)
+            for (size_t c = 0; c < collider_count; ++c)
             {
-                const sphere_collider& sc = collider_list[c];
+                const sphere_collider &sc = collider_list[c];
                 fr::point_3d col_position = target_origin + sc.position;
                 int col_radius = sc.radius + LASER_SNAP_DISTANCE; // Adding to radius so laser "snaps" to closer target.
                 // <-- Might still require a direction snap
@@ -138,31 +147,31 @@ void player_laser::raycast_laser(enemy_manager& enemies)
                 int cp_lo_x = col_position.x().integer() - laser_origin.x().integer();
                 int cp_lo_y = col_position.y().integer() - laser_origin.y().integer();
                 int cp_lo_z = col_position.z().integer() - laser_origin.z().integer();
-                int64_t cp_lo_len2 = int64_t(cp_lo_x)*cp_lo_x + int64_t(cp_lo_y)*cp_lo_y + int64_t(cp_lo_z)*cp_lo_z; // squared distance from laser start to collider position.
+                int64_t cp_lo_len2 = int64_t(cp_lo_x) * cp_lo_x + int64_t(cp_lo_y) * cp_lo_y + int64_t(cp_lo_z) * cp_lo_z; // squared distance from laser start to collider position.
 
                 // Calculate projection of collider position (translated to laser origin) onto laser vector, to get it's parallel component.
-                int64_t raw_proj_cp_lv = int64_t(cp_lo_x)*lvx + int64_t(cp_lo_y)*lvy + int64_t(cp_lo_z)*lvz; // formula is usually (cp_lo·lv)/|lv|, but we're intentionally skipping division. 
+                int64_t raw_proj_cp_lv = int64_t(cp_lo_x) * lvx + int64_t(cp_lo_y) * lvy + int64_t(cp_lo_z) * lvz; // formula is usually (cp_lo·lv)/|lv|, but we're intentionally skipping division.
 
                 // Now we can check a couple of scenarios:
                 bool hit = false;
                 int64_t clamped_proj_dist = 0;
-                if(raw_proj_cp_lv <= 0)
+                if (raw_proj_cp_lv <= 0)
                 {
                     // Closest point with laser is origin. Check if collider sphere intersects it.
-                    if(cp_lo_len2 <= col_radius2)
+                    if (cp_lo_len2 <= col_radius2)
                     {
                         hit = true;
                         clamped_proj_dist = 0;
                     }
                 }
-                else if(raw_proj_cp_lv >= laser_len2)
+                else if (raw_proj_cp_lv >= laser_len2)
                 {
                     // Closest point with laser is target point. Check if collider sphere intersects it.
                     int cp_lt_x = col_position.x().integer() - laser_target.x().integer();
                     int cp_lt_y = col_position.y().integer() - laser_target.y().integer();
                     int cp_lt_z = col_position.z().integer() - laser_target.z().integer();
-                    int64_t cp_lt_len2 = int64_t(cp_lt_x)*cp_lt_x + int64_t(cp_lt_y)*cp_lt_y + int64_t(cp_lt_z)*cp_lt_z;
-                    if(cp_lt_len2 <= col_radius2)
+                    int64_t cp_lt_len2 = int64_t(cp_lt_x) * cp_lt_x + int64_t(cp_lt_y) * cp_lt_y + int64_t(cp_lt_z) * cp_lt_z;
+                    if (cp_lt_len2 <= col_radius2)
                     {
                         hit = true;
                         clamped_proj_dist = laser_len2;
@@ -181,22 +190,22 @@ void player_laser::raycast_laser(enemy_manager& enemies)
                     // Co^2 * |laser_vec|^2 = H^2 * |laser_vec|^2 - Ca^2 * |laser_vec|^2
                     // Co^2 * |laser_vec|^2 = cp_lo_len2 * |laser_vec|^2 - raw_proj_cp_lv^2
                     // We can then compare Co^2 * |laser_vec|^2 with r^2 * |laser_vec|^2 to determine if intersection happened!
-                    
+
                     int64_t dist_collider_laser_scaled = cp_lo_len2 * laser_len2 - raw_proj_cp_lv * raw_proj_cp_lv;
-                    if(dist_collider_laser_scaled <= col_radius2 * laser_len2)
+                    if (dist_collider_laser_scaled <= col_radius2 * laser_len2)
                     {
                         hit = true;
                         clamped_proj_dist = raw_proj_cp_lv; // projection (still scaled)
                     }
                 }
 
-                if(!hit)
+                if (!hit)
                 {
                     continue;
                 }
 
                 // Choose the nearest forward hit (smallest clamped_proj_dist)
-                if(!found_hit || clamped_proj_dist < clamped_closest_proj_dist)
+                if (!found_hit || clamped_proj_dist < clamped_closest_proj_dist)
                 {
                     found_hit = true;
                     // Even though values were scaled/squared, clamped_closest_proj_dist will be in the interval:
@@ -208,18 +217,20 @@ void player_laser::raycast_laser(enemy_manager& enemies)
             }
         }
 
-        if(found_hit)
+        if (found_hit)
         {
             // We want t = clamped_closest_proj_dist / laser_len2  (0..1) in fixed.
             // Instead of iterative shifting, compute a high-precision fraction first:
             // Use 8 fractional bits (scale 256) matching bn::fixed internal granularity.
             int64_t num = clamped_closest_proj_dist;
             int64_t den = laser_len2;
-            if(num < 0) num = 0;        // guard
-            if(num > den) num = den;    // clamp
+            if (num < 0)
+                num = 0; // guard
+            if (num > den)
+                num = den;                                      // clamp
             int64_t scaled = (den > 0) ? (num * 256) / den : 0; // 0..256
             // bn::fixed constructed from int holds the integer part; divide by 256 to reintroduce fraction.
-            bn::fixed t = bn::fixed(int(scaled)) / 256;  // precise within 1/256
+            bn::fixed t = bn::fixed(int(scaled)) / 256; // precise within 1/256
             fr::point_3d hit_offset = laser_vec * t;
             laser_target = laser_origin + hit_offset;
 

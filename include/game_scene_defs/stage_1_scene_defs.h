@@ -14,6 +14,7 @@
 #include "models/asteroid1.h"
 #include "models/moon_oyster.h"
 #include "models/player_ship_02.h"
+#include "models/shot.h"
 
 using namespace scene_colors_generator;
 
@@ -159,7 +160,8 @@ constexpr const auto raw_scene_colors = {
     bn::span<const bn::color>(fr::model_3d_items::hurt_colors),
     bn::span<const bn::color>(fr::model_3d_items::player_ship_02_colors),
     bn::span<const bn::color>(fr::model_3d_items::asteroid1_colors),
-    bn::span<const bn::color>(fr::model_3d_items::moon_oyster_colors)
+    bn::span<const bn::color>(fr::model_3d_items::moon_oyster_colors),
+    bn::span<const bn::color>(fr::model_3d_items::shot_colors)
 };
 
 constexpr size_t model_palette_count = raw_scene_colors.size();

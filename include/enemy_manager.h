@@ -35,7 +35,7 @@ public:
   void process_section_enemies(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
 
   //
-  void create_bullet(fr::point_3d position);
+  void create_bullet(fr::point_3d position, fr::point_3d target);
 
   enemy_slot* get_enemies()
   {

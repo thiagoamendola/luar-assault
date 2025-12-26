@@ -46,9 +46,11 @@ void hud_manager::update(fr::models_3d *models)
     {
         _text_generator.generate(-7 * 16, -72, "Location (Y): " + bn::to_string<64>(int(_camera->position().y())),
                                  _text_sprites);
-        _text_generator.generate(-7 * 16, -60,
-                                 "Dynamic Objs: " + bn::to_string<64>(models->dynamic_models_count()) + "/" +
-                                     bn::to_string<64>(models->dynamic_models_max_count()),
+        // _text_generator.generate(-7 * 16, -60,
+        //                          "Dynamic Objs: " + bn::to_string<64>(models->dynamic_models_count()) + "/" +
+        //                              bn::to_string<64>(models->dynamic_models_max_count()),
+        //                          _text_sprites);
+        _text_generator.generate(-7 * 16, -60, "Player (Y): " + bn::to_string<64>(int(_player_ship->get_position().y())),
                                  _text_sprites);
     }
     else

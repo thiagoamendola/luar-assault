@@ -11,6 +11,7 @@
 #include "player_ship.h"
 #include "asteroid.h"
 #include "oyster.h"
+#include "enemy_bullet.h"
 #include "enemy_def.h"
 
 enemy_manager::enemy_manager(fr::models_3d *models, controller *controller, player_ship *player)
@@ -184,16 +185,15 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
 
 }
 
-void enemy_manager::create_bullet(fr::point_3d position)
+void enemy_manager::create_bullet(fr::point_3d position, fr::point_3d target)
 {
     // <-- Separate this into its own method
     for (int slot = 0; slot < MAX_ENEMIES; ++slot)
     {
         if (!_enemies[slot].used)
         {
-            fr::point_3d movement(0, 30, 0); // placeholder movement
             // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
-            _enemies[slot].ptr = new asteroid(position, movement, _models, _controller); // <-- Convert to a proper object pool later
+            _enemies[slot].ptr = new enemy_bullet(position, target, _models, _controller); // <-- Convert to a proper object pool later
             _enemies[slot].used = true;
             _enemies[slot].source = nullptr; // Bullets may not need a source descriptor
             BN_LOG("[SPAWN] BULLET: y DEPTH=" + bn::to_string<64>(int(position.y())) +

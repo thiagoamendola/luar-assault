@@ -1,13 +1,14 @@
 {
   "name": "stage_1_scene",
-  "version": 2,
+  "version": 3,
   "palette": [
       "debug_collider",
       "laser",
       "hurt",
       "player_ship_02",
       "asteroid1",
-      "moon_oyster"
+      "moon_oyster",
+      "shot"
   ],
   "sections": [
     {

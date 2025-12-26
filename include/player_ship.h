@@ -59,6 +59,11 @@ class player_ship
         return _model;
     };
 
+    void set_position(const fr::point_3d &position)
+    {
+        _model->set_position(position);
+        _camera->set_position(position + fr::point_3d(0, 180, 0)); // <-- Magic number for camera offset
+    }
     fr::point_3d get_position() const
     {
         return _model->position();
@@ -81,8 +86,8 @@ class player_ship
     }
 
     // - Movement
+    constexpr static bn::fixed FORWARD_SPEED = 2.5;
     const bn::fixed MANEUVER_SPEED = 3.5;
-    const bn::fixed FORWARD_SPEED = 2.5;
     const bn::fixed FOCUS_DISTANCE = 200;
     
     // - Cooldowns
