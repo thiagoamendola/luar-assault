@@ -56,14 +56,12 @@ enemy_bullet::enemy_bullet(fr::point_3d position, fr::point_3d target, fr::model
 
     // Calculate shot rotation towards target
     bn::fixed angle_phi_degrees = bn::degrees_atan2(distance_target.x().integer(), -distance_target.y().integer());
-
     bn::rule_of_three_approximation rotation_units(360, 65536); // <-- Reutilize this for entire project
     angle_phi = rotation_units.calculate(angle_phi_degrees);
 
     // Update model
     _model = &_models->create_dynamic_model(fr::model_3d_items::shot_full);
     _model->set_position(position);
-    // _model->set_theta(16383); // 90 degrees // <-- Magic number
     _model->set_palette(fr::model_3d_items::shot_colors);
 
     _state = enemy_state::ACTIVE;
@@ -82,12 +80,6 @@ void enemy_bullet::destroy()
         _models->destroy_dynamic_model(*_model);
         _model = nullptr;
     }
-    
-    // Remove explosion effect.
-    if(_explosion)
-    {
-        _explosion.reset();
-    }
 
     _state = enemy_state::DESTROYED;
 }
@@ -96,16 +88,7 @@ void enemy_bullet::update(player_ship* player)
 {
     switch (_state)
     {
-    case enemy_state::ACTIVE:
-        // Handle laser hit cooldown.
-        if (_damage_cooldown > 0)
-        {
-           _damage_cooldown--;
-            if (_damage_cooldown <= 0) {
-                _model->set_palette(fr::model_3d_items::shot_colors);
-            }
-        }
-        
+    case enemy_state::ACTIVE:        
         // Update position using movement vector
         _position = fr::point_3d(
             _position.x() + _movement.x(),
@@ -116,7 +99,7 @@ void enemy_bullet::update(player_ship* player)
     
         // Rotate.
         _model->set_phi(0); // Avoid gimbal lock
-        _model->set_psi(_model->psi() + 600); // Bullet twisting// <-- Magic number
+        _model->set_psi(_model->psi() + ROTATION_ANIM_SPEED);
         _model->set_phi(-16383 + angle_phi);  // Model front + towards target // <-- Magic number
 
         // Update colliders.
@@ -125,19 +108,8 @@ void enemy_bullet::update(player_ship* player)
         break;
 
     case enemy_state::DESTROYING:
-        // Handle destruction animation.
-        _explode_frames -= 1;
-
-        if (_explode_frames <= 0)
-        {
-            destroy();
-        }
-        else if(_explosion)
-        {
-            // Update the explosion effect
-            _explosion->update();
-        }
-
+        destroy();
+        
         break;
 
     default:
@@ -163,26 +135,7 @@ int enemy_bullet::statics_render(const fr::model_3d_item **static_model_items,
 
 void enemy_bullet::handle_laser_hit()
 {
-    if(_state != enemy_state::ACTIVE)
-    {
-        return;
-    }
-
-    // Apply hit feedback palette and cooldown only if still alive after hit
-    if(_health > 0)
-    {
-        // <-- MUST NOT HELATH HEALTH
-        _health -= 1;
-        if(_health <= 0)
-        {
-            // Final destruction
-            // kill();
-            return;
-        }
-        // _model->set_palette(fr::model_3d_items::laser_colors);
-        _damage_cooldown = DAMAGE_COOLDOWN;
-    }
-    // bn::sound_items::bullet_hit.play(); // <-- Get bullet hit sound
+    return; // Bullets are never hit by lasers
 }
 
 void enemy_bullet::kill()
@@ -192,13 +145,7 @@ void enemy_bullet::kill()
         return;
     }
 
-    // <-- MUST NOT BE KILLED WITH EXPLOSION
-
     _state = enemy_state::DESTROYING;
-    _explode_frames = TOTAL_EXPLODE_FRAMES;
-
-    // Create explosion effect
-    _explosion.emplace(_position, _models);
 
     // Remove bullet model
     _models->destroy_dynamic_model(*_model);

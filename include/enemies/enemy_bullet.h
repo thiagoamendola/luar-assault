@@ -59,10 +59,7 @@ class enemy_bullet : public base_enemy
     }
 
     const bn::fixed MOVEMENT_SPEED = 5;
-    const bn::fixed ROTATION_SPEED = 2.5;
-    const int DAMAGE_COOLDOWN = 3;
-    const int MAX_HEALTH = 3;
-    const int TOTAL_EXPLODE_FRAMES = 10;
+    const bn::fixed ROTATION_ANIM_SPEED = 600;
 
   private:
     fr::point_3d _movement;
@@ -70,12 +67,6 @@ class enemy_bullet : public base_enemy
     fr::models_3d *_models;
     fr::model_3d *_model;
     controller *_controller;
-
-    int _damage_cooldown = 0;
-    int _health = MAX_HEALTH;
-    int _explode_frames = 0;
-
-    bn::optional<explosion_effect> _explosion; // <-- Remove
 
     sphere_collider_set _sphere_collider_set;
 
