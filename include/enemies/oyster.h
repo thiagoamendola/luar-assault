@@ -78,7 +78,8 @@ class oyster : public base_enemy
     const int MAX_HEALTH = 4;
     const int TOTAL_EXPLODE_FRAMES = 10;
 
-    const int BULLET_COOLDOWN = 120; // 4 second
+    const int INITIAL_BULLET_COOLDOWN = 30;
+    const int BULLET_COOLDOWN = 90;
 
   private:
     fr::point_3d _movement;

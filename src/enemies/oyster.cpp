@@ -115,7 +115,7 @@ void oyster::update_active(player_ship* player)
         {
             _behavior_state = oyster_behavior_state::ATTACKING;
             _initial_attacking_distance = player->get_position().y();
-            _bullet_cooldown = BULLET_COOLDOWN;
+            _bullet_cooldown = INITIAL_BULLET_COOLDOWN;
             BN_LOG("[oyster] Proximity reached, switching to ATTACKING state.");
         }
 

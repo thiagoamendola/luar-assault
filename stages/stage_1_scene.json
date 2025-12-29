@@ -274,6 +274,27 @@
           "playerDistance": 300
         }
       ]
+    },
+    {
+      "id": 9,
+      "range": {
+        "start":-1850,
+        "end": -3750
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "OYSTER",
+          "enabled": true,
+          "position": {
+            "x": 50,
+            "y": -800,
+            "z": 30
+          },
+          "rotation": 300,
+          "playerDistance": 320
+        }
+      ]
     }
   ]
 }
