@@ -13,6 +13,7 @@
 #include "fr_constants_3d.h"
 #include "fr_div_lut.h"
 
+#include "base_game_scene.h"
 #include "enemy_manager.h"
 #include "controller.h"
 #include "utils.h"
@@ -21,12 +22,11 @@
 // #include "models/player_ship_01.h"
 #include "models/player_ship_02.h"
 
-
-player_ship::player_ship(controller *controller, fr::camera_3d *camera,
+player_ship::player_ship(base_game_scene *base_scene, controller *controller, fr::camera_3d *camera,
                          fr::models_3d *models)
-    : _controller(controller), _camera(camera), _models(models),
-    _sphere_collider_set(fr::model_3d_items::ship_colliders),
-    _player_laser(this)
+    : _base_scene(base_scene), _controller(controller), _camera(camera), _models(models),
+      _sphere_collider_set(fr::model_3d_items::ship_colliders),
+      _player_laser(this)
 {
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::player_ship_02_full);
@@ -93,8 +93,6 @@ void player_ship::update()
         fr::point_3d cam_v = _camera->v();
         // cam_w is identity. How this affects things? (0,0,1)
 
-        // BN_LOG("[player_ship] --------------------"); // <-- REMOVE THESE LOGS
-
         // Build direction vector in camera space
         bn::fixed dir_x = cam_u.x() * target_position.x() + cam_v.x() * target_position.y();
         bn::fixed dir_z = cam_u.z() * target_position.x() + cam_v.z() * target_position.y();
@@ -103,8 +101,7 @@ void player_ship::update()
         fr::point_3d target_world_pos(
             int((dir_x - cam_pos.x()) * depth_to_camera) >> focal_length_shift,
             depth_position,
-            -int((dir_z - cam_pos.z()) * depth_to_camera) >> focal_length_shift
-        );
+            -int((dir_z - cam_pos.z()) * depth_to_camera) >> focal_length_shift);
 
         // BN_LOG("[player_ship] target_world_pos position: " + bn::to_string<64>(target_world_pos.x()) + ", " + bn::to_string<64>(target_world_pos.y()) + ", " + bn::to_string<64>(target_world_pos.z()));
 
@@ -127,11 +124,10 @@ void player_ship::update()
         bn::fixed angle_psi = rotation_units.calculate(angle_psi_degrees);
         bn::fixed angle_phi = rotation_units.calculate(angle_phi_degrees);
 
-        _model->set_psi(0); // Avoid gimbal lock
-        _model->set_phi(angle_phi); // Yaw (around Z)
+        _model->set_psi(0);                 // Avoid gimbal lock
+        _model->set_phi(angle_phi);         // Yaw (around Z)
         _model->set_psi(16383 + angle_psi); // Pitch (centered) // <-- Magic number
         // BN_LOG("[player_ship] angles psi: " + bn::to_string<64>(angle_psi) + ", phi " + bn::to_string<64>(angle_phi));
-    
     }
 
     {
@@ -168,7 +164,7 @@ void player_ship::update()
 }
 
 void player_ship::collision_update(const fr::model_3d_item **static_model_items,
-    size_t static_items_count, enemy_manager& enemies)
+                                   size_t static_items_count, enemy_manager &enemies)
 {
     {
         // - Player Laser
@@ -182,9 +178,12 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
         {
             _damage_cooldown--;
             // Blink ship
-            if (_damage_cooldown % 6 < 3) { // <-- MAGIC NUMBER
+            if (_damage_cooldown % 6 < 3)
+            { // <-- MAGIC NUMBER
                 _model->set_palette(fr::model_3d_items::hurt_colors);
-            } else {
+            }
+            else
+            {
                 _model->set_palette(fr::model_3d_items::player_ship_02_colors);
             }
             return;
@@ -193,26 +192,28 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
         // - Collision with statics
         if (_sphere_collider_set.colliding_with_statics(static_model_items, static_items_count))
         {
-            _model->set_palette(fr::model_3d_items::hurt_colors);
-            bn::sound_items::player_damage.play();
-            _damage_cooldown = DAMAGE_COOLDOWN;
-            health--;
-            return;
+            take_damage();
+            // return;
         }
         // - Collision with dynamic enemies
-        else if(check_collision_with_enemies(enemies))
+        else if (check_collision_with_enemies(enemies))
         {
-            _model->set_palette(fr::model_3d_items::hurt_colors);
-            bn::sound_items::player_damage.play();
-            _damage_cooldown = DAMAGE_COOLDOWN;
-            health--;
+            take_damage();
         }
         else
         {
             _model->set_palette(fr::model_3d_items::player_ship_02_colors);
         }
     }
+}
 
+void player_ship::take_damage()
+{
+    bn::sound_items::player_damage.play();
+    _damage_cooldown = DAMAGE_COOLDOWN;
+    health--;
+    _base_scene->set_hit_stop(HIT_STOP_COOLDOWN);
+    _model->set_palette(fr::model_3d_items::hurt_colors);
 }
 
 int player_ship::statics_render(const fr::model_3d_item **static_model_items,
@@ -247,15 +248,15 @@ int player_ship::statics_render(const fr::model_3d_item **static_model_items,
     return current_static_count;
 }
 
-bool player_ship::check_collision_with_enemies(enemy_manager& enemies)
+bool player_ship::check_collision_with_enemies(enemy_manager &enemies)
 {
-    auto& player_collider = collider_set();
-    enemy_slot* enemy_slots = enemies.get_enemies();
-    for(int i = 0; i < enemy_manager::MAX_ENEMIES; ++i)
+    auto &player_collider = collider_set();
+    enemy_slot *enemy_slots = enemies.get_enemies();
+    for (int i = 0; i < enemy_manager::MAX_ENEMIES; ++i)
     {
-        if(enemy_slots[i].used && enemy_slots[i].ptr)
+        if (enemy_slots[i].used && enemy_slots[i].ptr)
         {
-            if(!enemy_slots[i].ptr->is_killed() && player_collider.colliding_with_dynamic(enemy_slots[i].ptr->get_collider()))
+            if (!enemy_slots[i].ptr->is_killed() && player_collider.colliding_with_dynamic(enemy_slots[i].ptr->get_collider()))
             {
                 return true;
             }

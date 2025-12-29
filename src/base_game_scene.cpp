@@ -5,7 +5,7 @@
 base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      scene_colors_generator::color_mapping_handler *color_mapping,
                                      stage_section_list_ptr sections, size_t sections_count)
-        : _sections(sections), _sections_count(sections_count), _player_ship(&_controller, &_camera, &_models),
+        : _sections(sections), _sections_count(sections_count), _player_ship(this, &_controller, &_camera, &_models),
             _enemy_manager(&_models, &_controller, &_player_ship), _hud_manager(&_controller, &_camera, &_player_ship), _prepare_to_leave(false)
 {
     // Initialize camera position.
@@ -24,13 +24,22 @@ bool base_game_scene::update()
     {
         return true;
     }
-    else if (bn::keypad::start_pressed())
+    
+    if (bn::keypad::start_pressed())
     {
+        // <-- Implement pause menu hereD
         // Start destroy process.
         destroy();
         return false;
     }
-    else
+
+    if (_hit_stop_cooldown > 0)
+    {
+        _hit_stop_cooldown--;
+        return false;
+    }
+    
+    // Handle normal updates
     {
         // - UI
         _hud_manager.update(&_models);
@@ -41,26 +50,18 @@ bool base_game_scene::update()
         // - Enemies
         _enemy_manager.process_section_enemies(_sections, _sections_count, _camera.position().y());
         _enemy_manager.update();
-    }
 
-    {
         // - Collisions
         static_count =
             stage_section_renderer::manage_section_render(_sections, _sections_count, _camera, _static_model_items);
 
         _player_ship.collision_update(_static_model_items, static_count, _enemy_manager);
-    }
 
-    {
         // - Static object rendering
-
-        // Player Laser
         static_count = _player_ship.statics_render(_static_model_items, static_count);
-
-        // Enemies
         static_count = _enemy_manager.statics_render(_static_model_items, static_count);
 
-        // Final models update
+        // - Final models update
         _models.set_static_model_items(_static_model_items, static_count);
         _models.update(_camera);
         _hud_manager.statics_update(static_count);
@@ -75,4 +76,9 @@ void base_game_scene::destroy()
 
     _player_ship.destroy();
     _enemy_manager.destroy();
+}
+
+void base_game_scene::set_hit_stop(int hit_stop_frames)
+{
+    _hit_stop_cooldown = hit_stop_frames;
 }

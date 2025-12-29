@@ -31,6 +31,8 @@ class base_game_scene // : public fr::scene
         return &_controller;
     }
 
+    void set_hit_stop(int hit_stop_frames);
+
   private:
     stage_section_list_ptr _sections;
     size_t _sections_count;
@@ -47,6 +49,7 @@ class base_game_scene // : public fr::scene
     const fr::model_3d_item *_static_model_items[fr::constants_3d::max_static_models];
 
     bool _prepare_to_leave = false;
+    int _hit_stop_cooldown = 0;
 };
 
 #endif

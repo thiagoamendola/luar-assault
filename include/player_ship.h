@@ -11,28 +11,31 @@
 #include "controller.h"
 #include "player_laser.h"
 
-class enemy_manager; // Forward declaration
+// - Forward declaration
+
+class base_game_scene;
+class enemy_manager;
 
 // - Constants
 
 namespace fr::model_3d_items
 {
 
-constexpr inline bn::color hurt_colors[] = {
-    bn::color(18, 0, 0),
-    bn::color(18, 0, 0),
-};
+    constexpr inline bn::color hurt_colors[] = {
+        bn::color(18, 0, 0),
+        bn::color(18, 0, 0),
+    };
 
-constexpr const sphere_collider ship_colliders[] = {
-    sphere_collider(fr::point_3d(-15, 0, 7), 4),
-    sphere_collider(fr::point_3d(15, 0, 7), 4),
-    sphere_collider(fr::point_3d(-15, 0, -7), 4),
-    sphere_collider(fr::point_3d(15, 0, -7), 4),
-    sphere_collider(fr::point_3d(0, 0, 0), 8)
-    
-};
+    constexpr const sphere_collider ship_colliders[] = {
+        sphere_collider(fr::point_3d(-15, 0, 7), 4),
+        sphere_collider(fr::point_3d(15, 0, 7), 4),
+        sphere_collider(fr::point_3d(-15, 0, -7), 4),
+        sphere_collider(fr::point_3d(15, 0, -7), 4),
+        sphere_collider(fr::point_3d(0, 0, 0), 8)
 
-constexpr size_t ship_colliders_count = sizeof(ship_colliders) / sizeof(ship_colliders[0]);
+    };
+
+    constexpr size_t ship_colliders_count = sizeof(ship_colliders) / sizeof(ship_colliders[0]);
 
 } // namespace fr::model_3d_items
 
@@ -40,8 +43,8 @@ constexpr size_t ship_colliders_count = sizeof(ship_colliders) / sizeof(ship_col
 
 class player_ship
 {
-  public:
-    player_ship(controller *controller, fr::camera_3d *camera,
+public:
+    player_ship(base_game_scene *base_scene, controller *controller, fr::camera_3d *camera,
                 fr::models_3d *models);
 
     void destroy();
@@ -49,7 +52,9 @@ class player_ship
     void update();
 
     void collision_update(const fr::model_3d_item **static_model_items, size_t static_items_count,
-        enemy_manager& enemies);
+                          enemy_manager &enemies);
+
+    void take_damage();
 
     int statics_render(const fr::model_3d_item **static_model_items,
                        int static_count);
@@ -74,7 +79,7 @@ class player_ship
         return health;
     }
 
-    sphere_collider_set& collider_set()
+    sphere_collider_set &collider_set()
     {
         return _sphere_collider_set;
     }
@@ -89,14 +94,15 @@ class player_ship
     constexpr static bn::fixed FORWARD_SPEED = 2.5;
     const bn::fixed MANEUVER_SPEED = 3.5;
     const bn::fixed FOCUS_DISTANCE = 200;
-    
+
     // - Cooldowns
-    const int DAMAGE_COOLDOWN = 60; // 1 second
+    constexpr static int DAMAGE_COOLDOWN = 60;   // 1 second
+    constexpr static int HIT_STOP_COOLDOWN = 20;
 
-  private:
+private:
+    bool check_collision_with_enemies(enemy_manager &enemies);
 
-    bool check_collision_with_enemies(enemy_manager& enemies);
-
+    base_game_scene *_base_scene;
     controller *_controller;
     fr::camera_3d *_camera;
 
@@ -111,7 +117,6 @@ class player_ship
     int health = 3;
     int _damage_cooldown = 0;
     bn::fixed_point target_position;
-
 };
 
 #endif
