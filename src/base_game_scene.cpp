@@ -24,12 +24,24 @@ bool base_game_scene::update()
     {
         return true;
     }
-    
+
+    // <-- Handle this from controller class
     if (bn::keypad::start_pressed())
     {
-        // <-- Implement pause menu hereD
-        // Start destroy process.
-        destroy();
+        _is_paused = !_is_paused;
+        // destroy();
+        return false;
+    }
+
+    // If paused, don't render game update.
+    if (_is_paused)
+    {
+        _hud_manager.hide_game_hud();
+        // <-- Handle pause menu update
+        // <-- Create pause handler
+        // <-- Create black filter with alpha
+        // <-- Show "PAUSED" text
+
         return false;
     }
 

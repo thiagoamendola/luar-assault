@@ -25,6 +25,8 @@ public:
     void update(fr::models_3d *models); 
     void statics_update(int static_count);
 
+    void hide_game_hud();
+
     // Neutral stick threshold
     const bn::fixed DIRECTION_DEADZONE = 0.15;
 

@@ -49,6 +49,7 @@ class base_game_scene // : public fr::scene
     const fr::model_3d_item *_static_model_items[fr::constants_3d::max_static_models];
 
     bool _prepare_to_leave = false;
+    bool _is_paused = false;
     int _hit_stop_cooldown = 0;
 };
 

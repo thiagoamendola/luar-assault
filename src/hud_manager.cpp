@@ -62,6 +62,8 @@ void hud_manager::update(fr::models_3d *models)
     _move_target();
 }
 
+
+
 void hud_manager::statics_update(int static_count)
 {
     // Display static count debug text.
@@ -99,4 +101,9 @@ void hud_manager::_move_target()
     _player_ship->set_target_position(target_pos);
 
     _target_growth_action->update();
+}
+
+void hud_manager::hide_game_hud()
+{
+    _text_sprites.clear();
 }
