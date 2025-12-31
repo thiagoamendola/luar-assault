@@ -11,6 +11,7 @@
 #include "enemy_manager.h"
 #include "player_ship.h"
 #include "hud_manager.h"
+#include "pause_manager.h"
 #include "stage_section.h"
 #include "stage_section_renderer.h"
 
@@ -44,12 +45,12 @@ class base_game_scene // : public fr::scene
     player_ship _player_ship;
     enemy_manager _enemy_manager;
     hud_manager _hud_manager;
+    pause_manager _pause_manager;
 
     bn::span<const fr::model_3d_item> _model_items; // <-- CAN BEW REMOVED NOW?
     const fr::model_3d_item *_static_model_items[fr::constants_3d::max_static_models];
 
     bool _prepare_to_leave = false;
-    bool _is_paused = false;
     int _hit_stop_cooldown = 0;
 };
 

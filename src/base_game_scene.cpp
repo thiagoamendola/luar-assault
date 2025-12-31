@@ -6,7 +6,8 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      scene_colors_generator::color_mapping_handler *color_mapping,
                                      stage_section_list_ptr sections, size_t sections_count)
         : _sections(sections), _sections_count(sections_count), _player_ship(this, &_controller, &_camera, &_models),
-            _enemy_manager(&_models, &_controller, &_player_ship), _hud_manager(&_controller, &_camera, &_player_ship), _prepare_to_leave(false)
+            _enemy_manager(&_models, &_controller, &_player_ship), _hud_manager(&_controller, &_camera, &_player_ship),
+            _pause_manager(&_hud_manager), _prepare_to_leave(false)
 {
     // Initialize camera position.
     // _player_ship.set_position(fr::point_3d(0, 860, 0)); // <-- Starting position. CHANGE THAT
@@ -25,23 +26,11 @@ bool base_game_scene::update()
         return true;
     }
 
-    // <-- Handle this from controller class
-    if (bn::keypad::start_pressed())
+    // Handle pause state
+    if (_pause_manager.check_pause_toggle())
     {
-        _is_paused = !_is_paused;
-        // destroy();
-        return false;
-    }
-
-    // If paused, don't render game update.
-    if (_is_paused)
-    {
-        _hud_manager.hide_game_hud();
-        // <-- Handle pause menu update
-        // <-- Create pause handler
-        // <-- Create black filter with alpha
-        // <-- Show "PAUSED" text
-
+        // Is paused, only update pause menu.
+        _pause_manager.menu_update();
         return false;
     }
 
