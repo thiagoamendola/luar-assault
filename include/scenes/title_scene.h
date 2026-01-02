@@ -36,7 +36,7 @@ class title_scene : public fr::scene
     fr::model_3d *_model;
 
     bool _prepare_to_leave;
-  scene_type _target_scene = scene_type::TEST_3D; // which scene to jump to after fade (START vs SELECT)
+    scene_type _target_scene = scene_type::TEST_3D; // which scene to jump to after fade (START vs SELECT)
     bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_out_action;
     bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;
 };
