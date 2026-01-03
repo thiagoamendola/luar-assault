@@ -5,9 +5,9 @@
 #include "bn_vector.h"
 #include "bn_color.h"
 #include "bn_optional.h"
-#include "bn_bg_palettes_actions.h"
-#include "bn_sprite_palettes_actions.h"
 #include "bn_sprite_text_generator.h"
+#include "bn_regular_bg_ptr.h"
+#include "bn_blending_actions.h"
 
 class hud_manager;
 
@@ -38,11 +38,15 @@ class pause_manager
     bn::sprite_text_generator _text_generator; // <-- move to common stuff?
     bn::vector<bn::sprite_ptr, 32> _text_sprites;
 
-    // Fade actions
-    bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_in_action;
-    bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_in_action;
-    bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_out_action;
-    bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;
+    // Fading
+    bn::regular_bg_ptr _pause_bg;
+    bn::optional<bn::blending_transparency_alpha_to_action> _bgs_fade_in_action;
+    bn::optional<bn::blending_transparency_alpha_to_action> _bgs_fade_out_action;
+    // bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_in_action;
+    // bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_in_action;
+    // bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_out_action;
+    // bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;
+
 };
 
 #endif

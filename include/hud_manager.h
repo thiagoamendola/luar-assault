@@ -3,7 +3,6 @@
 
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
-#include "bn_sprite_ptr.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_actions.h"
 #include "bn_point.h"
@@ -48,7 +47,7 @@ private:
     player_ship *_player_ship;
 
     // UI
-    bn::sprite_text_generator _text_generator; // <-- move to common stuff
+    bn::sprite_text_generator _text_generator; // <-- move to common stuff?
     bn::vector<bn::sprite_ptr, 32> _text_sprites;
 
     // Target animated sprite
