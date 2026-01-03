@@ -7,6 +7,7 @@
 #include "bn_optional.h"
 #include "bn_bg_palettes_actions.h"
 #include "bn_sprite_palettes_actions.h"
+#include "bn_sprite_text_generator.h"
 
 class hud_manager;
 
@@ -33,6 +34,11 @@ class pause_manager
     hud_manager *_hud_manager;
     bool _is_paused = false;
   
+    // Text UI
+    bn::sprite_text_generator _text_generator; // <-- move to common stuff?
+    bn::vector<bn::sprite_ptr, 32> _text_sprites;
+
+    // Fade actions
     bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_in_action;
     bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_in_action;
     bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_out_action;

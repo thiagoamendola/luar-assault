@@ -1,19 +1,27 @@
 #include "pause_manager.h"
+
 #include "bn_keypad.h"
+#include "bn_sprite_ptr.h"
+#include "bn_sprite_text_generator.h"
+
 #include "hud_manager.h"
 
-pause_manager::pause_manager(hud_manager *hud_manager) : _hud_manager(hud_manager)
+#include "common_variable_8x16_sprite_font.h"
+
+pause_manager::pause_manager(hud_manager *hud_manager) : 
+    _hud_manager(hud_manager),
+    _text_generator(common::variable_8x16_sprite_font)
 {
     // Initialize pause menu resources
+    bn::bg_palettes::set_fade(bn::colors::black, 0);
     _bgs_fade_in_action.emplace(10, .4); // <-- MAGIC NUMBERS
     _sprites_fade_in_action.emplace(10, .4);
-
 }
 
 bool pause_manager::check_pause_toggle()
 {
     if (bn::keypad::start_pressed())
-    {        
+    {
         if (!_is_paused)
         {
             _is_paused = true;
@@ -25,7 +33,7 @@ bool pause_manager::check_pause_toggle()
             hide_menu();
         }
     }
-    
+
     return _is_paused;
 }
 
@@ -55,14 +63,10 @@ void pause_manager::menu_update()
             _bgs_fade_out_action.reset();
             _sprites_fade_out_action.reset();
         }
-
     }
 
-
-
-
     // <-- Handle pause menu animations or updates
-    // <-- handle menu input 
+    // <-- handle menu input
 }
 
 void pause_manager::show_menu()
@@ -73,7 +77,12 @@ void pause_manager::show_menu()
     _sprites_fade_in_action.emplace(10, .4);
 
     // <-- Show pause menu sprites and text
-    // <-- Create black filter with alpha
+    // set_priority??? set_blending???
+
+    _text_generator.set_center_alignment();
+    _text_generator.set_blending_enabled(false); // DOES NOT WORK
+    _text_generator.generate(0, 0, "PAUSED",
+                                 _text_sprites);
 
 }
 
@@ -84,6 +93,5 @@ void pause_manager::hide_menu()
     // bn::bg_palettes::set_fade(fade_color, 1);
 
     // <-- Hide pause menu sprites and text
-    // <-- Remove black filter
-
+    _text_sprites.clear();
 }
