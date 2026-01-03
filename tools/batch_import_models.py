@@ -4,6 +4,7 @@ import sys
 import glob
 import json
 from pathlib import Path
+from termcolor import colored
 
 # Local import of converter
 import wavefront2v3d
