@@ -17,12 +17,14 @@
 
 #include "bn_sprite_items_target_ui.h"
 #include "common_variable_8x16_sprite_font.h"
+#include "common_variable_8x8_sprite_font.h"
 
 hud_manager::hud_manager(controller *controller, fr::camera_3d *camera, player_ship *player_ship)
     : _controller(controller), _camera(camera), _player_ship(player_ship),
-      _text_generator(common::variable_8x16_sprite_font), _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
+      _text_generator(common::variable_8x8_sprite_font), _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
       _target_growth_action()
 {
+    //common::variable_8x16_sprite_font
     // Setup target sprite
     _target_spr.set_horizontal_scale(TARGET_INITIAL_SCALE);
     _target_spr.set_vertical_scale(TARGET_INITIAL_SCALE);

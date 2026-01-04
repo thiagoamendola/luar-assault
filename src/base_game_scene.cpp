@@ -7,7 +7,7 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      stage_section_list_ptr sections, size_t sections_count)
         : _sections(sections), _sections_count(sections_count), _player_ship(this, &_controller, &_camera, &_models),
             _enemy_manager(&_models, &_controller, &_player_ship), _hud_manager(&_controller, &_camera, &_player_ship),
-            _pause_manager(&_hud_manager), _prepare_to_leave(false)
+            _pause_manager(&_hud_manager, &_controller), _prepare_to_leave(false)
 {
     // Initialize camera position.
     // _player_ship.set_position(fr::point_3d(0, 860, 0)); // <-- Starting position. CHANGE THAT
