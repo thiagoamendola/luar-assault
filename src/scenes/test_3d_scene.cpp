@@ -16,7 +16,7 @@
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_actions.h"
 #include "bn_sound_items.h"
-
+#include "bn_regular_bg_ptr.h"
 #include "fr_model_3d_item.h"
 #include "fr_model_colors.h"
 
@@ -27,11 +27,11 @@
 // #include "bn_sprite_items_butano_background_2.h"
 // #include "bn_sprite_items_ninja.h"
 #include "models/shot.h"
-
-#include "bn_regular_bg_items_floor.h"
+#include "bn_regular_bg_items_black.h"
 // #include "bn_regular_bg_items_moon.h"
 #include "bn_regular_bg_items_bg_anim.h"
-#include "bn_regular_bg_ptr.h"
+#include "common_variable_8x16_sprite_font.h"
+
 
 test_3d_scene::test_3d_scene()
     : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count),
@@ -41,7 +41,9 @@ test_3d_scene::test_3d_scene()
     //       _ninja_spr, 16, bn::sprite_items::ninja.tiles_item(), 0, 1, 2, 3)),
       _anim_bg(bn::regular_bg_items::bg_anim.create_bg(0, 0)),
       _anim_bg_action(bn::create_regular_bg_cached_animate_action_forever(
-            _anim_bg, 6, bn::regular_bg_items::bg_anim.map_item(), 0, 1, 2, 3))
+            _anim_bg, 6, bn::regular_bg_items::bg_anim.map_item(), 0, 1, 2, 3)),
+      _ending_bg(bn::regular_bg_items::black.create_bg(0, 0)),
+      _text_generator(common::variable_8x16_sprite_font)
     //   _scene_bg(bn::regular_bg_items::floor.create_bg(0, 0)),
 //   _moon_bg(bn::regular_bg_items::moon.create_bg(0, 20))
 //   _test_sprite_sprite_3d_item(bn::sprite_items::butano_background_2, 0)
@@ -60,25 +62,61 @@ test_3d_scene::test_3d_scene()
     // _test_sprite->set_theta(32000);
     // bn::sound_items::dialog_test1.play(1);
 
+    // Ending screen setup
+    _text_generator.set_bg_priority(2);
+    _text_generator.set_center_alignment();
+    _ending_bg.set_priority(2);
+    _ending_bg.set_visible(false);
 }
 
 bn::optional<scene_type> test_3d_scene::update()
 {
     bn::optional<scene_type> result;
 
-    _anim_bg_action.update();
-
-    bool change_scene = _base_game_scene.update();
-    
-    if (change_scene)
+    if (!_cleared_stage)
     {
-        auto scene_override = _base_game_scene.get_next_scene_override();
-        if (scene_override)
+        _anim_bg_action.update(); // <-- Pause on pause
+    
+        bool change_scene = _base_game_scene.update();
+        
+        if (change_scene)
         {
-            return scene_override;
+            auto scene_override = _base_game_scene.get_next_scene_override();
+            if (scene_override)
+            {
+                return scene_override;
+            }
+            // Stage cleared
+            // <-- Create ending screen and prob move it to _base_game_scene later
+            // result = scene_type::BUTANO_INTRO;
+            _ending_bg.set_visible(true);
+            _ending_bg.set_blending_enabled(true);
+            bn::blending::set_transparency_alpha(0);
+            _bgs_fade_in_action.emplace(60, .6); // <-- MAGIC NUMBERS
+            _cleared_stage = true;
+            // Show ending text
+            _ending_text_sprites.clear();
+            _text_generator.generate(0, -30, "STAGE CLEARED!", _ending_text_sprites);
+            _text_generator.generate(0, 10, "Thank you for playing this demo!", _ending_text_sprites);
+            _text_generator.generate(0, 30, "Press START to return", _ending_text_sprites);
+
+            return result;
         }
-        result = scene_type::BUTANO_INTRO;
-        return result;
+    }
+    else
+    {
+        // Ending screen logic
+        if (!_bgs_fade_in_action->done())
+        {
+            _bgs_fade_in_action->update();
+        }
+        else
+        {
+            if (bn::keypad::start_pressed())
+            {
+                result = scene_type::TITLE;
+            }
+        }
     }
 
     return result;

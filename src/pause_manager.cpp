@@ -136,15 +136,15 @@ void pause_manager::hide_menu()
     _bgs_fade_out_action.emplace(10, 0); // <-- MAGIC NUMBERS   
 
     // <-- Hide pause menu sprites and text
-    _title_sprites.clear();
+    _text_sprites.clear();
 }
 
 void pause_manager::render_menu()
 {
-    _title_sprites.clear();
+    _text_sprites.clear();
 
     _text_generator.generate(0, -40, "PAUSED",
-                                 _title_sprites);
+                                 _text_sprites);
     auto STARTING_Y = -10;
     auto OFFSET_Y = 15;
 
@@ -158,7 +158,7 @@ void pause_manager::render_menu()
             option_name = "> " + option_name + " <";
         }
         _text_generator.generate(0, STARTING_Y + i * OFFSET_Y, option_name,
-                                _title_sprites);           
+                                _text_sprites);           
     }
 
 }

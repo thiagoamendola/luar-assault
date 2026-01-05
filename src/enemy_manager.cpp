@@ -246,5 +246,6 @@ void enemy_manager::check_end_section_cleaned()
     }
     // All enemies cleared. Finish stage.
     BN_LOG("[STAGE CLEARED] All enemies in end section destroyed.");
-    // <-- FINISH STAGE
+    // <-- Improve finish stage handling
+    _base_scene->prepare_to_finish_stage();
 }

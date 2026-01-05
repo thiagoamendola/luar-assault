@@ -32,6 +32,7 @@ class base_game_scene // : public fr::scene
 
     void restart_scene();
     void return_to_main_menu();
+    void prepare_to_finish_stage();
 
     bn::optional<scene_type> get_next_scene_override();
 

@@ -13,7 +13,7 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
 {
     // Initialize camera position.
     // _player_ship.set_position(fr::point_3d(0, 860, 0)); // <-- Starting position. CHANGE THAT
-    _player_ship.set_position(fr::point_3d(0, -1260, 0)); // <-- Starting position. CHANGE THAT
+    _player_ship.set_position(fr::point_3d(0, -1660, 0)); // <-- Starting position. CHANGE THAT
 
     // Load 3D model colors.
     _models.load_colors(scene_colors, color_mapping);
@@ -97,6 +97,11 @@ void base_game_scene::restart_scene()
 void base_game_scene::return_to_main_menu()
 {
     _next_scene_override = scene_type::TITLE;
+    destroy();
+}
+
+void base_game_scene::prepare_to_finish_stage()
+{
     destroy();
 }
 

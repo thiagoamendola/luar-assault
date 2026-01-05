@@ -37,6 +37,7 @@ class test_3d_scene : public fr::scene
     // fr::model_3d *_model; // <-- RETURN FOR TEST
 
     bool _prepare_to_leave;
+    bool _cleared_stage = false;
 
     // <-- 3D SPRITE TEST. REMOVE
     // fr::sprite_3d *_test_sprite = nullptr;
@@ -47,6 +48,12 @@ class test_3d_scene : public fr::scene
     bn::regular_bg_ptr _anim_bg;
     bn::regular_bg_cached_animate_action<5> _anim_bg_action;
     // bn::regular_bg_ptr _moon_bg;
+
+    // End screen
+    bn::regular_bg_ptr _ending_bg;
+    bn::optional<bn::blending_transparency_alpha_to_action> _bgs_fade_in_action;
+    bn::sprite_text_generator _text_generator; // <-- move to common stuff?
+    bn::vector<bn::sprite_ptr, 32> _ending_text_sprites;
 
 };
 

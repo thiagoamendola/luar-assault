@@ -25,7 +25,6 @@ explosion_effect::explosion_effect(fr::point_3d position, fr::models_3d *models)
 
 explosion_effect::~explosion_effect()
 {
-    destroy();
 }
 
 bool explosion_effect::update()

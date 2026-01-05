@@ -53,6 +53,7 @@ void oyster::destroy()
     // Remove explosion effect.
     if(_explosion)
     {
+        _explosion->destroy();
         _explosion.reset();
     }
 

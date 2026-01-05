@@ -49,7 +49,7 @@ private:
 
   // Text UI
   bn::sprite_text_generator _text_generator; // <-- move to common stuff?
-  bn::vector<bn::sprite_ptr, 32> _title_sprites;
+  bn::vector<bn::sprite_ptr, 32> _text_sprites;
 
   // Fading
   bn::regular_bg_ptr _pause_bg;
