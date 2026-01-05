@@ -7,6 +7,7 @@
 #include "fr_model_3d_item.h"
 #include "fr_models_3d.h"
 
+#include "scene_type.h"
 #include "controller.h"
 #include "enemy_manager.h"
 #include "player_ship.h"
@@ -29,10 +30,19 @@ class base_game_scene // : public fr::scene
 
     controller* get_controller()
     {
-        return &_controller;
+      return &_controller;
+    }
+    hud_manager* get_hud_manager()
+    {
+      return &_hud_manager;
     }
 
     void set_hit_stop(int hit_stop_frames);
+
+    void restart_scene();
+    void return_to_main_menu();
+
+    bn::optional<scene_type> get_next_scene_override();
 
   private:
     stage_section_list_ptr _sections;
@@ -51,6 +61,8 @@ class base_game_scene // : public fr::scene
     const fr::model_3d_item *_static_model_items[fr::constants_3d::max_static_models];
 
     bool _prepare_to_leave = false;
+    bn::optional<scene_type> _next_scene_override;
+
     int _hit_stop_cooldown = 0;
 };
 

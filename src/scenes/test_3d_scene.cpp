@@ -72,6 +72,11 @@ bn::optional<scene_type> test_3d_scene::update()
     
     if (change_scene)
     {
+        auto scene_override = _base_game_scene.get_next_scene_override();
+        if (scene_override)
+        {
+            return scene_override;
+        }
         result = scene_type::BUTANO_INTRO;
         return result;
     }

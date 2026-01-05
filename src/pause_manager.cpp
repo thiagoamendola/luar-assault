@@ -9,6 +9,7 @@
 #include "bn_blending.h"
 
 #include "hud_manager.h"
+#include "base_game_scene.h"
 #include "controller.h"
 
 #include "bn_regular_bg_items_black.h"
@@ -16,9 +17,10 @@
 // #include "bn_sprite_items_variable_8x16_font_red.h"
 // #include "bn_sprite_items_variable_8x16_font_white.h"
 
-pause_manager::pause_manager(hud_manager *hud_manager, controller* controller) : 
-    _hud_manager(hud_manager),
-    _controller(controller),
+pause_manager::pause_manager(base_game_scene *base_scene) : 
+    _base_scene(base_scene),
+    _hud_manager(base_scene->get_hud_manager()),
+    _controller(base_scene->get_controller()),
     _text_generator(common::variable_8x16_sprite_font),
     _pause_bg(bn::regular_bg_items::black.create_bg(0, 0))
 {
@@ -102,8 +104,12 @@ void pause_manager::menu_update()
                     return;
                     break;
                 case 1: // Restart
+                    _base_scene->restart_scene();
+                    return;
                     break;
                 case 2: // Exit
+                    _base_scene->return_to_main_menu();
+                    return;
                     break;
             }
         }
@@ -144,6 +150,8 @@ void pause_manager::render_menu()
                                  _title_sprites);
     auto STARTING_Y = -10;
     auto OFFSET_Y = 15;
+
+    // <-- Update selection text color or similar
 
     for (int i = 0; i < MENU_OPTIONS.size(); ++i)
     {

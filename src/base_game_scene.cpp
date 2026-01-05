@@ -2,12 +2,14 @@
 
 #include "bn_keypad.h"
 
+#include "scene_type.h"
+
 base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      scene_colors_generator::color_mapping_handler *color_mapping,
                                      stage_section_list_ptr sections, size_t sections_count)
         : _sections(sections), _sections_count(sections_count), _player_ship(this, &_controller, &_camera, &_models),
             _enemy_manager(&_models, &_controller, &_player_ship), _hud_manager(&_controller, &_camera, &_player_ship),
-            _pause_manager(&_hud_manager, &_controller), _prepare_to_leave(false)
+            _pause_manager(this), _prepare_to_leave(false)
 {
     // Initialize camera position.
     // _player_ship.set_position(fr::point_3d(0, 860, 0)); // <-- Starting position. CHANGE THAT
@@ -15,6 +17,8 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
 
     // Load 3D model colors.
     _models.load_colors(scene_colors, color_mapping);
+
+    _next_scene_override = bn::nullopt;
 }
 
 bool base_game_scene::update()
@@ -83,3 +87,21 @@ void base_game_scene::set_hit_stop(int hit_stop_frames)
 {
     _hit_stop_cooldown = hit_stop_frames;
 }
+
+void base_game_scene::restart_scene()
+{
+    _next_scene_override = scene_type::TEST_3D;
+    destroy();
+}
+
+void base_game_scene::return_to_main_menu()
+{
+    _next_scene_override = scene_type::TITLE;
+    destroy();
+}
+
+bn::optional<scene_type> base_game_scene::get_next_scene_override()
+{
+    return _next_scene_override;
+}
+
