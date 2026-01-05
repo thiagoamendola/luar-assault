@@ -14,10 +14,13 @@
 #include "controller.h"
 #include "player_ship.h"
 
+// - Forward declaration
+class base_game_scene;
+
 class hud_manager
 {
 public:
-    hud_manager(controller *controller, fr::camera_3d *camera, player_ship *player_ship);
+    hud_manager(base_game_scene *base_scene);
 
     void destroy();
 
@@ -42,6 +45,7 @@ public:
     const bn::fixed TARGET_GROWTH_MAX_SCALE = 2.0;
 
 private:
+    base_game_scene *_base_scene;
     controller *_controller; // <-- move to common stuff
     fr::camera_3d *_camera;
     player_ship *_player_ship;

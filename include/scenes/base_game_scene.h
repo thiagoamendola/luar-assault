@@ -25,17 +25,8 @@ class base_game_scene // : public fr::scene
 
     void destroy();
 
-    // When ready to move, will return true to owner, who will control as they see fit.
+    // Returns true when ready to go to next scene.
     bool update();
-
-    controller* get_controller()
-    {
-      return &_controller;
-    }
-    hud_manager* get_hud_manager()
-    {
-      return &_hud_manager;
-    }
 
     void set_hit_stop(int hit_stop_frames);
 
@@ -43,6 +34,27 @@ class base_game_scene // : public fr::scene
     void return_to_main_menu();
 
     bn::optional<scene_type> get_next_scene_override();
+
+    controller* get_controller()
+    {
+      return &_controller;
+    }
+    fr::camera_3d* get_camera()
+    {
+      return &_camera;
+    }
+    fr::models_3d* get_models()
+    {
+      return &_models;
+    }
+    player_ship* get_player_ship()
+    {
+      return &_player_ship;
+    }
+    hud_manager* get_hud_manager()
+    {
+      return &_hud_manager;
+    }
 
   private:
     stage_section_list_ptr _sections;

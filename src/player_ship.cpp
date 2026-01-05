@@ -8,7 +8,6 @@
 #include "bn_sound_items.h"
 #include "bn_string.h"
 #include "bn_profiler.h"
-
 #include "fr_point_3d.h"
 #include "fr_constants_3d.h"
 #include "fr_div_lut.h"
@@ -22,9 +21,9 @@
 // #include "models/player_ship_01.h"
 #include "models/player_ship_02.h"
 
-player_ship::player_ship(base_game_scene *base_scene, controller *controller, fr::camera_3d *camera,
-                         fr::models_3d *models)
-    : _base_scene(base_scene), _controller(controller), _camera(camera), _models(models),
+player_ship::player_ship(base_game_scene *base_scene)
+    : _base_scene(base_scene), _controller(base_scene->get_controller()),
+      _camera(base_scene->get_camera()), _models(base_scene->get_models()),
       _sphere_collider_set(fr::model_3d_items::ship_colliders),
       _player_laser(this)
 {

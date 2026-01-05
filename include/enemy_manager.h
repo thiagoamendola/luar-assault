@@ -10,6 +10,8 @@
 #include "colliders.h"
 #include "player_ship.h"
 
+// - Forward declaration
+class base_game_scene;
 
 // <-- Change to generic enemy
 struct enemy_slot {
@@ -22,7 +24,7 @@ struct enemy_slot {
 class enemy_manager
 {
 public:
-  enemy_manager(fr::models_3d *models, controller *controller, player_ship* player);
+  enemy_manager(base_game_scene *base_scene);
 
   void destroy();
 
@@ -49,6 +51,7 @@ private:
   // <-- Change to generic enemy
   enemy_slot _enemies[MAX_ENEMIES];
 
+  base_game_scene *_base_scene;
   fr::models_3d *_models;
   controller *_controller;
   player_ship* _player;

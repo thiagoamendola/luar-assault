@@ -7,8 +7,8 @@
 base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      scene_colors_generator::color_mapping_handler *color_mapping,
                                      stage_section_list_ptr sections, size_t sections_count)
-        : _sections(sections), _sections_count(sections_count), _player_ship(this, &_controller, &_camera, &_models),
-            _enemy_manager(&_models, &_controller, &_player_ship), _hud_manager(&_controller, &_camera, &_player_ship),
+        : _sections(sections), _sections_count(sections_count), _player_ship(this),
+            _enemy_manager(this), _hud_manager(this),
             _pause_manager(this), _prepare_to_leave(false)
 {
     // Initialize camera position.

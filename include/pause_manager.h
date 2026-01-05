@@ -12,14 +12,15 @@
 #include "bn_blending_actions.h"
 
 #include "controller.h"
+#include "hud_manager.h"
 
 // - Forward declaration
-class hud_manager;
+class base_game_scene;
 
 class pause_manager
 {
 public:
-  pause_manager(hud_manager *hud_manager, controller* controller);
+  pause_manager(base_game_scene *base_scene);
 
   bool check_pause_toggle();
 
@@ -40,8 +41,10 @@ private:
     "Continue", "Restart", "Exit"
   };
 
+  base_game_scene *_base_scene;
   hud_manager *_hud_manager;
-  controller* _controller;
+  controller *_controller;
+
   bool _is_paused = false;
 
   // Text UI

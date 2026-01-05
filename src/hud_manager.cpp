@@ -14,14 +14,17 @@
 
 #include "controller.h"
 #include "player_ship.h"
+#include "base_game_scene.h"
 
 #include "bn_sprite_items_target_ui.h"
 #include "common_variable_8x16_sprite_font.h"
 #include "common_variable_8x8_sprite_font.h"
 
-hud_manager::hud_manager(controller *controller, fr::camera_3d *camera, player_ship *player_ship)
-    : _controller(controller), _camera(camera), _player_ship(player_ship),
-      _text_generator(common::variable_8x8_sprite_font), _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
+hud_manager::hud_manager(base_game_scene *base_scene)
+    : _base_scene(base_scene), _controller(base_scene->get_controller()), 
+      _camera(base_scene->get_camera()), _player_ship(base_scene->get_player_ship()),
+      _text_generator(common::variable_8x8_sprite_font), 
+      _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
       _target_growth_action()
 {
     //common::variable_8x16_sprite_font

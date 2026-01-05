@@ -6,8 +6,9 @@
 #include "fr_model_3d_item.h"
 #include "fr_model_colors.h"
 
-class player_ship; // Forward declaration
-class enemy_manager; // Forward declaration
+// - Forward declaration
+class player_ship; 
+class enemy_manager;
 
 namespace fr::model_3d_items
 {

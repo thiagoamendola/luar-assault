@@ -12,7 +12,6 @@
 #include "player_laser.h"
 
 // - Forward declaration
-
 class base_game_scene;
 class enemy_manager;
 
@@ -44,8 +43,7 @@ namespace fr::model_3d_items
 class player_ship
 {
 public:
-    player_ship(base_game_scene *base_scene, controller *controller, fr::camera_3d *camera,
-                fr::models_3d *models);
+    player_ship(base_game_scene *base_scene);
 
     void destroy();
 

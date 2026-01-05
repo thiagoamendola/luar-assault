@@ -13,9 +13,12 @@
 #include "oyster.h"
 #include "enemy_bullet.h"
 #include "enemy_def.h"
+#include "base_game_scene.h"
 
-enemy_manager::enemy_manager(fr::models_3d *models, controller *controller, player_ship *player)
-    : _models(models), _controller(controller), _player(player)
+enemy_manager::enemy_manager(base_game_scene *base_scene)
+    : _base_scene(base_scene), _models(base_scene->get_models()),
+      _controller(base_scene->get_controller()),
+      _player(base_scene->get_player_ship())
 {
 }
 

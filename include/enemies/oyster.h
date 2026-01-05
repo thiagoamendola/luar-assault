@@ -15,7 +15,6 @@
 #include "enemy_def.h"
 
 // - Forward declaration
-
 class enemy_manager;
 
 // - Enums
