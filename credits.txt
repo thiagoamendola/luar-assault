@@ -3,15 +3,20 @@ CREDITS
 - Programming
 Thiago Amendola
 
-- 3D Assets
+- 3D Models
 André Amorim
 Thiago Amendola
 
-- Music
+- Sprites
+Laise Aquino
+Thiago Amendola
+
+- Music/Sound FX
 André Tuffo
 
 - Additional Thanks
 GValiente
+João Baptista de Paula e Silva
 nikku4211
 simon-paris
 
