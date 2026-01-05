@@ -29,9 +29,11 @@ constexpr std::initializer_list<enemy_def> _section_1_enemies = {
 
 constexpr int _section_1_start = 1050;
 constexpr int _section_1_end = 250;
+constexpr bool _section_1_end_section = false;
 
 constexpr stage_section section_1(_section_1_start, _section_1_end,
-                                  _section_1_static_model_items, _section_1_enemies);
+                                  _section_1_static_model_items, _section_1_enemies,
+                                  _section_1_end_section);
 
 
 constexpr std::initializer_list<fr::model_3d_item> _section_2_static_model_items = {};
@@ -42,9 +44,11 @@ constexpr std::initializer_list<enemy_def> _section_2_enemies = {
 
 constexpr int _section_2_start = 750;
 constexpr int _section_2_end = -150;
+constexpr bool _section_2_end_section = false;
 
 constexpr stage_section section_2(_section_2_start, _section_2_end,
-                                  _section_2_static_model_items, _section_2_enemies);
+                                  _section_2_static_model_items, _section_2_enemies,
+                                  _section_2_end_section);
 
 
 constexpr std::initializer_list<fr::model_3d_item> _section_3_static_model_items = {};
@@ -57,9 +61,11 @@ constexpr std::initializer_list<enemy_def> _section_3_enemies = {
 
 constexpr int _section_3_start = 450;
 constexpr int _section_3_end = -350;
+constexpr bool _section_3_end_section = false;
 
 constexpr stage_section section_3(_section_3_start, _section_3_end,
-                                  _section_3_static_model_items, _section_3_enemies);
+                                  _section_3_static_model_items, _section_3_enemies,
+                                  _section_3_end_section);
 
 
 constexpr std::initializer_list<fr::model_3d_item> _section_4_static_model_items = {};
@@ -72,9 +78,11 @@ constexpr std::initializer_list<enemy_def> _section_4_enemies = {
 
 constexpr int _section_4_start = 50;
 constexpr int _section_4_end = -750;
+constexpr bool _section_4_end_section = false;
 
 constexpr stage_section section_4(_section_4_start, _section_4_end,
-                                  _section_4_static_model_items, _section_4_enemies);
+                                  _section_4_static_model_items, _section_4_enemies,
+                                  _section_4_end_section);
 
 
 constexpr std::initializer_list<fr::model_3d_item> _section_5_static_model_items = {};
@@ -87,9 +95,11 @@ constexpr std::initializer_list<enemy_def> _section_5_enemies = {
 
 constexpr int _section_5_start = -350;
 constexpr int _section_5_end = -1250;
+constexpr bool _section_5_end_section = false;
 
 constexpr stage_section section_5(_section_5_start, _section_5_end,
-                                  _section_5_static_model_items, _section_5_enemies);
+                                  _section_5_static_model_items, _section_5_enemies,
+                                  _section_5_end_section);
 
 
 constexpr std::initializer_list<fr::model_3d_item> _section_6_static_model_items = {};
@@ -102,9 +112,11 @@ constexpr std::initializer_list<enemy_def> _section_6_enemies = {
 
 constexpr int _section_6_start = -550;
 constexpr int _section_6_end = -1450;
+constexpr bool _section_6_end_section = false;
 
 constexpr stage_section section_6(_section_6_start, _section_6_end,
-                                  _section_6_static_model_items, _section_6_enemies);
+                                  _section_6_static_model_items, _section_6_enemies,
+                                  _section_6_end_section);
 
 
 constexpr std::initializer_list<fr::model_3d_item> _section_7_static_model_items = {};
@@ -117,9 +129,11 @@ constexpr std::initializer_list<enemy_def> _section_7_enemies = {
 
 constexpr int _section_7_start = -850;
 constexpr int _section_7_end = -1750;
+constexpr bool _section_7_end_section = false;
 
 constexpr stage_section section_7(_section_7_start, _section_7_end,
-                                  _section_7_static_model_items, _section_7_enemies);
+                                  _section_7_static_model_items, _section_7_enemies,
+                                  _section_7_end_section);
 
 
 constexpr oyster_properties _s8_enemy_1_props = {300};
@@ -132,9 +146,11 @@ constexpr std::initializer_list<enemy_def> _section_8_enemies = {
 
 constexpr int _section_8_start = -1350;
 constexpr int _section_8_end = -3250;
+constexpr bool _section_8_end_section = false;
 
 constexpr stage_section section_8(_section_8_start, _section_8_end,
-                                  _section_8_static_model_items, _section_8_enemies);
+                                  _section_8_static_model_items, _section_8_enemies,
+                                  _section_8_end_section);
 
 
 constexpr oyster_properties _s9_enemy_1_props = {320};
@@ -147,9 +163,11 @@ constexpr std::initializer_list<enemy_def> _section_9_enemies = {
 
 constexpr int _section_9_start = -1850;
 constexpr int _section_9_end = -3750;
+constexpr bool _section_9_end_section = true;
 
 constexpr stage_section section_9(_section_9_start, _section_9_end,
-                                  _section_9_static_model_items, _section_9_enemies);
+                                  _section_9_static_model_items, _section_9_enemies,
+                                  _section_9_end_section);
 
 // # Sections List
 

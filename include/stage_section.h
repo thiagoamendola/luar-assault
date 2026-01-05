@@ -10,12 +10,14 @@ class stage_section
     constexpr stage_section(
         const int starting_pos, const int ending_pos,
         const std::initializer_list<fr::model_3d_item> &static_model_items,
-        const std::initializer_list<enemy_def> &enemies)
+        const std::initializer_list<enemy_def> &enemies,
+        const bool end_section = false)
         : _static_model_items(static_model_items.begin()),
           _static_model_count(static_model_items.size()),
           _enemies(enemies.begin()),
           _enemies_count(enemies.size()),
-          _starting_pos(starting_pos), _ending_pos(ending_pos)
+          _starting_pos(starting_pos), _ending_pos(ending_pos),
+          _end_section(end_section)
     {
     }
 
@@ -49,6 +51,11 @@ class stage_section
       return _enemies_count;
     }
 
+    constexpr bool is_end_section() const
+    {
+      return _end_section;
+    }
+
   private:
     const fr::model_3d_item *_static_model_items;
     const int _static_model_count;
@@ -56,6 +63,7 @@ class stage_section
     const int _enemies_count;
     int _starting_pos;
     int _ending_pos;
+    bool _end_section;
 };
 
 typedef const stage_section *const *stage_section_list_ptr;

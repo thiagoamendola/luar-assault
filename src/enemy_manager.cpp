@@ -50,6 +50,10 @@ void enemy_manager::update()
                 _enemies[i].ptr = nullptr;
                 _enemies[i].used = false;
                 _enemies[i].source = nullptr;
+                // Check if ready to finish stage.
+                if (is_end_section_current){
+                    check_end_section_cleaned();
+                }
             }
         }
     }
@@ -87,50 +91,18 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                 // <-- Make switch case
                 if (enemy.type == enemy_type::ASTEROID)
                 {
-                    // <-- Separate this into its own method
-                    for (int slot = 0; slot < MAX_ENEMIES; ++slot)
-                    {
-                        if (!_enemies[slot].used)
-                        {
-                            fr::point_3d movement(0, 30, 0); // placeholder movement
-                            // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
-                            _enemies[slot].ptr = new asteroid(enemy.position, movement, _models, _controller); // <-- Convert to a proper object pool later
-                            _enemies[slot].used = true;
-                            _enemies[slot].source = &enemy;
-                            BN_LOG("[SPAWN] ASTEROID: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
-                                   " x=" + bn::to_string<64>(int(enemy.position.x())) +
-                                   " z=" + bn::to_string<64>(int(enemy.position.z())));
-                            break;
-                        }
-                    }
+                    spawn_asteroid(enemy);
                 }
                 else if (enemy.type == enemy_type::OYSTER)
                 {
-                    // <-- Separate this into its own method
-                    for (int slot = 0; slot < MAX_ENEMIES; ++slot)
-                    {
-                        if (!_enemies[slot].used)
-                        {
-                            fr::point_3d movement(0, 25, 0); // placeholder movement
-
-                            // Get oyster-specific properties if available
-                            const oyster_properties *props = nullptr;
-                            if (enemy.properties)
-                            {
-                                props = get_enemy_properties<oyster_properties>(enemy);
-                            }
-
-                            // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
-                            _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller, this, props); // <-- Convert to a proper object pool later
-                            _enemies[slot].used = true;
-                            _enemies[slot].source = &enemy;
-                            BN_LOG("[SPAWN] OYSTER: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
-                                   " x=" + bn::to_string<64>(int(enemy.position.x())) +
-                                   " z=" + bn::to_string<64>(int(enemy.position.z())));
-                            break;
-                        }
-                    }
+                    spawn_oyster(enemy);
                 }
+            }
+
+            //  Check if this is the end section
+            if (section->is_end_section())
+            {
+                is_end_section_current = true;
             }
         }
 
@@ -156,11 +128,17 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                             _enemies[slot].used = false;
                             _enemies[slot].source = nullptr;
                             BN_LOG("[DESTROY] Section enemy destroyed at ending_pos=" + bn::to_string<64>(int(section->ending_pos())));
+                            // Check if ready to finish stage.
+                            if (is_end_section_current){
+                                check_end_section_cleaned();
+                            }
                             break;
                         }
                     }
                 }
             }
+
+            // <-- How about enemies already destroyed?
 
             // Update the tracker to this section's ending pos
             _last_section_end_y = section->ending_pos();
@@ -182,6 +160,10 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                 _enemies[slot].used = false;
                 _enemies[slot].source = nullptr;
                 BN_LOG("[DESTROY] Refless object destroyed at y=" + bn::to_string<64>(int(camera_y)));
+                // Check if ready to finish stage.
+                if (is_end_section_current){
+                    check_end_section_cleaned();
+                }
             }
         }
     }
@@ -207,3 +189,62 @@ void enemy_manager::create_bullet(fr::point_3d position, fr::point_3d target)
     }
 }
 
+void enemy_manager::spawn_asteroid(const enemy_def &enemy)
+{
+    for (int slot = 0; slot < MAX_ENEMIES; ++slot)
+    {
+        if (!_enemies[slot].used)
+        {
+            fr::point_3d movement(0, 30, 0); // placeholder movement
+            // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
+            _enemies[slot].ptr = new asteroid(enemy.position, movement, _models, _controller); // <-- Convert to a proper object pool later
+            _enemies[slot].used = true;
+            _enemies[slot].source = &enemy;
+            BN_LOG("[SPAWN] ASTEROID: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
+                   " x=" + bn::to_string<64>(int(enemy.position.x())) +
+                   " z=" + bn::to_string<64>(int(enemy.position.z())));
+            break;
+        }
+    }
+}
+
+void enemy_manager::spawn_oyster(const enemy_def &enemy)
+{
+    for (int slot = 0; slot < MAX_ENEMIES; ++slot)
+    {
+        if (!_enemies[slot].used)
+        {
+            fr::point_3d movement(0, 25, 0); // placeholder movement
+
+            // Get oyster-specific properties if available
+            const oyster_properties *props = nullptr;
+            if (enemy.properties)
+            {
+                props = get_enemy_properties<oyster_properties>(enemy);
+            }
+
+            // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
+            _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller, this, props); // <-- Convert to a proper object pool later
+            _enemies[slot].used = true;
+            _enemies[slot].source = &enemy;
+            BN_LOG("[SPAWN] OYSTER: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
+                   " x=" + bn::to_string<64>(int(enemy.position.x())) +
+                   " z=" + bn::to_string<64>(int(enemy.position.z())));
+            break;
+        }
+    }
+}
+
+void enemy_manager::check_end_section_cleaned()
+{
+    for (int slot = 0; slot < MAX_ENEMIES; ++slot)
+    {
+        if (_enemies[slot].used)
+        {
+            return; // Still enemies present
+        }
+    }
+    // All enemies cleared. Finish stage.
+    BN_LOG("[STAGE CLEARED] All enemies in end section destroyed.");
+    // <-- FINISH STAGE
+}

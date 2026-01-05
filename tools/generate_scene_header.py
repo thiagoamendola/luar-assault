@@ -229,10 +229,14 @@ def generate_header(scene: Dict[str, Any]) -> str:
         section_src.append("")
         section_src.append(f"constexpr int _section_{sid}_start = {start};")
         section_src.append(f"constexpr int _section_{sid}_end = {end};")
+        end_section = s.get('end_section', False)
+        end_section_str = 'true' if end_section else 'false'
+        section_src.append(f"constexpr bool _section_{sid}_end_section = {end_section_str};")
         section_src.append("")
         section_src.append(
             f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
-            f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies);")
+            f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
+            f"                                  _section_{sid}_end_section);")
         section_blocks.append('\n'.join(section_src))
 
     # Sections list

@@ -294,7 +294,8 @@
           "rotation": 300,
           "playerDistance": 320
         }
-      ]
+      ],
+      "end_section": true
     }
   ]
 }

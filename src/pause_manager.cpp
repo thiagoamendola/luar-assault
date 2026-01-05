@@ -56,19 +56,16 @@ void pause_manager::menu_update()
 
     if (!_bgs_fade_in_action->done())
     {
-        BN_LOG("Fading in pause menu...");
         _bgs_fade_in_action->update();
     }
     else if (_bgs_fade_out_action)
     {
         if (!_bgs_fade_out_action->done())
         {
-            BN_LOG("Fading out pause menu...");
             _bgs_fade_out_action->update();
         }
         else
         {
-            BN_LOG("Pause menu hidden.");
             _is_paused = false;
             _pause_bg.set_visible(false);
             _bgs_fade_out_action.reset();

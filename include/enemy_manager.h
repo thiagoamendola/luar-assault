@@ -48,6 +48,11 @@ public:
   static constexpr int MAX_ENEMIES = fr::constants_3d::max_dynamic_models - 1;
 
 private:
+  void spawn_asteroid(const enemy_def &enemy);
+  void spawn_oyster(const enemy_def &enemy);
+
+  void check_end_section_cleaned();
+
   // <-- Change to generic enemy
   enemy_slot _enemies[MAX_ENEMIES];
 
@@ -58,7 +63,8 @@ private:
 
   bn::fixed _last_section_start_y = bn::fixed(32767);
   bn::fixed _last_section_end_y = bn::fixed(32767);
-    
+
+  bool is_end_section_current = false;
 };
 
 #endif
