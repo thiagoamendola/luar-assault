@@ -213,6 +213,10 @@ void player_ship::take_damage()
     health--;
     _base_scene->set_hit_stop(HIT_STOP_COOLDOWN);
     _model->set_palette(fr::model_3d_items::hurt_colors);
+    if (health <= 0)
+    {
+        _base_scene->get_game_over_manager()->show();
+    }
 }
 
 int player_ship::statics_render(const fr::model_3d_item **static_model_items,

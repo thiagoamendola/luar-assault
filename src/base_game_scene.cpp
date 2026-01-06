@@ -8,8 +8,8 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      scene_colors_generator::color_mapping_handler *color_mapping,
                                      stage_section_list_ptr sections, size_t sections_count)
         : _sections(sections), _sections_count(sections_count), _player_ship(this),
-            _enemy_manager(this), _hud_manager(this),
-            _pause_manager(this), _prepare_to_leave(false)
+            _enemy_manager(this), _hud_manager(this), _pause_manager(this),
+            _game_over_manager(this), _prepare_to_leave(false)
 {
     // Initialize camera position.
     // _player_ship.set_position(fr::point_3d(0, 860, 0)); // <-- Starting position. CHANGE THAT
@@ -28,6 +28,13 @@ bool base_game_scene::update()
     if (_prepare_to_leave)
     {
         return true;
+    }
+
+    // Handle game over state
+    if (_game_over_manager.is_shown())
+    {
+        _game_over_manager.menu_update();
+        return false;
     }
 
     // Handle pause state

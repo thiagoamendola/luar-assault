@@ -15,6 +15,7 @@
 #include "pause_manager.h"
 #include "stage_section.h"
 #include "stage_section_renderer.h"
+#include "game_over_manager.h"
 
 class base_game_scene // : public fr::scene
 {
@@ -56,6 +57,10 @@ class base_game_scene // : public fr::scene
     {
       return &_hud_manager;
     }
+    game_over_manager* get_game_over_manager()
+    {
+      return &_game_over_manager;
+    }
 
   private:
     stage_section_list_ptr _sections;
@@ -69,6 +74,7 @@ class base_game_scene // : public fr::scene
     enemy_manager _enemy_manager;
     hud_manager _hud_manager;
     pause_manager _pause_manager;
+    game_over_manager _game_over_manager;
 
     bn::span<const fr::model_3d_item> _model_items; // <-- CAN BEW REMOVED NOW?
     const fr::model_3d_item *_static_model_items[fr::constants_3d::max_static_models];
