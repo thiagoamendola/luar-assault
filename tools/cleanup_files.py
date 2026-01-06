@@ -8,6 +8,7 @@ from termcolor import colored
 UNWANTED_PATTERNS = [
     "*.bmp~",
     "*.blend1",
+    "*-autosave.kra",
 ]
 
 

@@ -12,7 +12,7 @@
 #include "base_game_scene.h"
 #include "controller.h"
 
-#include "bn_regular_bg_items_black.h"
+#include "bn_regular_bg_items_red.h"
 #include "common_variable_8x16_sprite_font.h"
 
 game_over_manager::game_over_manager(base_game_scene *base_scene) : 
@@ -20,7 +20,7 @@ game_over_manager::game_over_manager(base_game_scene *base_scene) :
     _hud_manager(base_scene->get_hud_manager()),
     _controller(base_scene->get_controller()),
     _text_generator(common::variable_8x16_sprite_font),
-    _game_over_bg(bn::regular_bg_items::black.create_bg(0, 0)) // <-- Change to red
+    _game_over_bg(bn::regular_bg_items::red.create_bg(0, 0))
 {
     _text_generator.set_bg_priority(2);
     _text_generator.set_center_alignment();
@@ -44,7 +44,7 @@ void game_over_manager::show()
     _game_over_bg.set_visible(true);
     _game_over_bg.set_blending_enabled(true);
     bn::blending::set_transparency_alpha(0);
-    _bgs_fade_in_action.emplace(60, .8); // <-- MAGIC NUMBERS
+    _bgs_fade_in_action.emplace(60, .6); // <-- MAGIC NUMBERS
     
     // Show menu
     _current_selection = 0;
