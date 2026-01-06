@@ -112,7 +112,7 @@ private:
 
     sphere_collider_set _sphere_collider_set;
 
-    int health = 3;
+    int health = 5;
     int _damage_cooldown = 0;
     bn::fixed_point target_position;
 };
