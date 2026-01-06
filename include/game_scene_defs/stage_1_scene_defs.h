@@ -85,16 +85,16 @@ constexpr stage_section section_4(_section_4_start, _section_4_end,
                                   _section_4_end_section);
 
 
+constexpr oyster_properties _s5_enemy_1_props = {300};
+
 constexpr std::initializer_list<fr::model_3d_item> _section_5_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_5_enemies = {
-    enemy_def{fr::point_3d(0, -1150, -10), 100, enemy_type::ASTEROID, nullptr},
-    enemy_def{fr::point_3d(40, -1250, -35), 300, enemy_type::ASTEROID, nullptr},
-    enemy_def{fr::point_3d(-80, -1350, 30), 500, enemy_type::ASTEROID, nullptr}
+    enemy_def{fr::point_3d(-50, -1250, -30), 100, enemy_type::OYSTER, &_s5_enemy_1_props}
 };
 
-constexpr int _section_5_start = -350;
-constexpr int _section_5_end = -1250;
+constexpr int _section_5_start = -450;
+constexpr int _section_5_end = -2350;
 constexpr bool _section_5_end_section = false;
 
 constexpr stage_section section_5(_section_5_start, _section_5_end,
@@ -102,16 +102,16 @@ constexpr stage_section section_5(_section_5_start, _section_5_end,
                                   _section_5_end_section);
 
 
+constexpr oyster_properties _s6_enemy_1_props = {320};
+
 constexpr std::initializer_list<fr::model_3d_item> _section_6_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_6_enemies = {
-    enemy_def{fr::point_3d(-40, -1350, -5), 100, enemy_type::ASTEROID, nullptr},
-    enemy_def{fr::point_3d(-40, -1450, -35), 300, enemy_type::ASTEROID, nullptr},
-    enemy_def{fr::point_3d(70, -1550, -25), 500, enemy_type::ASTEROID, nullptr}
+    enemy_def{fr::point_3d(50, -1750, 30), 300, enemy_type::OYSTER, &_s6_enemy_1_props}
 };
 
-constexpr int _section_6_start = -550;
-constexpr int _section_6_end = -1450;
+constexpr int _section_6_start = -950;
+constexpr int _section_6_end = -2850;
 constexpr bool _section_6_end_section = false;
 
 constexpr stage_section section_6(_section_6_start, _section_6_end,
@@ -122,13 +122,13 @@ constexpr stage_section section_6(_section_6_start, _section_6_end,
 constexpr std::initializer_list<fr::model_3d_item> _section_7_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_7_enemies = {
-    enemy_def{fr::point_3d(0, -1650, -10), 100, enemy_type::ASTEROID, nullptr},
-    enemy_def{fr::point_3d(40, -1750, -35), 300, enemy_type::ASTEROID, nullptr},
-    enemy_def{fr::point_3d(80, -1850, 30), 500, enemy_type::ASTEROID, nullptr}
+    enemy_def{fr::point_3d(0, -2250, -10), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(40, -2350, -35), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-80, -2450, 30), 500, enemy_type::ASTEROID, nullptr}
 };
 
-constexpr int _section_7_start = -850;
-constexpr int _section_7_end = -1750;
+constexpr int _section_7_start = -1450;
+constexpr int _section_7_end = -2350;
 constexpr bool _section_7_end_section = false;
 
 constexpr stage_section section_7(_section_7_start, _section_7_end,
@@ -136,16 +136,16 @@ constexpr stage_section section_7(_section_7_start, _section_7_end,
                                   _section_7_end_section);
 
 
-constexpr oyster_properties _s8_enemy_1_props = {300};
-
 constexpr std::initializer_list<fr::model_3d_item> _section_8_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_8_enemies = {
-    enemy_def{fr::point_3d(-50, -2150, -30), 100, enemy_type::OYSTER, &_s8_enemy_1_props}
+    enemy_def{fr::point_3d(-40, -2450, -5), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-40, -2550, -35), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(70, -2650, -25), 500, enemy_type::ASTEROID, nullptr}
 };
 
-constexpr int _section_8_start = -1350;
-constexpr int _section_8_end = -3250;
+constexpr int _section_8_start = -1650;
+constexpr int _section_8_end = -2550;
 constexpr bool _section_8_end_section = false;
 
 constexpr stage_section section_8(_section_8_start, _section_8_end,
@@ -153,16 +153,16 @@ constexpr stage_section section_8(_section_8_start, _section_8_end,
                                   _section_8_end_section);
 
 
-constexpr oyster_properties _s9_enemy_1_props = {320};
-
 constexpr std::initializer_list<fr::model_3d_item> _section_9_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_9_enemies = {
-    enemy_def{fr::point_3d(50, -2650, 30), 300, enemy_type::OYSTER, &_s9_enemy_1_props}
+    enemy_def{fr::point_3d(0, -2750, -10), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(40, -2850, -35), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(80, -2950, 30), 500, enemy_type::ASTEROID, nullptr}
 };
 
-constexpr int _section_9_start = -1850;
-constexpr int _section_9_end = -3750;
+constexpr int _section_9_start = -1950;
+constexpr int _section_9_end = -2850;
 constexpr bool _section_9_end_section = true;
 
 constexpr stage_section section_9(_section_9_start, _section_9_end,

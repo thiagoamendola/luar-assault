@@ -135,10 +135,53 @@
     },
     {
       "id": 5,
+      "comment": "Initiating oysters for the first time",
+      "range": {
+        "start": -450,
+        "end": -2350
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "OYSTER",
+          "enabled": true,
+          "position": {
+            "x": -50,
+            "y": -800,
+            "z": -30
+          },
+          "rotation": 100,
+          "playerDistance": 300
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "range": {
+        "start": -950,
+        "end": -2850
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "OYSTER",
+          "enabled": true,
+          "position": {
+            "x": 50,
+            "y": -800,
+            "z": 30
+          },
+          "rotation": 300,
+          "playerDistance": 320
+        }
+      ]
+    },
+    {
+      "id": 7,
       "comment": "Beginning of random asteroids",
       "range": {
-        "start":-350,
-        "end": -1250
+        "start": -1450,
+        "end": -2350
       },
       "staticModels": [],
       "enemies": [
@@ -175,10 +218,10 @@
       ]
     },
     {
-      "id": 6,
+      "id": 8,
       "range": {
-        "start":-550,
-        "end": -1450
+        "start": -1650,
+        "end": -2550
       },
       "staticModels": [],
       "enemies": [
@@ -215,10 +258,10 @@
       ]
     },
     {
-      "id": 7,
+      "id": 9,
       "range": {
-        "start":-850,
-        "end": -1750
+        "start": -1950,
+        "end": -2850
       },
       "staticModels": [],
       "enemies": [
@@ -251,48 +294,6 @@
             "z": 30
           },
           "rotation": 500
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "range": {
-        "start":-1350,
-        "end": -3250
-      },
-      "staticModels": [],
-      "enemies": [
-        {
-          "type": "OYSTER",
-          "enabled": true,
-          "position": {
-            "x": -50,
-            "y": -800,
-            "z": -30
-          },
-          "rotation": 100,
-          "playerDistance": 300
-        }
-      ]
-    },
-    {
-      "id": 9,
-      "range": {
-        "start":-1850,
-        "end": -3750
-      },
-      "staticModels": [],
-      "enemies": [
-        {
-          "type": "OYSTER",
-          "enabled": true,
-          "position": {
-            "x": 50,
-            "y": -800,
-            "z": 30
-          },
-          "rotation": 300,
-          "playerDistance": 320
         }
       ],
       "end_section": true

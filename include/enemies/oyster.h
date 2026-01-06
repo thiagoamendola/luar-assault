@@ -74,8 +74,9 @@ class oyster : public base_enemy
     const bn::fixed MOVEMENT_SPEED = 2.5;
     const bn::fixed ROTATION_SPEED = 1.5;
     const int DAMAGE_COOLDOWN = 3;
-    const int MAX_HEALTH = 4;
+    const int MAX_HEALTH = 7;
     const int TOTAL_EXPLODE_FRAMES = 10;
+    const bn::fixed FLEEING_THRESHOLD = 700;
 
     const int INITIAL_BULLET_COOLDOWN = 30;
     const int BULLET_COOLDOWN = 90;
@@ -102,7 +103,6 @@ class oyster : public base_enemy
     
     // Properties
     bn::fixed _player_distance = 0;
-    bn::fixed _fleeing_threshold = 1000;
 
     bn::fixed _initial_attacking_distance = 0;
 

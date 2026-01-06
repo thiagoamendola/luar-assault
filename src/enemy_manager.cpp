@@ -74,6 +74,8 @@ int enemy_manager::statics_render(const fr::model_3d_item **static_model_items, 
 
 void enemy_manager::process_section_enemies(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y)
 {
+    bn::fixed latest_section_end_y = _last_section_end_y;
+
     for (size_t i = 0; i < sections_count; ++i)
     {
         const stage_section *section = sections[i];
@@ -141,9 +143,11 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
             // <-- How about enemies already destroyed?
 
             // Update the tracker to this section's ending pos
-            _last_section_end_y = section->ending_pos();
+            latest_section_end_y = section->ending_pos();
         }
     }
+    // Updates at the end to make sure all sections are processed first
+    _last_section_end_y = latest_section_end_y;
 
     // Clean up refless objects such as bullets
     for (int slot = 0; slot < MAX_ENEMIES; ++slot)
@@ -168,6 +172,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
         }
     }
 
+    
 }
 
 void enemy_manager::create_bullet(fr::point_3d position, fr::point_3d target)

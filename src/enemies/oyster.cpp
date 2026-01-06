@@ -107,7 +107,9 @@ void oyster::update_active(player_ship* player)
     {
     case oyster_behavior_state::APPROACHING:
     {
-        // Move // <-- or not
+        // Move
+        _position.set_y(_position.y() + MOVEMENT_SPEED);
+        _model->set_position(_position);
 
         // Transition to ATTACKING state based on distance to player (and save Y location)
         const bn::fixed distance_to_player_y = bn::abs(player->get_position().y() - _model->position().y());
@@ -147,7 +149,7 @@ void oyster::update_active(player_ship* player)
         }
 
         // Transition to FLEEING state based on Y distance (decrease = forward)
-        if (player->get_position().y() < _initial_attacking_distance - _fleeing_threshold)
+        if (player->get_position().y() < _initial_attacking_distance - FLEEING_THRESHOLD)
         {
             _behavior_state = oyster_behavior_state::FLEEING;
             BN_LOG("[oyster] Threshold reached, switching to FLEEING state.");
