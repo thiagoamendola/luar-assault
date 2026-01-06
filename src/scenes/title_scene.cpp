@@ -11,7 +11,6 @@
 #include "bn_music_items.h"
 #include "bn_sound_items.h"
 #include "bn_sprite_text_generator.h"
-#include "common_variable_8x16_sprite_font.h"
 
 #include "fr_model_3d_item.h"
 #include "fr_model_colors.h"
@@ -19,6 +18,9 @@
 #include "scene_type.h"
 #include "test_3d_scene_defs.h"
 
+#include "common_variable_8x16_sprite_font.h"
+#include "common_variable_8x8_sprite_font.h"
+#include "common_fixed_8x16_sprite_font.h"
 #include "models/player_ship_02.h"
 #include "models/shot.h"
 
@@ -79,7 +81,12 @@ title_scene::title_scene() : _prepare_to_leave(false)
 
     // Set text
     bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
+    bn::sprite_text_generator text_generator2(common::fixed_8x16_sprite_font);
+    bn::sprite_text_generator text_generator3(common::variable_8x8_sprite_font);
     text_generator.generate(-100, 58, "Press Start", _text_sprites);
+    text_generator2.generate(-100, -52, "LUAR", _text_sprites);
+    text_generator2.generate(-100, -41, "ASSAULT", _text_sprites);
+    text_generator3.generate(-100, -24, "Demo", _text_sprites);
 
     // Set music
     // bn::music_items::amayadori2.play(1); // Works flawless (.xm)
