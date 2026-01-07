@@ -163,11 +163,51 @@ constexpr std::initializer_list<enemy_def> _section_9_enemies = {
 
 constexpr int _section_9_start = -1950;
 constexpr int _section_9_end = -2850;
-constexpr bool _section_9_end_section = true;
+constexpr bool _section_9_end_section = false;
 
 constexpr stage_section section_9(_section_9_start, _section_9_end,
                                   _section_9_static_model_items, _section_9_enemies,
                                   _section_9_end_section);
+
+
+constexpr oyster_properties _s10_enemy_4_props = {300};
+
+constexpr std::initializer_list<fr::model_3d_item> _section_10_static_model_items = {};
+
+constexpr std::initializer_list<enemy_def> _section_10_enemies = {
+    enemy_def{fr::point_3d(-20, -3330, -20), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(20, -3315, -15), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(60, -3300, -10), 500, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-30, -3250, 40), 100, enemy_type::OYSTER, &_s10_enemy_4_props}
+};
+
+constexpr int _section_10_start = -2450;
+constexpr int _section_10_end = -3750;
+constexpr bool _section_10_end_section = false;
+
+constexpr stage_section section_10(_section_10_start, _section_10_end,
+                                  _section_10_static_model_items, _section_10_enemies,
+                                  _section_10_end_section);
+
+
+constexpr oyster_properties _s11_enemy_4_props = {300};
+
+constexpr std::initializer_list<fr::model_3d_item> _section_11_static_model_items = {};
+
+constexpr std::initializer_list<enemy_def> _section_11_enemies = {
+    enemy_def{fr::point_3d(-20, -3930, 30), 100, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-15, -3915, -10), 300, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(-10, -3900, -50), 500, enemy_type::ASTEROID, nullptr},
+    enemy_def{fr::point_3d(40, -3900, -30), 100, enemy_type::OYSTER, &_s11_enemy_4_props}
+};
+
+constexpr int _section_11_start = -3050;
+constexpr int _section_11_end = -4400;
+constexpr bool _section_11_end_section = true;
+
+constexpr stage_section section_11(_section_11_start, _section_11_end,
+                                  _section_11_static_model_items, _section_11_enemies,
+                                  _section_11_end_section);
 
 // # Sections List
 
@@ -181,6 +221,8 @@ constexpr const auto sections_full = {
     &section_7,
     &section_8,
     &section_9,
+    &section_10,
+    &section_11,
 };
 
 constexpr stage_section_list_ptr sections = sections_full.begin();
