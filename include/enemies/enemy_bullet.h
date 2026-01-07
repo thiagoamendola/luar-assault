@@ -24,7 +24,7 @@ constexpr inline bn::color enemy_bullet_hit_colors[] = {
 };
 
 constexpr const sphere_collider enemy_bullet_colliders[] = {
-    sphere_collider(fr::point_3d(0, 0, 0), 15)
+    sphere_collider(fr::point_3d(0, 0, 0), 11)
 };
 
 constexpr size_t enemy_bullet_colliders_count = sizeof(enemy_bullet_colliders) / sizeof(enemy_bullet_colliders[0]);
@@ -58,8 +58,8 @@ class enemy_bullet : public base_enemy
         return &_sphere_collider_set;
     }
 
-    const bn::fixed MOVEMENT_SPEED = 5;
-    const bn::fixed ROTATION_ANIM_SPEED = 600;
+    const bn::fixed MOVEMENT_SPEED = 6;
+    const bn::fixed ROTATION_ANIM_SPEED = 900;
 
   private:
     fr::point_3d _movement;

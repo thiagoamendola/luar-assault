@@ -26,10 +26,10 @@ namespace fr::model_3d_items
     };
 
     constexpr const sphere_collider ship_colliders[] = {
-        sphere_collider(fr::point_3d(-15, 0, 7), 4),
-        sphere_collider(fr::point_3d(15, 0, 7), 4),
-        sphere_collider(fr::point_3d(-15, 0, -7), 4),
-        sphere_collider(fr::point_3d(15, 0, -7), 4),
+        sphere_collider(fr::point_3d(-15, 0, 5), 2),
+        sphere_collider(fr::point_3d(15, 0, 5), 2),
+        sphere_collider(fr::point_3d(-15, 0, -5), 2),
+        sphere_collider(fr::point_3d(15, 0, -5), 2),
         sphere_collider(fr::point_3d(0, 0, 0), 8)
 
     };
