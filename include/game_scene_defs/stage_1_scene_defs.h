@@ -202,7 +202,7 @@ constexpr std::initializer_list<enemy_def> _section_11_enemies = {
 };
 
 constexpr int _section_11_start = -3050;
-constexpr int _section_11_end = -4400;
+constexpr int _section_11_end = -4250;
 constexpr bool _section_11_end_section = true;
 
 constexpr stage_section section_11(_section_11_start, _section_11_end,
