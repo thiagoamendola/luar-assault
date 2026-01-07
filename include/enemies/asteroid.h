@@ -14,6 +14,9 @@
 #include "explosion_effect.h"
 #include "player_ship.h"
 
+// - Forward declaration
+class base_game_scene;
+
 // - Constants
 
 namespace fr::model_3d_items
@@ -37,7 +40,8 @@ constexpr size_t asteroid_colliders_count = sizeof(asteroid_colliders) / sizeof(
 class asteroid : public base_enemy
 {
   public:
-    asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller);
+    asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, 
+        controller *controller, base_game_scene *base_scene);
 
     void destroy() override;
 
@@ -68,6 +72,7 @@ class asteroid : public base_enemy
   private:
     fr::point_3d _movement;
 
+    base_game_scene *_base_scene;
     fr::models_3d *_models;
     fr::model_3d *_model;
     controller *_controller;

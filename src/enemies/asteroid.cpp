@@ -14,14 +14,17 @@
 #include "player_ship.h"
 #include "explosion_effect.h"
 #include "base_enemy.h"
+#include "base_game_scene.h"
 
 #include "bn_sprite_items_explosion1.h"
 #include "bn_sprite_items_boom.h"
 #include "models/asteroid1.h"
 
 
-asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller)
-    : _movement(movement), _models(models), _controller(controller),
+asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, 
+        controller *controller, base_game_scene *base_scene)
+    : _movement(movement), _models(models), _controller(controller), 
+      _base_scene(base_scene),
       _sphere_collider_set(fr::model_3d_items::asteroid_colliders)
 {
     _position = position;
@@ -147,6 +150,7 @@ void asteroid::kill()
 
     _state = enemy_state::DESTROYING;
     _explode_frames = TOTAL_EXPLODE_FRAMES;
+    _base_scene->increment_score(10); // <-- MAGIC NUMBERS
 
     // Create explosion effect
     _explosion.emplace(_position, _models);

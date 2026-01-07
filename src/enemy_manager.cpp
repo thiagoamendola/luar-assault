@@ -202,7 +202,7 @@ void enemy_manager::spawn_asteroid(const enemy_def &enemy)
         {
             fr::point_3d movement(0, 30, 0); // placeholder movement
             // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
-            _enemies[slot].ptr = new asteroid(enemy.position, movement, _models, _controller); // <-- Convert to a proper object pool later
+            _enemies[slot].ptr = new asteroid(enemy.position, movement, _models, _controller, _base_scene); // <-- Convert to a proper object pool later
             _enemies[slot].used = true;
             _enemies[slot].source = &enemy;
             BN_LOG("[SPAWN] ASTEROID: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
@@ -229,7 +229,7 @@ void enemy_manager::spawn_oyster(const enemy_def &enemy)
             }
 
             // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
-            _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller, this, props); // <-- Convert to a proper object pool later
+            _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller, this, _base_scene, props); // <-- Convert to a proper object pool later
             _enemies[slot].used = true;
             _enemies[slot].source = &enemy;
             BN_LOG("[SPAWN] OYSTER: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +

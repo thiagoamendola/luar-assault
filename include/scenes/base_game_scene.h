@@ -37,6 +37,16 @@ class base_game_scene // : public fr::scene
 
     bn::optional<scene_type> get_next_scene_override();
 
+    int get_score() const
+    {
+      return _score;
+    }
+    int increment_score(int delta)
+    {
+      _score += delta;
+      return _score;
+    }
+
     controller* get_controller()
     {
       return &_controller;
@@ -83,6 +93,8 @@ class base_game_scene // : public fr::scene
     bn::optional<scene_type> _next_scene_override;
 
     int _hit_stop_cooldown = 0;
+
+    int _score; // <-- MOVE THIS LATER
 };
 
 #endif

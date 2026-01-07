@@ -18,6 +18,7 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
     // Load 3D model colors.
     _models.load_colors(scene_colors, color_mapping);
 
+    _score = 0;
     _next_scene_override = bn::nullopt;
 }
 

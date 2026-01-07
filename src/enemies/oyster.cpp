@@ -13,14 +13,18 @@
 #include "player_laser.h"
 #include "explosion_effect.h"
 #include "enemy_manager.h"
+#include "base_game_scene.h"
 
 #include "bn_sprite_items_explosion1.h"
 #include "bn_sprite_items_boom.h"
 #include "models/moon_oyster.h"
 
-
-oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, controller *controller, enemy_manager *enemy_manager, const oyster_properties* props)
+// <-- use base_game_scene to get managers
+oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *models,
+        controller *controller, enemy_manager *enemy_manager, 
+        base_game_scene *base_scene, const oyster_properties* props)
     : _movement(movement), _models(models), _controller(controller), _enemy_manager(enemy_manager),
+      _base_scene(base_scene),
       _sphere_collider_set(fr::model_3d_items::oyster_colliders)
 {
     if(props)
@@ -160,6 +164,9 @@ void oyster::update_active(player_ship* player)
     case oyster_behavior_state::FLEEING:
     {
         // <-- Move away from center
+        // Continue moving forward
+        _position.set_y(_position.y() + MOVEMENT_SPEED);
+        _model->set_position(_position);
 
         // <-- Call destroy when out of bounds
 
@@ -224,6 +231,7 @@ void oyster::kill()
 
     _state = enemy_state::DESTROYING;
     _explode_frames = TOTAL_EXPLODE_FRAMES;
+    _base_scene->increment_score(30); // <-- MAGIC NUMBERS
 
     // Create explosion effect
     _explosion.emplace(_position, _models);
