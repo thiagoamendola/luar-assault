@@ -96,7 +96,8 @@ bn::optional<scene_type> test_3d_scene::update()
             _cleared_stage = true;
             // Show ending text
             _ending_text_sprites.clear();
-            _text_generator.generate(0, -30, "STAGE CLEARED!", _ending_text_sprites);
+            _text_generator.generate(0, -40, "STAGE CLEARED!", _ending_text_sprites);
+            _text_generator.generate(0, -10, "Score: " + bn::to_string<64>(_base_game_scene.get_score()), _ending_text_sprites);
             _text_generator.generate(0, 10, "Thank you for playing this demo!", _ending_text_sprites);
             _text_generator.generate(0, 30, "Press START to return", _ending_text_sprites);
 
