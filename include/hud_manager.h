@@ -40,9 +40,9 @@ public:
     const int TARGET_MAX_Y = 75;
 
     // Target animation constants
-    const bn::fixed TARGET_INITIAL_SCALE = 1.2;
+    const bn::fixed TARGET_INITIAL_SCALE = 1.4;
     const int TARGET_GROWTH_STEPS = 15;
-    const bn::fixed TARGET_GROWTH_MAX_SCALE = 2.0;
+    const bn::fixed TARGET_GROWTH_MAX_SCALE = 1.8;
 
 private:
     base_game_scene *_base_scene;
