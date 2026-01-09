@@ -9,7 +9,7 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      stage_section_list_ptr sections, size_t sections_count)
         : _sections(sections), _sections_count(sections_count), _player_ship(this),
             _enemy_manager(this), _hud_manager(this), _pause_manager(this),
-            _game_over_manager(this), _prepare_to_leave(false)
+            _game_over_manager(this), _end_stage_banner(this), _prepare_to_leave(false)
 {
     // Initialize camera position.
     _player_ship.set_position(fr::point_3d(0, 860, 0)); // <-- Starting position. CHANGE THAT
@@ -35,6 +35,17 @@ bool base_game_scene::update()
     if (_game_over_manager.is_shown())
     {
         _game_over_manager.menu_update();
+        return false;
+    }
+
+    // Handle end stage banner
+    if (_end_stage_banner.is_shown())
+    {
+        _end_stage_banner.update();
+        if (_end_stage_banner.is_ready_to_exit())
+        {
+            destroy();
+        }
         return false;
     }
 
@@ -110,7 +121,7 @@ void base_game_scene::return_to_main_menu()
 
 void base_game_scene::prepare_to_finish_stage()
 {
-    destroy();
+    _end_stage_banner.show();
 }
 
 bn::optional<scene_type> base_game_scene::get_next_scene_override()
