@@ -16,6 +16,8 @@
 #include "bn_sprite_items_arrow.h"
 #include "bn_sprite_items_controller.h"
 #include "bn_sprite_items_ninja.h"
+#include "source_han_sans_jp_sprite_font.h"
+
 
 #if FR_PROFILE
 #include "bn_log.h"

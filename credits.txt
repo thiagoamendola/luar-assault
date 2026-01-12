@@ -1,18 +1,23 @@
 CREDITS
 
+
 - Programming
 Thiago Amendola
+
 
 - 3D Models
 André Amorim
 Thiago Amendola
 
+
 - Sprites
 Laise Aquino
 Thiago Amendola
 
+
 - Music/Sound FX
 André Tuffo
+
 
 - Additional Thanks
 GValiente
@@ -22,5 +27,5 @@ simon-paris
 
 
 Made using Butano (C) 2020-2025 Gustavo Valiente
-
+gba-free-fonts by laqieer
 VisualBoyAdvance - Nintendo Gameboy/GameboyAdvance (TM) emulator. Copyright (C) 1999-2018 VBA & VBA-M Contributors

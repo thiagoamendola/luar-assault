@@ -9,6 +9,8 @@
 # GRAPHICS is a list of files and directories containing files to be processed by grit.
 # AUDIO is a list of files and directories containing files to be processed by mmutil.
 # DMGAUDIO is a list of files and directories containing files to be processed by mod2gbt and s3m2gbt.
+# FONTS is a list of directories containing font files.
+# TEXTS is a list of directories or filenames containing text files.
 # ROMTITLE is a uppercase ASCII, max 12 characters text string containing the output ROM title.
 # ROMCODE is a uppercase ASCII, max 4 characters text string containing the output ROM code.
 # USERFLAGS is a list of additional compiler flags:
@@ -33,11 +35,13 @@ BUILD       	:=  build
 LIBBUTANO   	:=  ../butano/butano
 PYTHON      	:=  python
 SOURCES     	:=  src src/fr_lib src/enemies src/scenes ../butano/common/src
-INCLUDES    	:=  include include/fr_lib include/game_scene_defs include/enemies include/scenes ../butano/common/include
+INCLUDES    	:=  include include/fr_lib include/game_scene_defs include/enemies include/scenes ../butano/common/include $(BUILD)
 DATA        	:=
-GRAPHICS    	:=  graphics ../butano/common/graphics graphics/shape_group_textures
+GRAPHICS    	:=  graphics ../butano/common/graphics graphics/shape_group_textures $(BUILD)/fonts
 AUDIO       	:=  audio ../butano/common/audio
 DMGAUDIO    	:=  dmg_audio ../butano/common/dmg_audio
+FONTS     	 	:=  ../gba-free-fonts/fonts/SourceHanSans/JP
+TEXTS           := src/main.cpp 
 ROMTITLE    	:=  LUAR-ASSAULT
 ROMCODE     	:=  SBTP
 USERFLAGS   	:=  
@@ -49,7 +53,9 @@ USERLIBS    	:=
 DEFAULTLIBS 	:=  
 STACKTRACE		:=	
 USERBUILD   	:=  
-EXTTOOL     	:=  @$(PYTHON) -B ./tools/precompile.py
+EXTTOOL     	:=  @$(PYTHON) -B ./tools/precompile.py --build=$(BUILD) --fonts="$(FONTS)" --texts="$(TEXTS)"
+
+# <-- HOW ABOUT TESTING AUDIOBACKEND	:=  maxmod ???
 
 #---------------------------------------------------------------------------------------------------------------------
 # Export absolute butano path:

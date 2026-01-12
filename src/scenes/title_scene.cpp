@@ -18,6 +18,7 @@
 #include "scene_type.h"
 #include "test_3d_scene_defs.h"
 
+#include "source_han_sans_jp_sprite_font.h"
 #include "common_variable_8x16_sprite_font.h"
 #include "common_variable_8x8_sprite_font.h"
 #include "common_fixed_8x16_sprite_font.h"
@@ -80,7 +81,7 @@ title_scene::title_scene() : _prepare_to_leave(false)
     bn::bg_palettes::set_transparent_color(bn::color(2, 2, 6));
 
     // Set text
-    bn::sprite_text_generator text_generator(common::variable_8x16_sprite_font);
+    bn::sprite_text_generator text_generator(source_han_sans_jp_sprite_font);
     bn::sprite_text_generator text_generator2(common::fixed_8x16_sprite_font);
     bn::sprite_text_generator text_generator3(common::variable_8x8_sprite_font);
     text_generator.generate(-100, 58, "Press Start", _text_sprites);
