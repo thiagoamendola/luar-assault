@@ -19,6 +19,11 @@ Thiago Amendola
 André Tuffo
 
 
+- Fonts
+Vonwaon Bitmap by Haoyu Qiu
+k12x8 from littlelimit.net
+
+
 - Additional Thanks
 GValiente
 João Baptista de Paula e Silva
