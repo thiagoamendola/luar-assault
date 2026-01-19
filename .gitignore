@@ -1,5 +1,6 @@
 /[Bb]uild
 /[Tt]emp
+/voicelines
 
 *.gba
 *.elf

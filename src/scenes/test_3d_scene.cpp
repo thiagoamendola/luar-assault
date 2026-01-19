@@ -51,7 +51,7 @@ test_3d_scene::test_3d_scene()
     // bn::bg_palettes::set_transparent_color(bn::color(25, 18, 25));
 
     // Set music
-    bn::music_items::gameplay_p1.play(0.5); // WORKS!!!
+    bn::music_items::gameplay_p1.play(0.3); // WORKS!!!
     // bn::music_items::gameplay_p2.play(0.5); // DOESN'T WORK =(!!!
 
     // Test sprite 3D

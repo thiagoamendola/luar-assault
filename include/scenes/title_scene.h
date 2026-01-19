@@ -34,6 +34,7 @@ class title_scene : public fr::scene
     fr::models_3d _models;
 
     fr::model_3d *_model;
+    int _leave_scene_frame_counter = 0;
 
     bool _prepare_to_leave;
     scene_type _target_scene = scene_type::TEST_3D; // which scene to jump to after fade (START vs SELECT)
