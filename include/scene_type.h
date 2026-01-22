@@ -9,6 +9,7 @@ enum class scene_type
     TEST_BUTANO,
     TEST_3D,
     MODEL_VIEWER,
+    AUDIO_VIEWER,
     TITLE,
 };
 

@@ -1,8 +1,6 @@
 #ifndef MODEL_VIEWER_SCENE_H
 #define MODEL_VIEWER_SCENE_H
 
-#include "bn_bg_palettes_actions.h"
-#include "bn_sprite_palettes_actions.h"
 #include "bn_optional.h"
 #include "bn_sprite_ptr.h"
 #include "bn_vector.h"
@@ -50,10 +48,6 @@ private:
     // UI
     bn::vector<bn::sprite_ptr, 32> _text_sprites;
     bn::sprite_text_generator _text_generator;
-
-    // Fade out actions for exit
-    bn::optional<bn::bg_palettes_fade_to_action> _bgs_fade_out_action;
-    bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;
 
     void _load_palette();
     void _create_model();

@@ -98,7 +98,7 @@ title_scene::title_scene() : _prepare_to_leave(false)
     // crazy after. Prob a instrument! (.it, BB)
     // bn::music_items::title2.play(0.3); // WORKS!!! (.it, BB)
     
-    bn::music_items::title3.play(0.2); // WORKS!!! With lower HH (.it, BB)
+    bn::music_items::title_v2.play(0.2); // WORKS!!! With lower HH (.it, BB)
     // bn::music_items::gameplay2.play(0.3); 
     // bn::music_items::gameplay2c1.play(0.3); // WORKS!!!
 
@@ -150,8 +150,8 @@ bn::optional<scene_type> title_scene::update()
     }
     else if (bn::keypad::select_pressed())
     {
-        // Transition to model viewer
-        _target_scene = scene_type::MODEL_VIEWER;
+        // Transition to audio viewer
+        _target_scene = scene_type::AUDIO_VIEWER;
         bn::sound_items::menu_confirm.play();
         _bgs_fade_out_action.emplace(60, 1);
         _sprites_fade_out_action.emplace(60, 1);

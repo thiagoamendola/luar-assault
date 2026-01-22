@@ -11,6 +11,7 @@
 #include "test_butano_scene.h"
 #include "title_scene.h"
 #include "scenes/model_viewer_scene.h"
+#include "scenes/audio_viewer_scene.h"
 
 #include "bn_regular_bg_items_floor.h"
 #include "bn_sprite_items_arrow.h"
@@ -93,6 +94,10 @@ int main()
 
                 case scene_type::MODEL_VIEWER:
                     scene.reset(new model_viewer_scene());
+                    break;
+
+                case scene_type::AUDIO_VIEWER:
+                    scene.reset(new audio_viewer_scene());
                     break;
 
                 case scene_type::TITLE:

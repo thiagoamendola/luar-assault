@@ -96,71 +96,59 @@ bn::optional<scene_type> model_viewer_scene::update()
 {
     bn::optional<scene_type> result;
 
-    if (_bgs_fade_out_action)
+    // Inputs
+    if (bn::keypad::start_pressed())
     {
-        if (!_bgs_fade_out_action->done())
-        {
-            _bgs_fade_out_action->update();
-            _sprites_fade_out_action->update();
-        }
-        else
-        {
-            // exit
-            result = scene_type::TITLE;
-        }
+        result = scene_type::TITLE;
+        bn::sound_items::menu_confirm.play();
+    }
+    else if (bn::keypad::select_pressed())
+    {
+        result = scene_type::TITLE;
+        bn::sound_items::menu_confirm.play();
+    }
+    else if (bn::keypad::a_pressed())
+    {
+        _current_index = (_current_index + 1) % model_viewer_defs::models_count;
+        bn::sound_items::menu_focus.play();
+        _create_model();
+        _show_model_name();
+    }
+    else if (bn::keypad::b_pressed())
+    {
+        _current_index = (_current_index + model_viewer_defs::models_count - 1) % model_viewer_defs::models_count;
+        bn::sound_items::menu_focus.play();
+        _create_model();
+        _show_model_name();
     }
     else
     {
-        // Inputs
-        if (bn::keypad::start_pressed())
+        // Rotation controls
+        if (bn::keypad::left_held())
         {
-            _bgs_fade_out_action.emplace(30, 1);
-            _sprites_fade_out_action.emplace(30, 1);
-            bn::sound_items::menu_confirm.play();
+            _model->set_phi(_model->phi() - 256);
         }
-        else if (bn::keypad::a_pressed())
+        else if (bn::keypad::right_held())
         {
-            _current_index = (_current_index + 1) % model_viewer_defs::models_count;
-            bn::sound_items::menu_focus.play();
-            _create_model();
-            _show_model_name();
+            _model->set_phi(_model->phi() + 256);
         }
-        else if (bn::keypad::b_pressed())
-        {
-            _current_index = (_current_index + model_viewer_defs::models_count - 1) % model_viewer_defs::models_count;
-            bn::sound_items::menu_focus.play();
-            _create_model();
-            _show_model_name();
-        }
-        else
-        {
-            // Rotation controls
-            if (bn::keypad::left_held())
-            {
-                _model->set_phi(_model->phi() - 256);
-            }
-            else if (bn::keypad::right_held())
-            {
-                _model->set_phi(_model->phi() + 256);
-            }
 
-            if (bn::keypad::up_held())
-            {
-                _model->set_psi(_model->psi() - 256);
-            }
-            else if (bn::keypad::down_held())
-            {
-                _model->set_psi(_model->psi() + 256);
-            }
+        if (bn::keypad::up_held())
+        {
+            _model->set_psi(_model->psi() - 256);
+        }
+        else if (bn::keypad::down_held())
+        {
+            _model->set_psi(_model->psi() + 256);
+        }
 
-            if (bn::keypad::l_held())
-            {
-                _model->set_theta(_model->theta() - 256);
-            }
-            else if (bn::keypad::r_held())
-            {
-                _model->set_theta(_model->theta() + 256);
-            }
+        if (bn::keypad::l_held())
+        {
+            _model->set_theta(_model->theta() - 256);
+        }
+        else if (bn::keypad::r_held())
+        {
+            _model->set_theta(_model->theta() + 256);
         }
     }
 
