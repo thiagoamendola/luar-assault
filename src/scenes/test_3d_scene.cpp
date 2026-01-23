@@ -1,7 +1,7 @@
 #include "test_3d_scene.h"
 // #include "test_3d_scene_defs.h"
 // #include "test_automated_scene_defs.h"
-#include "stage_1_scene_defs.h"
+#include "alpha_stage_v1_scene_defs.h"
 
 #include "bn_bg_palettes_actions.h"
 #include "bn_regular_bg_animate_actions.h"
