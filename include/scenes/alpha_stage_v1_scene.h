@@ -1,5 +1,5 @@
-#ifndef TEST_3D_SCENE_H
-#define TEST_3D_SCENE_H
+#ifndef ALPHA_STAGE_V1_SCENE_H
+#define ALPHA_STAGE_V1_SCENE_H
 
 #include "bn_regular_bg_ptr.h"
 #include "bn_regular_bg_animate_actions.h"
@@ -22,11 +22,11 @@
 #include "enemy_manager.h"
 #include "scene_type.h"
 
-class test_3d_scene : public fr::scene
+class alpha_stage_v1_scene : public fr::scene
 {
 
   public:
-    test_3d_scene();
+    alpha_stage_v1_scene();
 
     [[nodiscard]] bn::optional<scene_type> update() final;
 

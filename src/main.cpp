@@ -7,7 +7,7 @@
 // #include "fr_jam_intro_scene.h"
 #include "fr_butano_intro_scene.h"
 
-#include "test_3d_scene.h"
+#include "alpha_stage_v1_scene.h"
 #include "test_butano_scene.h"
 #include "title_scene.h"
 #include "scenes/model_viewer_scene.h"
@@ -89,7 +89,7 @@ int main()
                     break;
 
                 case scene_type::TEST_3D:
-                    scene.reset(new test_3d_scene());
+                    scene.reset(new alpha_stage_v1_scene());
                     break;
 
                 case scene_type::MODEL_VIEWER:

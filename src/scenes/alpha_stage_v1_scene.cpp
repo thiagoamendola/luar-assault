@@ -1,5 +1,5 @@
-#include "test_3d_scene.h"
-// #include "test_3d_scene_defs.h"
+#include "alpha_stage_v1_scene.h"
+// #include "alpha_stage_v1_scene_defs.h"
 // #include "test_automated_scene_defs.h"
 #include "alpha_stage_v1_scene_defs.h"
 
@@ -33,7 +33,7 @@
 #include "common_variable_8x16_sprite_font.h"
 
 
-test_3d_scene::test_3d_scene()
+alpha_stage_v1_scene::alpha_stage_v1_scene()
     : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count),
     //   _enemy_manager(&_models, &_controller),
       _prepare_to_leave(false),
@@ -61,7 +61,7 @@ test_3d_scene::test_3d_scene()
     // bn::sound_items::dialog_test1.play(1);
 }
 
-bn::optional<scene_type> test_3d_scene::update()
+bn::optional<scene_type> alpha_stage_v1_scene::update()
 {
     bn::optional<scene_type> result;
 

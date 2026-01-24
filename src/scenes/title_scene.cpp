@@ -16,7 +16,7 @@
 #include "fr_model_colors.h"
 
 #include "scene_type.h"
-#include "test_3d_scene_defs.h"
+#include "alpha_stage_v1_scene_defs.h"
 
 #include "source_han_sans_jp_sprite_font.h"
 #include "common_variable_8x16_sprite_font.h"
