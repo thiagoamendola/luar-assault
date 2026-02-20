@@ -31,6 +31,8 @@ public:
 
   void menu_update();
 
+  // <-- AM I MISSING A DESTROY?
+
 private:
   void show_menu();
   void hide_menu();

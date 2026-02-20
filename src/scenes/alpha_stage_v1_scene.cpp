@@ -9,7 +9,6 @@
 #include "bn_core.h"
 #include "bn_fixed.h"
 #include "bn_keypad.h"
-#include "bn_log.h"
 #include "bn_music.h"
 #include "bn_music_items.h"
 #include "bn_sprite_ptr.h"
@@ -37,6 +36,7 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count),
     //   _enemy_manager(&_models, &_controller),
       _prepare_to_leave(false),
+      _letterbox_manager(),
     //   _ninja_action(bn::create_sprite_animate_action_forever(
     //       _ninja_spr, 16, bn::sprite_items::ninja.tiles_item(), 0, 1, 2, 3)),
       _anim_bg(bn::regular_bg_items::bg_anim.create_bg(0, 0)),
@@ -59,6 +59,8 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     // _test_sprite->set_position(fr::point_3d(0, 760, -20));
     // _test_sprite->set_theta(32000);
     // bn::sound_items::dialog_test1.play(1);
+
+    _letterbox_manager.show();
 }
 
 bn::optional<scene_type> alpha_stage_v1_scene::update()
@@ -68,6 +70,11 @@ bn::optional<scene_type> alpha_stage_v1_scene::update()
     _anim_bg_action.update(); // <-- Pause on pause
 
     bool change_scene = _base_game_scene.update();
+
+    if (!_letterbox_manager.is_shown())
+    {
+        // UPDATE
+    }
     
     if (change_scene)
     {

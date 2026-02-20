@@ -30,6 +30,8 @@ public:
     return _ready_to_exit;
   }
 
+  // <-- Did we clear?
+
 private:
   base_game_scene *_base_scene;
 
