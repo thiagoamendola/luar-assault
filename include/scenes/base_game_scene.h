@@ -23,7 +23,7 @@ class base_game_scene // : public fr::scene
   public:
     base_game_scene(const bn::span<const bn::color> &scene_colors,
                       scene_colors_generator::color_mapping_handler *color_mapping, stage_section_list_ptr sections,
-                      size_t sections_count);
+                      size_t sections_count, int initial_position);
 
     void destroy();
 

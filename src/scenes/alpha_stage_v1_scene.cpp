@@ -33,7 +33,7 @@
 
 
 alpha_stage_v1_scene::alpha_stage_v1_scene()
-    : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count),
+    : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count, 1160),
     //   _enemy_manager(&_models, &_controller),
       _prepare_to_leave(false),
       _letterbox_manager(),
@@ -73,12 +73,11 @@ bn::optional<scene_type> alpha_stage_v1_scene::update()
 
     if (_letterbox_manager.is_fading())
     {
-        // UPDATE
         _letterbox_manager.update();
     }
 
     // Fade out letterbox after a while
-    if (!_no_letterbox && _base_game_scene.get_current_position() < 950)
+    if (!_no_letterbox && _base_game_scene.get_current_position() < 1050)
     {
         _no_letterbox = true;
         _letterbox_manager.fade_out();

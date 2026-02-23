@@ -38,7 +38,11 @@ public:
 
     void clear();
 
+    const bn::fixed LETTERBOX_HEIGHT = 25;
+    const bn::fixed FADE_SPEED = .5;
+
 private:
+
     bn::sprite_tiles_ptr _letterboxing_tiles;
     bn::sprite_palette_ptr _letterboxing_palette;
     bn::sprite_builder _letterboxing_builder;
@@ -46,6 +50,10 @@ private:
     bn::vector<bn::sprite_ptr, 36> _letterboxing_down_sprites;
     bool _is_shown = false;
     fading_state _fading_state = NONE;
+
+    const bn::fixed sprite_y_retreat = 32 - LETTERBOX_HEIGHT;
+    const bn::fixed sprite_y_start = 72 + sprite_y_retreat;
+    const bn::fixed sprite_y_end = 72 - 16;
 };
 
 #endif

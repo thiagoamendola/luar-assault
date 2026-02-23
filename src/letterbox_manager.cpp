@@ -37,13 +37,13 @@ void letterbox_manager::update()
 
     // Check if fade is complete
 
-    if (_fading_state == FADING_OUT && _letterboxing_up_sprites.front().y() <= -72-32) // <-- MAGIC NUMBERS
+    if (_fading_state == FADING_OUT && _letterboxing_up_sprites.front().y() <= -sprite_y_start - LETTERBOX_HEIGHT)
     {
         BN_LOG("Fade out complete");
         _fading_state = NONE;
         clear();
     }
-    else if (_fading_state == FADING_IN && _letterboxing_up_sprites.front().y() >= -72+32) // <-- MAGIC NUMBERS
+    else if (_fading_state == FADING_IN && _letterboxing_up_sprites.front().y() >= -sprite_y_start)
     {
         BN_LOG("Fade in complete");
         _fading_state = NONE;
@@ -67,8 +67,9 @@ void letterbox_manager::show()
         _letterboxing_down_sprites.clear();
     }
 
-    // Create upper letterbox
-    for (bn::fixed sprite_y = -72; sprite_y <= -56; sprite_y += 16) // <-- MAGIC NUMBERS
+    // Create upper and lower letterbox
+
+    for (bn::fixed sprite_y = -sprite_y_start; sprite_y <= -sprite_y_end; sprite_y += 16) // <-- MAGIC NUMBERS
     {
         for (bn::fixed sprite_x = -112; sprite_x <= 112; sprite_x += 16) // <-- MAGIC NUMBERS
         {
@@ -77,8 +78,7 @@ void letterbox_manager::show()
         }
     }
 
-    // Create lower letterbox
-    for (bn::fixed sprite_y = 72; sprite_y >= 56; sprite_y -= 16) // <-- MAGIC NUMBERS
+    for (bn::fixed sprite_y = sprite_y_start; sprite_y >= sprite_y_end; sprite_y -= 16) // <-- MAGIC NUMBERS
     {
         for (bn::fixed sprite_x = -112; sprite_x <= 112; sprite_x += 16) // <-- MAGIC NUMBERS
         {
@@ -98,28 +98,26 @@ void letterbox_manager::hide()
 
 void letterbox_manager::fade_out()
 {
-    // <-- Use frames
     show();
     _fading_state = FADING_OUT;
 }
 
 void letterbox_manager::fade_in()
 {
-    // <-- Use frames
     show();
     _fading_state = FADING_IN;
+
     // Move sprites out of screen for a start.
+
     for (bn::sprite_ptr& sprite : _letterboxing_up_sprites)
     {
-        sprite.set_y(sprite.y() - 32); // <-- MAGIC NUMBERS
+        sprite.set_y(sprite.y() - LETTERBOX_HEIGHT);
     }
     for (bn::sprite_ptr& sprite : _letterboxing_down_sprites)
     {
-        sprite.set_y(sprite.y() + 32); // <-- MAGIC NUMBERS
+        sprite.set_y(sprite.y() + LETTERBOX_HEIGHT);
     }
-    
 }
-
 
 void letterbox_manager::clear()
 {
