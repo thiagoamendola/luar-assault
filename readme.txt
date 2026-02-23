@@ -12,3 +12,9 @@ python -m pip install termcolor
 ```
 git clone https://github.com/laqieer/gba-free-fonts.git
 ```
+
+# Build
+
+```
+make
+```
