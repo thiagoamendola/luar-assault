@@ -7,19 +7,25 @@
 #include "bn_sprite_palette_ptr.h"
 #include "bn_sprite_builder.h"
 
+enum fading_state {
+    NONE,
+    FADING_IN,
+    FADING_OUT
+};
+
 class letterbox_manager
 {
 public:
     letterbox_manager();
 
-    // void update();
+    void update();
     bool is_shown() const;
 
     void show();
     void hide();
 
-    // void fade_in(int frames);
-    // void fade_out(int frames);
+    void fade_out(int frames);
+    void fade_in(int frames);
 
     void clear();
 
@@ -29,7 +35,8 @@ private:
     bn::sprite_builder _letterboxing_builder;
     bn::vector<bn::sprite_ptr, 36> _letterboxing_up_sprites;
     bn::vector<bn::sprite_ptr, 36> _letterboxing_down_sprites;
-    bool _shown = false;
+    bool _is_shown = false;
+    fading_state _fading_state = NONE;
 };
 
 #endif

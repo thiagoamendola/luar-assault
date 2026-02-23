@@ -60,7 +60,7 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     // _test_sprite->set_theta(32000);
     // bn::sound_items::dialog_test1.play(1);
 
-    _letterbox_manager.show();
+    _letterbox_manager.fade_out(10);
 }
 
 bn::optional<scene_type> alpha_stage_v1_scene::update()
@@ -71,9 +71,10 @@ bn::optional<scene_type> alpha_stage_v1_scene::update()
 
     bool change_scene = _base_game_scene.update();
 
-    if (!_letterbox_manager.is_shown())
+    if (_letterbox_manager.is_shown())
     {
         // UPDATE
+        _letterbox_manager.update();
     }
     
     if (change_scene)
