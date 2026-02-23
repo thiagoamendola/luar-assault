@@ -29,6 +29,15 @@ public:
     return _is_paused;
   }
 
+  void set_can_pause(bool can_pause)
+  {
+    _can_pause = can_pause;
+  }
+  bool can_pause() const
+  {
+    return _can_pause;
+  }
+  
   void menu_update();
 
   // <-- AM I MISSING A DESTROY?
@@ -48,6 +57,7 @@ private:
   controller *_controller;
 
   bool _is_paused = false;
+  bool _can_pause = true;
 
   // Text UI
   bn::sprite_text_generator _text_generator; // <-- move to common stuff?

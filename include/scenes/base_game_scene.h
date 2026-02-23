@@ -73,6 +73,10 @@ class base_game_scene // : public fr::scene
     {
       return &_hud_manager;
     }
+    pause_manager* get_pause_manager()
+    {
+      return &_pause_manager;
+    }
     game_over_manager* get_game_over_manager()
     {
       return &_game_over_manager;

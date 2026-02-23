@@ -38,7 +38,7 @@ void game_over_manager::show()
     _is_shown = true;
 
     // Hide game HUD
-    _hud_manager->hide_game_hud();
+    _hud_manager->hide();
 
     // Setup fade in
     _game_over_bg.set_visible(true);

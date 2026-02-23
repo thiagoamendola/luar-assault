@@ -5,8 +5,10 @@
 #include "bn_sprite_text_generator.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_actions.h"
+#include "bn_blending_actions.h"
 #include "bn_point.h"
 #include "bn_fixed.h"
+#include "bn_optional.h"
 
 #include "fr_camera_3d.h"
 #include "fr_models_3d.h"
@@ -27,7 +29,11 @@ public:
     void update(fr::models_3d *models); 
     void statics_update(int static_count);
 
-    void hide_game_hud();
+    void hide();
+    void show();
+
+    void fade_in();
+    void fade_out();
 
     // Neutral stick threshold
     const bn::fixed DIRECTION_DEADZONE = 0.15;
@@ -44,11 +50,15 @@ public:
     const int TARGET_GROWTH_STEPS = 15;
     const bn::fixed TARGET_GROWTH_MAX_SCALE = 1.8;
 
+    // Fade constants
+    const int FADE_FRAMES = 30;
+
 private:
     base_game_scene *_base_scene;
     controller *_controller; // <-- move to common stuff
     fr::camera_3d *_camera;
     player_ship *_player_ship;
+    bool _is_hidden = false;
 
     // UI
     bn::sprite_text_generator _text_generator; // <-- move to common stuff?
@@ -58,6 +68,14 @@ private:
     // bn::sprite_animate_action<4> _target_action;
     bn::sprite_ptr _target_spr;
     bn::optional<bn::sprite_scale_loop_action> _target_growth_action;
+
+    // Fade actions
+    // Each HUD sprite is individually opted into blending so only HUD elements
+    // are affected. Text sprites are re-created every frame, so blending is
+    // re-applied to them inside update() while a fade is active.
+    bn::optional<bn::blending_transparency_alpha_to_action> _fade_in_action;
+    bn::optional<bn::blending_transparency_alpha_to_action> _fade_out_action;
+    bool _is_blending_active = false;
 
     void _move_target();
     bn::fixed_point _compute_target_return();

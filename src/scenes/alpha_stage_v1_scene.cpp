@@ -61,6 +61,8 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     // bn::sound_items::dialog_test1.play(1);
 
     _letterbox_manager.show();
+    _base_game_scene.get_hud_manager()->hide();
+    _base_game_scene.get_pause_manager()->set_can_pause(false);
 }
 
 bn::optional<scene_type> alpha_stage_v1_scene::update()
@@ -81,6 +83,13 @@ bn::optional<scene_type> alpha_stage_v1_scene::update()
     {
         _no_letterbox = true;
         _letterbox_manager.fade_out();
+    }
+    // Show HUD right after
+    if (!_hud_shown && _base_game_scene.get_current_position() < 950)
+    {
+        _hud_shown = true;
+        _base_game_scene.get_hud_manager()->fade_in();
+        _base_game_scene.get_pause_manager()->set_can_pause(true);
     }
     
     if (change_scene)

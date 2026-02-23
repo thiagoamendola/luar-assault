@@ -42,8 +42,11 @@ bool pause_manager::check_pause_toggle()
     {
         if (!_is_paused)
         {
-            _is_paused = true;
-            show_menu();
+            if (_can_pause)
+            {
+                _is_paused = true;
+                show_menu();
+            }
         }
         else
         {
@@ -123,7 +126,7 @@ void pause_manager::menu_update()
 void pause_manager::show_menu()
 {
     // Hide game HUD
-    _hud_manager->hide_game_hud();
+    _hud_manager->hide();
 
     // Setup fade in
     _pause_bg.set_visible(true);
@@ -138,6 +141,9 @@ void pause_manager::show_menu()
 
 void pause_manager::hide_menu()
 {
+    // Show game HUD
+    _hud_manager->show();
+
     _bgs_fade_out_action.emplace(10, 0); // <-- MAGIC NUMBERS   
 
     // <-- Hide pause menu sprites and text

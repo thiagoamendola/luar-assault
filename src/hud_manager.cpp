@@ -3,6 +3,8 @@
 #include "bn_log.h"
 #include "bn_math.h"
 #include "bn_memory.h" // <-- Only import when debugging
+#include "bn_blending.h"
+#include "bn_blending_actions.h"
 #include "bn_sprite_actions.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_ptr.h"
@@ -32,6 +34,7 @@ hud_manager::hud_manager(base_game_scene *base_scene)
       _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
       _target_growth_action()
 {
+    _is_hidden = false;
     //common::variable_8x16_sprite_font
     // Setup target sprite
     _target_spr.set_horizontal_scale(TARGET_INITIAL_SCALE);
@@ -46,6 +49,11 @@ void hud_manager::destroy()
 
 void hud_manager::update(fr::models_3d *models)
 {
+    if (_is_hidden)
+    {
+        return;
+    }
+
     // Clear texts.
     _text_sprites.clear();
 
@@ -71,7 +79,48 @@ void hud_manager::update(fr::models_3d *models)
                                  _text_sprites); // <-- SCORE
     }
 
+    // While fading, opt every freshly-created text sprite into blending so
+    // they are affected by the shared transparency alpha.
+    if (_is_blending_active)
+    {
+        for (bn::sprite_ptr& spr : _text_sprites)
+        {
+            spr.set_blending_enabled(true);
+        }
+    }
+
     _move_target();
+
+    // Tick blending fade actions
+    if (_fade_in_action)
+    {
+        if (!_fade_in_action->done())
+        {
+            _fade_in_action->update();
+        }
+        else
+        {
+            // Fade-in complete: sprites are fully opaque, clean up blending.
+            _target_spr.set_blending_enabled(false);
+            _is_blending_active = false;
+            _fade_in_action.reset();
+        }
+    }
+
+    if (_fade_out_action)
+    {
+        if (!_fade_out_action->done())
+        {
+            _fade_out_action->update();
+        }
+        else
+        {
+            // Fade-out complete: keep blending active so sprites stay invisible
+            // (disabling blending would snap them back to fully opaque).
+            // <-- Fix this
+            _fade_out_action.reset();
+        }
+    }
 }
 
 
@@ -115,7 +164,49 @@ void hud_manager::_move_target()
     _target_growth_action->update();
 }
 
-void hud_manager::hide_game_hud()
+void hud_manager::show()
 {
+    _is_hidden = false;
+    // <-- text should auto-gen on update
+    _target_spr.set_visible(true);
+}
+
+void hud_manager::hide()
+{
+    _is_hidden = true;
     _text_sprites.clear();
+    // <-- Hide other HUD elements like score, target sprite, etc.
+    _target_spr.set_visible(false);
+}
+
+void hud_manager::fade_in()
+{
+    _is_hidden = false;
+    _fade_out_action.reset();
+
+    // Opt the persistent target sprite into blending.
+    // Text sprites are opted in each frame inside update() while fading.
+    _target_spr.set_visible(true);
+    _target_spr.set_blending_enabled(true);
+    _is_blending_active = true;
+
+    // Start fully transparent and animate to opaque (alpha 0 → 1).
+    bn::blending::set_transparency_alpha(0);
+    _fade_in_action.emplace(FADE_FRAMES, bn::fixed(1));
+}
+
+void hud_manager::fade_out()
+{
+    _is_hidden = false;
+    _fade_in_action.reset();
+
+    // Opt the persistent target sprite into blending.
+    // Text sprites are opted in each frame inside update() while fading.
+    _target_spr.set_visible(true);
+    _target_spr.set_blending_enabled(true);
+    _is_blending_active = true;
+
+    // Animate from fully opaque to fully transparent (alpha 1 → 0).
+    bn::blending::set_transparency_alpha(1);
+    _fade_out_action.emplace(FADE_FRAMES, bn::fixed(0));
 }
