@@ -19,13 +19,22 @@ public:
     letterbox_manager();
 
     void update();
-    bool is_shown() const;
 
     void show();
     void hide();
 
-    void fade_out(int frames);
-    void fade_in(int frames);
+    bool is_shown() const
+    {
+        return _is_shown;
+    };
+
+    bool is_fading() const
+    {
+        return _fading_state != NONE;
+    }
+
+    void fade_out();
+    void fade_in();
 
     void clear();
 

@@ -47,6 +47,8 @@ class alpha_stage_v1_scene : public fr::scene
     bn::regular_bg_cached_animate_action<5> _anim_bg_action;
     // bn::regular_bg_ptr _moon_bg;
 
+    
+    bool _no_letterbox = false;
 };
 
 #endif

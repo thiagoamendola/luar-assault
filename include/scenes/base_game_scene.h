@@ -48,6 +48,11 @@ class base_game_scene // : public fr::scene
       return _score;
     }
 
+    bn::fixed get_current_position() const
+    {
+      return _player_ship.get_position().y();
+    }
+
     controller* get_controller()
     {
       return &_controller;

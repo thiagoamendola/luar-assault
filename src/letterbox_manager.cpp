@@ -50,11 +50,6 @@ void letterbox_manager::update()
     }
 }
 
-bool letterbox_manager::is_shown() const
-{
-    return _is_shown;
-}
-
 void letterbox_manager::show()
 {
     if (_is_shown)
@@ -93,6 +88,7 @@ void letterbox_manager::show()
     }
 
     _is_shown = true;
+    _fading_state = NONE;
 }
 
 void letterbox_manager::hide()
@@ -100,14 +96,14 @@ void letterbox_manager::hide()
     clear();
 }
 
-void letterbox_manager::fade_out(int frames)
+void letterbox_manager::fade_out()
 {
     // <-- Use frames
     show();
     _fading_state = FADING_OUT;
 }
 
-void letterbox_manager::fade_in(int frames)
+void letterbox_manager::fade_in()
 {
     // <-- Use frames
     show();
@@ -130,4 +126,5 @@ void letterbox_manager::clear()
     _letterboxing_up_sprites.clear();
     _letterboxing_down_sprites.clear();
     _is_shown = false;
+    _fading_state = NONE;
 }
