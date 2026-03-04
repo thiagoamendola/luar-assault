@@ -7,10 +7,11 @@ enum class scene_type
 {
     BUTANO_INTRO,
     TEST_BUTANO,
-    TEST_3D,
+    ALPHA_STAGE_V1,
     MODEL_VIEWER,
     AUDIO_VIEWER,
     TITLE,
+    MOCK_CUTSCENE,
 };
 
 #endif

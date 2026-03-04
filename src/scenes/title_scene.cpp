@@ -1,6 +1,8 @@
 #include "title_scene.h"
 
 #include "bn_bg_palettes_actions.h"
+#include "bn_bg_palettes.h"
+#include "bn_sprite_palettes.h"
 #include "bn_colors.h"
 #include "bn_config_audio.h"
 #include "bn_core.h"
@@ -64,6 +66,10 @@ int mixing_rate()
 
 title_scene::title_scene() : _prepare_to_leave(false)
 {
+    // Reset any fade-to-black left over from a previous scene
+    bn::bg_palettes::set_fade_intensity(0);
+    bn::sprite_palettes::set_fade_intensity(0);
+
     _camera.set_position(fr::point_3d(0, 0, 0));
     _camera.set_phi(6000);
 
@@ -141,8 +147,9 @@ bn::optional<scene_type> title_scene::update()
     }
     else if (bn::keypad::start_pressed())
     {
-        // Transition to gameplay (TEST_3D)
-        _target_scene = scene_type::TEST_3D;
+        // Transition to gameplay (ALPHA_STAGE_V1)
+        _target_scene = scene_type::ALPHA_STAGE_V1;
+        // _target_scene = scene_type::MOCK_CUTSCENE;
         bn::sound_items::menu_confirm.play(0.4);
         _leave_scene_frame_counter = 0;
         _bgs_fade_out_action.emplace(90, 1);

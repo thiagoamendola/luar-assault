@@ -109,7 +109,7 @@ void base_game_scene::set_hit_stop(int hit_stop_frames)
 
 void base_game_scene::restart_scene()
 {
-    _next_scene_override = scene_type::TEST_3D;
+    _next_scene_override = scene_type::ALPHA_STAGE_V1;
     destroy();
 }
 

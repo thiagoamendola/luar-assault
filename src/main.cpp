@@ -12,6 +12,7 @@
 #include "title_scene.h"
 #include "scenes/model_viewer_scene.h"
 #include "scenes/audio_viewer_scene.h"
+#include "scenes/mock_cutscene_scene.h"
 
 #include "bn_regular_bg_items_floor.h"
 #include "bn_sprite_items_arrow.h"
@@ -88,7 +89,7 @@ int main()
                     scene.reset(new fr::butano_intro_scene(*common_stuff));
                     break;
 
-                case scene_type::TEST_3D:
+                case scene_type::ALPHA_STAGE_V1:
                     scene.reset(new alpha_stage_v1_scene());
                     break;
 
