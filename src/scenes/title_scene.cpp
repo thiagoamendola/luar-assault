@@ -148,8 +148,8 @@ bn::optional<scene_type> title_scene::update()
     else if (bn::keypad::start_pressed())
     {
         // Transition to gameplay (ALPHA_STAGE_V1)
-        _target_scene = scene_type::ALPHA_STAGE_V1;
-        // _target_scene = scene_type::MOCK_CUTSCENE;
+        // _target_scene = scene_type::ALPHA_STAGE_V1;
+        _target_scene = scene_type::MOCK_CUTSCENE;
         bn::sound_items::menu_confirm.play(0.4);
         _leave_scene_frame_counter = 0;
         _bgs_fade_out_action.emplace(90, 1);

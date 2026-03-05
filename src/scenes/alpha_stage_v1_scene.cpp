@@ -4,6 +4,8 @@
 #include "alpha_stage_v1_scene_defs.h"
 
 #include "bn_bg_palettes_actions.h"
+#include "bn_bg_palettes.h"
+#include "bn_sprite_palettes.h"
 #include "bn_regular_bg_animate_actions.h"
 #include "bn_colors.h"
 #include "bn_core.h"
@@ -46,6 +48,10 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
 //   _moon_bg(bn::regular_bg_items::moon.create_bg(0, 20))
 //   _test_sprite_sprite_3d_item(bn::sprite_items::butano_background_2, 0)
 {
+
+    // Reset any fade-to-black left over from a previous scene
+    bn::bg_palettes::set_fade_intensity(0);
+    bn::sprite_palettes::set_fade_intensity(0);
 
     // Scenario setup
     // bn::bg_palettes::set_transparent_color(bn::color(25, 18, 25));

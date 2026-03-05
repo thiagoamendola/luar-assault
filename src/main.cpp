@@ -105,6 +105,10 @@ int main()
                     scene.reset(new title_scene());
                     break;
 
+                case scene_type::MOCK_CUTSCENE:
+                    scene.reset(new mock_cutscene_scene());
+                    break;
+
                 default:
                     BN_ERROR("Invalid next scene: ", int(*next_scene));
                     break;
