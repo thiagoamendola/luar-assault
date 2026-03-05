@@ -10,6 +10,7 @@
 #include "fr_point_3d.h"
 
 #include "cutscene/timeline_command.h"
+#include "cutscene/easing.h"
 
 struct model_rotation
 {
@@ -19,7 +20,7 @@ struct model_rotation
 };
 
 /**
- * Linearly interpolates an fr::model_3d position over time.
+ * Interpolates an fr::model_3d position over time.
  */
 class move_model_cmd : public timeline_command
 {
@@ -27,9 +28,10 @@ public:
     fr::model_3d& model;
     fr::point_3d  start_pos;
     fr::point_3d  end_pos;
+    easing        ease;
 
     move_model_cmd(fr::model_3d& m, fr::point_3d s, fr::point_3d e,
-                   int start, int dur);
+                   int start, int dur, easing ease = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;
@@ -50,10 +52,11 @@ public:
     fr::model_3d&  model;
     model_rotation start_rot;
     model_rotation end_rot;
+    easing         ease;
 
     rotate_model_combined_cmd(fr::model_3d& m,
                               model_rotation s, model_rotation e,
-                              int start, int dur);
+                              int start, int dur, easing ease = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;
@@ -64,7 +67,7 @@ private:
 };
 
 /**
- * Linearly interpolates an fr::camera_3d position over time.
+ * Interpolates an fr::camera_3d position over time.
  */
 class move_camera_cmd : public timeline_command
 {
@@ -72,9 +75,10 @@ public:
     fr::camera_3d& camera;
     fr::point_3d   start_pos;
     fr::point_3d   end_pos;
+    easing         ease;
 
     move_camera_cmd(fr::camera_3d& cam, fr::point_3d s, fr::point_3d e,
-                    int start, int dur);
+                    int start, int dur, easing ease = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;

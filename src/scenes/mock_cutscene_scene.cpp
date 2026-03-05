@@ -34,27 +34,27 @@ mock_cutscene_scene::mock_cutscene_scene()
 
     _cmd_move = new move_model_cmd(
         *_model,
-        fr::point_3d(0, -180, -70), // start
+        fr::point_3d(-30, -210, -60), // start
         fr::point_3d(0, -180, 0),  // end
-        0, 60);
+        0, 50, easing::EASE_OUT);
     _timeline.add(_cmd_move);
 
     _cmd_rotate = new rotate_model_combined_cmd(
         *_model,
         model_rotation{.phi = -8000, .theta = 0, .psi = -16383}, // start
         model_rotation{.phi = -8000, .theta = 67000, .psi = -16383}, // end
-        70, 30);
+        60, 30, easing::EASE_IN_OUT);
     _timeline.add(_cmd_rotate);
 
     _cmd_move = new move_model_cmd(
         *_model,
         fr::point_3d(0, -180, 0), // start
-        fr::point_3d(100, -80, -0),  // end
-        130, 30);
+        fr::point_3d(150, -30, -0),  // end
+        100, 30, easing::EASE_IN);
     _timeline.add(_cmd_move);
 
     _timeline.add(new play_sound_cmd(
-        bn::sound_items::player_death, 1, 130));
+        bn::sound_items::player_death, 1, 95));
 
     // Letterbox
     _letterbox.show();
