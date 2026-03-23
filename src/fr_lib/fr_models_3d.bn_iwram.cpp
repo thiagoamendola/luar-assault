@@ -51,9 +51,14 @@ void models_3d::_process_models(const camera_3d &camera)
     point_3d camera_position = camera.position();
     bn::fixed camera_phi = camera.phi();
     bn::fixed camera_u_x = camera.u().x();
+    bn::fixed camera_u_y = camera.u().y();
     bn::fixed camera_u_z = camera.u().z();
     bn::fixed camera_v_x = camera.v().x();
+    bn::fixed camera_v_y = camera.v().y();
     bn::fixed camera_v_z = camera.v().z();
+    bn::fixed camera_w_x = camera.w().x();
+    bn::fixed camera_w_y = camera.w().y();
+    bn::fixed camera_w_z = camera.w().z();
     int global_vertex_index = 0;
     int valid_faces_count = 0;
 
@@ -75,17 +80,24 @@ void models_3d::_process_models(const camera_3d &camera)
         for (int index = 0; index < model_vertices_count; ++index)
         {
             const point_3d &model_point = model_vertices[index].point();
-            bn::fixed vry = model_point.y() - camera_position.y();
-            int vcz = -vry.data();
+
+            // Bit shifting to avoid overflow
+            bn::fixed vrx = bn::fixed::from_data((model_point.x() - camera_position.x()).data() >> 4);
+            bn::fixed vry = bn::fixed::from_data((model_point.y() - camera_position.y()).data() >> 4);
+            bn::fixed vrz = bn::fixed::from_data((model_point.z() - camera_position.z()).data() >> 4);
+            
+            int vcz = -(vrx.unsafe_multiplication(camera_w_x) +
+                        vry.unsafe_multiplication(camera_w_y) +
+                        vrz.unsafe_multiplication(camera_w_z)).data() << 4;
 
             if (near_plane <= vcz) [[likely]]
             {
-                bn::fixed vrx = (model_point.x() - camera_position.x()) / 16;
-                bn::fixed vrz = (model_point.z() - camera_position.z()) / 16;
                 int vcx = (vrx.unsafe_multiplication(camera_u_x) +
+                           vry.unsafe_multiplication(camera_u_y) +
                            vrz.unsafe_multiplication(camera_u_z))
                               .data();
                 int vcy = -(vrx.unsafe_multiplication(camera_v_x) +
+                            vry.unsafe_multiplication(camera_v_y) +
                             vrz.unsafe_multiplication(camera_v_z))
                                .data();
 
@@ -121,7 +133,10 @@ void models_3d::_process_models(const camera_3d &camera)
 
                 if (vr.safe_dot_product(normal) < 0) [[likely]]
                 {
-                    int projected_z = -vr.y().data();
+                    // >>4 to avoid overflow; no <<4 needed — used for sort only.
+                    int projected_z = -(bn::fixed::from_data(vr.x().data() >> 4).unsafe_multiplication(camera_w_x) +
+                                        bn::fixed::from_data(vr.y().data() >> 4).unsafe_multiplication(camera_w_y) +
+                                        bn::fixed::from_data(vr.z().data() >> 4).unsafe_multiplication(camera_w_z)).data();
                     int color_index_override = -1;
 
                     if (_color_mapping)
@@ -164,17 +179,23 @@ void models_3d::_process_models(const camera_3d &camera)
         for (int index = 0; index < model_vertices_count; ++index)
         {
             point_3d model_point = model.transform(model_vertices[index]);
-            bn::fixed vry = model_point.y() - camera_position.y();
-            int vcz = -vry.data();
+
+            // Bit shifting to avoid overflow
+            bn::fixed vrx = bn::fixed::from_data((model_point.x() - camera_position.x()).data() >> 4);
+            bn::fixed vry = bn::fixed::from_data((model_point.y() - camera_position.y()).data() >> 4);
+            bn::fixed vrz = bn::fixed::from_data((model_point.z() - camera_position.z()).data() >> 4);
+            int vcz = -(vrx.unsafe_multiplication(camera_w_x) +
+                        vry.unsafe_multiplication(camera_w_y) +
+                        vrz.unsafe_multiplication(camera_w_z)).data() << 4;
 
             if (near_plane <= vcz) [[likely]]
             {
-                bn::fixed vrx = (model_point.x() - camera_position.x()) / 16;
-                bn::fixed vrz = (model_point.z() - camera_position.z()) / 16;
                 int vcx = (vrx.unsafe_multiplication(camera_u_x) +
+                           vry.unsafe_multiplication(camera_u_y) +
                            vrz.unsafe_multiplication(camera_u_z))
                               .data();
                 int vcy = -(vrx.unsafe_multiplication(camera_v_x) +
+                            vry.unsafe_multiplication(camera_v_y) +
                             vrz.unsafe_multiplication(camera_v_z))
                                .data();
 
@@ -210,7 +231,9 @@ void models_3d::_process_models(const camera_3d &camera)
 
                 if (vr.safe_dot_product(normal) < 0) [[likely]]
                 {
-                    int projected_z = -vr.y().data();
+                    int projected_z = -(bn::fixed::from_data(vr.x().data() >> 4).unsafe_multiplication(camera_w_x) +
+                                        bn::fixed::from_data(vr.y().data() >> 4).unsafe_multiplication(camera_w_y) +
+                                        bn::fixed::from_data(vr.z().data() >> 4).unsafe_multiplication(camera_w_z)).data();
                     int color_index_override = -1;
 
                     if (_color_mapping)
@@ -322,14 +345,19 @@ void models_3d::_process_models(const camera_3d &camera)
     for (sprite_3d &sprite : _sprites_list)
     {
         const point_3d &sprite_position = sprite.position();
-        bn::fixed vry = sprite_position.y() - camera_position.y();
-        int vcz = -vry.data();
+
+        // Bit shifting to avoid overflow
+        bn::fixed vrx = bn::fixed::from_data((sprite_position.x() - camera_position.x()).data() >> 4);
+        bn::fixed vry = bn::fixed::from_data((sprite_position.y() - camera_position.y()).data() >> 4);
+        bn::fixed vrz = bn::fixed::from_data((sprite_position.z() - camera_position.z()).data() >> 4);
+        int vcz = -(vrx.unsafe_multiplication(camera_w_x) +
+                    vry.unsafe_multiplication(camera_w_y) +
+                    vrz.unsafe_multiplication(camera_w_z)).data() << 4;
 
         if (near_plane <= vcz) [[likely]]
         {
-            bn::fixed vrx = (sprite_position.x() - camera_position.x()) / 16;
-            bn::fixed vrz = (sprite_position.z() - camera_position.z()) / 16;
             int vcx = (vrx.unsafe_multiplication(camera_u_x) +
+                       vry.unsafe_multiplication(camera_u_y) +
                        vrz.unsafe_multiplication(camera_u_z))
                           .data();
 
@@ -341,6 +369,7 @@ void models_3d::_process_models(const camera_3d &camera)
             if (sprite_x < display_width && sprite_x + 64 > 0) [[likely]]
             {
                 int vcy = -(vrx.unsafe_multiplication(camera_v_x) +
+                            vry.unsafe_multiplication(camera_v_y) +
                             vrz.unsafe_multiplication(camera_v_z))
                                .data();
                 int sprite_y =

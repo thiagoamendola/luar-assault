@@ -19,8 +19,11 @@ mock_cutscene_scene::mock_cutscene_scene()
     bn::bg_palettes::set_transparent_color(bn::color(2, 2, 6));
 
     // Camera
-    _camera.set_position(fr::point_3d(0, 0, 0));
-    _camera.set_phi(0);
+    _camera.set_position(fr::point_3d(0, 0, -50));
+    // _camera.set_position(fr::point_3d(0, 0, 0));
+    // _camera.set_phi(6000);
+    // _camera.set_psi(-3000);
+    _camera.set_theta(3000);
 
     // Model
     _models.load_colors(fr::model_3d_items::player_ship_02_colors);
