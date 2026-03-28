@@ -6,6 +6,8 @@
 #include "bn_math.h"
 #include "bn_log.h"
 #include "bn_string.h"
+#include "bn_profiler.h"
+
 #include "fr_constants_3d.h"
 
 #include "utils.h"
@@ -93,7 +95,7 @@ bn::fixed_point controller::get_smooth_directional()
 
 void controller::update()
 {
-// Toggle collider visibility
+    // Toggle collider visibility
 #if SHOW_COLLIDERS
     if (bn::keypad::select_pressed())
     {
@@ -101,13 +103,15 @@ void controller::update()
     }
 #endif
 
-// Toggle debug text
-#if SHOW_DEBUG_TEXT
+    // Toggle debug text
     if (bn::keypad::select_pressed())
     {
-        enable_debug_text = !enable_debug_text;
-    }
+#if FR_DETAILED_PROFILE
+        bn::profiler::show();
+#elif SHOW_DEBUG_TEXT
+    // enable_debug_text = !enable_debug_text;
 #endif
+    }
 }
 
 bool controller::is_collider_display_enabled()

@@ -17,10 +17,6 @@
 #define FR_PROFILE true
 #endif
 
-#ifndef FR_DETAILED_PROFILE
-#define FR_DETAILED_PROFILE false
-#endif
-
 #ifndef FR_SHOW_CPU_USAGE
 #define FR_SHOW_CPU_USAGE false
 #endif
@@ -43,6 +39,12 @@
 
 // == GAME VARS
 
+// Enable profiler display by pressing SELECT
+#ifndef FR_DETAILED_PROFILE
+#define FR_DETAILED_PROFILE true
+#endif
+
+//
 #ifndef LOG_STATIC_RENDER_STEPS
 #define LOG_STATIC_RENDER_STEPS false
 #endif
@@ -54,8 +56,10 @@
 
 // Enables debug text by pressing SELECT
 #ifndef SHOW_DEBUG_TEXT
-#define SHOW_DEBUG_TEXT true
+#define SHOW_DEBUG_TEXT false
 #endif
+
+
 
 // <-- Create FF for stage skips
 

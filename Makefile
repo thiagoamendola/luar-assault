@@ -46,7 +46,7 @@ FONTS     	 	:=  $(GBAFONTS)/SourceHanSans/JP $(GBAFONTS)/SourceHanMono/JP $(LOC
 TEXTS           :=  src/main.cpp 
 ROMTITLE    	:=  LUAR-ASSAULT
 ROMCODE     	:=  SBTP
-USERFLAGS   	:=  
+USERFLAGS   	:=  -DBN_CFG_PROFILER_ENABLED=true
 USERCXXFLAGS	:=  
 USERASFLAGS 	:=  
 USERLDFLAGS 	:=  
