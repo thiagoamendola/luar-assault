@@ -104,14 +104,19 @@ void controller::update()
 #endif
 
     // Toggle debug text
+#if SHOW_DEBUG_TEXT
     if (bn::keypad::select_pressed())
     {
-#if FR_DETAILED_PROFILE
-        bn::profiler::show();
-#elif SHOW_DEBUG_TEXT
-    // enable_debug_text = !enable_debug_text;
-#endif
+        enable_debug_text = !enable_debug_text;
     }
+#endif
+
+#if FR_DETAILED_PROFILE
+    if (bn::keypad::start_pressed() && bn::keypad::select_held())
+    {
+        bn::profiler::show();
+    }
+#endif
 }
 
 bool controller::is_collider_display_enabled()
@@ -122,4 +127,9 @@ bool controller::is_collider_display_enabled()
 bool controller::is_debug_text_enabled()
 {
     return enable_debug_text;
+}
+
+bool controller::is_pause_pressed()
+{
+    return bn::keypad::start_pressed() && !bn::keypad::select_held();
 }

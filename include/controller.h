@@ -15,6 +15,8 @@ class controller
     bool is_collider_display_enabled();
     bool is_debug_text_enabled();
 
+    bool is_pause_pressed();
+
   private:
     const bn::fixed INTERP_STEP = 0.1;
 

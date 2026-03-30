@@ -38,7 +38,7 @@ pause_manager::pause_manager(base_game_scene *base_scene) :
 
 bool pause_manager::check_pause_toggle()
 {
-    if (bn::keypad::start_pressed())
+    if (_controller->is_pause_pressed())
     {
         if (!_is_paused)
         {
