@@ -50,6 +50,7 @@ public:
 private:
   void spawn_asteroid(const enemy_def &enemy);
   void spawn_oyster(const enemy_def &enemy);
+  void spawn_scorpion(const enemy_def &enemy);
 
   void check_end_section_cleaned();
 

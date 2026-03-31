@@ -56,9 +56,8 @@
 
 // Enables debug text by pressing SELECT
 #ifndef SHOW_DEBUG_TEXT
-#define SHOW_DEBUG_TEXT false
+#define SHOW_DEBUG_TEXT true
 #endif
-
 
 
 // <-- Create FF for stage skips

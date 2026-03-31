@@ -18,6 +18,11 @@ struct naiah_properties
     // Add naiah-specific properties here as needed
 };
 
+struct scorpion_properties
+{
+    bn::fixed player_distance;
+};
+
 struct enemy_def
 {
     fr::point_3d position;

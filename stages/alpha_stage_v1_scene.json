@@ -1,13 +1,13 @@
 {
-  "name": "alpha_stage_v1",
+  "name": "alpha_stage_v1_scene",
   "version": 3,
   "palette": [
-      "debug_collider",
       "laser",
       "hurt",
       "player_ship_02",
       "asteroid1",
       "moon_oyster",
+      "scorpion",
       "shot"
   ],
   "sections": [
@@ -388,6 +388,16 @@
           "rotation": 500
         },
         {
+          "type": "SCORPION",
+          "enabled": true,
+          "position": {
+            "x": -20,
+            "y": -880,
+            "z": 30
+          },
+          "rotation": 100
+        },
+        {
           "type": "OYSTER",
           "enabled": true,
           "position": {
@@ -397,6 +407,26 @@
           },
           "rotation": 100,
           "playerDistance": 300
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "range": {
+        "start": -3950,
+        "end": -5000
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "SCORPION",
+          "enabled": true,
+          "position": {
+            "x": -20,
+            "y": -880,
+            "z": 30
+          },
+          "rotation": 100
         }
       ],
       "end_section": true

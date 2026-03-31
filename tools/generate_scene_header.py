@@ -22,6 +22,7 @@ STRUCTURAL_INCLUDES = [
     'scene_colors_generator.h',
     'stage_section.h',
     'static_model_3d_item.h',
+    'enemy_def.h',
     'bn_color.h',
     'bn_span.h',
 ]
@@ -32,6 +33,7 @@ PALETTE_HEADER_MAP = {
     'debug_collider': 'colliders.h',
     'laser': 'player_laser.h',
     'hurt': 'player_ship.h',
+    'scorpion_alt': 'enemies/scorpion.h',
     # model palettes like 'bush', 'asteroid1', 'player_ship_02', 'shot' are provided by their model headers
 }
 
@@ -193,6 +195,13 @@ def generate_header(scene: Dict[str, Any]) -> str:
                     props_const_name = f"_s{sid}_enemy_{enemy_index}_props"
                     enemy_property_const_lines.append(
                         f"constexpr oyster_properties {props_const_name} = {{{player_distance}}};")
+                    props_ptr = f"&{props_const_name}"
+            elif etype == 'SCORPION':
+                player_distance = e.get('playerDistance')
+                if player_distance is not None:
+                    props_const_name = f"_s{sid}_enemy_{enemy_index}_props"
+                    enemy_property_const_lines.append(
+                        f"constexpr scorpion_properties {props_const_name} = {{{player_distance}}};")
                     props_ptr = f"&{props_const_name}"
             elif etype == 'NAIAH':
                 # Add naiah property parsing here when needed
