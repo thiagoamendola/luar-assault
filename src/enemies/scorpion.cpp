@@ -31,9 +31,12 @@ scorpion::scorpion(fr::point_3d position, fr::point_3d movement, fr::models_3d *
         _player_distance = props->player_distance;
     }
 
+    _models->get_color_mapping()->log_debug();
+
     _position = position;
     _model =
-        &_models->create_dynamic_model(fr::model_3d_items::scorpion_full);
+        &_models->create_dynamic_model(fr::model_3d_items::scorpion_full,
+                                       fr::model_3d_items::scorpion_alt_colors);
     _model->set_position(position);
     // _model->set_palette(fr::model_3d_items::scorpion_alt_colors);
     _state = enemy_state::ACTIVE;

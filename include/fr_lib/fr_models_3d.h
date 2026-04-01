@@ -49,6 +49,11 @@ class models_3d
         delete[] _color_mapping;
     }
 
+    scene_colors_generator::color_mapping_handler *get_color_mapping()
+    {
+        return _color_mapping;
+    }
+
     void set_fade(bn::color color, bn::fixed intensity)
     {
         _shape_groups.set_fade(color, intensity);

@@ -31,6 +31,10 @@ enum class scorpion_behavior_state {
 namespace fr::model_3d_items
 {
 
+constexpr inline bn::color scorpion_alt_colors[] = {
+            bn::color(24,0,2),
+            bn::color(24,24,24),
+};
 
 constexpr inline bn::color scorpion_hit_colors[] = {
     bn::color(18, 0, 0),
