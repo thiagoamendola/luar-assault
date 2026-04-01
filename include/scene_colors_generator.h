@@ -122,16 +122,35 @@ struct color_mapping_handler
     bn::array<int, MAX_MODELS> _palette_sizes;
 };
 
-// Get full size of final scene color array (does not count for repeated)
+// Get full size of final scene color array (deduplicating repeated colors)
 constexpr size_t calculate_total_size(
     const std::initializer_list<bn::span<const bn::color>> &color_list)
 {
-    size_t total_size = 0;
+    bn::array<bn::color, MAX_COLORS * MAX_MODELS> seen;
+    size_t seen_count = 0;
+
     for (const auto &colors_span : color_list)
     {
-        total_size += colors_span.size();
+        for (const auto color : colors_span)
+        {
+            bool found = false;
+            for (size_t j = 0; j < seen_count; ++j)
+            {
+                if (seen[j] == color)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                seen[seen_count] = color;
+                ++seen_count;
+            }
+        }
     }
-    return total_size;
+
+    return seen_count;
 }
 
 //

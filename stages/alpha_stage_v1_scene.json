@@ -2,12 +2,13 @@
   "name": "alpha_stage_v1_scene",
   "version": 3,
   "palette": [
+      "debug_collider",
       "laser",
       "hurt",
       "player_ship_02",
       "asteroid1",
       "moon_oyster",
-      "scorpion",
+      "scorpion_alt",
       "shot"
   ],
   "sections": [

@@ -34,9 +34,10 @@ scorpion::scorpion(fr::point_3d position, fr::point_3d movement, fr::models_3d *
     _models->get_color_mapping()->log_debug();
 
     _position = position;
+    _current_palette = fr::model_3d_items::scorpion_alt_colors;
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::scorpion_full,
-                                       fr::model_3d_items::scorpion_alt_colors);
+                                       _current_palette);
     _model->set_position(position);
     // _model->set_palette(fr::model_3d_items::scorpion_alt_colors);
     _state = enemy_state::ACTIVE;
@@ -103,7 +104,7 @@ void scorpion::update_active(player_ship *player)
         _damage_cooldown--;
         if (_damage_cooldown <= 0)
         {
-            _model->set_palette(fr::model_3d_items::scorpion_colors);
+            _model->set_palette(_current_palette);
         }
     }
 

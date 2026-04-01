@@ -9,12 +9,13 @@
 #include "enemy_def.h"
 #include "bn_color.h"
 #include "bn_span.h"
+#include "colliders.h"
 #include "player_laser.h"
 #include "player_ship.h"
+#include "enemies/scorpion.h"
 #include "models/asteroid1.h"
 #include "models/moon_oyster.h"
 #include "models/player_ship_02.h"
-#include "models/scorpion.h"
 #include "models/shot.h"
 
 using namespace scene_colors_generator;
@@ -249,12 +250,13 @@ constexpr size_t sections_count = sections_full.size();
 // --- Colors
 
 constexpr const auto raw_scene_colors = {
+    bn::span<const bn::color>(fr::model_3d_items::debug_collider_colors),
     bn::span<const bn::color>(fr::model_3d_items::laser_colors),
     bn::span<const bn::color>(fr::model_3d_items::hurt_colors),
     bn::span<const bn::color>(fr::model_3d_items::player_ship_02_colors),
     bn::span<const bn::color>(fr::model_3d_items::asteroid1_colors),
     bn::span<const bn::color>(fr::model_3d_items::moon_oyster_colors),
-    bn::span<const bn::color>(fr::model_3d_items::scorpion_colors),
+    bn::span<const bn::color>(fr::model_3d_items::scorpion_alt_colors),
     bn::span<const bn::color>(fr::model_3d_items::shot_colors)
 };
 

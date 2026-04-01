@@ -6,6 +6,7 @@
 #include "scene_colors_generator.h"
 #include "stage_section.h"
 #include "static_model_3d_item.h"
+#include "enemy_def.h"
 #include "bn_color.h"
 #include "bn_span.h"
 #include "colliders.h"

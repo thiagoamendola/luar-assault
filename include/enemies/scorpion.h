@@ -87,6 +87,7 @@ class scorpion : public base_enemy
 
   private:
     fr::point_3d _movement;
+    const bn::color *_current_palette;
 
     base_game_scene *_base_scene;
     fr::models_3d *_models;
