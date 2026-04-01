@@ -7,14 +7,20 @@
 #include "bn_sprite_palettes_actions.h"
 #include "bn_sound_items.h"
 
+#include "common_variable_8x16_sprite_font.h"
+
 #include "fr_model_colors.h"
 #include "fr_point_3d.h"
 
 #include "models/player_ship_02.h"
 
-mock_cutscene_scene::mock_cutscene_scene()
+mock_cutscene_scene::mock_cutscene_scene() :
+    _text_generator(common::variable_8x16_sprite_font)
 {
     BN_LOG("mock_cutscene_scene: init");
+
+    _text_generator.set_right_alignment();
+    _text_generator.set_bg_priority(1); // Draw on top of letterbox (bg_priority 2)
 
     bn::bg_palettes::set_transparent_color(bn::color(2, 2, 6));
 
@@ -69,16 +75,39 @@ mock_cutscene_scene::mock_cutscene_scene()
 mock_cutscene_scene::~mock_cutscene_scene()
 {
     _timeline.clear();
+    _skip_text_sprites.clear();
 }
 
 bn::optional<scene_type> mock_cutscene_scene::update()
 {
-    // Skip cutscene on Start press — begin fade out if not already fading
+    // Handle Start press for skip prompt
     if (bn::keypad::start_pressed() && !_bgs_fade_out_action)
     {
-        // _timeline.clear();
-        _bgs_fade_out_action.emplace(45, 1);
-        _sprites_fade_out_action.emplace(45, 1);
+        if (_skip_prompt_timer <= 0)
+        {
+            // First press — show prompt
+            _skip_text_sprites.clear();
+            _text_generator.generate(110, 65, "Press Start to Skip", _skip_text_sprites);
+            _skip_prompt_timer = SKIP_PROMPT_DURATION;
+        }
+        else
+        {
+            // Second press — trigger skip
+            _skip_prompt_timer = 0;
+            _skip_text_sprites.clear();
+            _bgs_fade_out_action.emplace(45, 1);
+            _sprites_fade_out_action.emplace(45, 1);
+        }
+    }
+
+    // Update skip prompt timer
+    if (_skip_prompt_timer > 0)
+    {
+        _skip_prompt_timer--;
+        if (_skip_prompt_timer == 0)
+        {
+            _skip_text_sprites.clear();
+        }
     }
 
     // Tick the letterbox animation
