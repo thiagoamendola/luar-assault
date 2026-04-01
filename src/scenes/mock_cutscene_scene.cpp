@@ -2,6 +2,7 @@
 
 #include "bn_bg_palettes.h"
 #include "bn_bg_palettes_actions.h"
+#include "bn_keypad.h"
 #include "bn_log.h"
 #include "bn_sprite_palettes_actions.h"
 #include "bn_sound_items.h"
@@ -10,7 +11,6 @@
 #include "fr_point_3d.h"
 
 #include "models/player_ship_02.h"
-
 
 mock_cutscene_scene::mock_cutscene_scene()
 {
@@ -38,21 +38,21 @@ mock_cutscene_scene::mock_cutscene_scene()
     _cmd_move = new move_model_cmd(
         *_model,
         fr::point_3d(-30, -210, -60), // start
-        fr::point_3d(0, -180, 0),  // end
+        fr::point_3d(0, -180, 0),     // end
         0, 50, easing::EASE_OUT);
     _timeline.add(_cmd_move);
 
     _cmd_rotate = new rotate_model_combined_cmd(
         *_model,
-        model_rotation{.phi = -8000, .theta = 0, .psi = -16383}, // start
+        model_rotation{.phi = -8000, .theta = 0, .psi = -16383},     // start
         model_rotation{.phi = -8000, .theta = 67000, .psi = -16383}, // end
         60, 30, easing::EASE_IN_OUT);
     _timeline.add(_cmd_rotate);
 
     _cmd_move = new move_model_cmd(
         *_model,
-        fr::point_3d(0, -180, 0), // start
-        fr::point_3d(150, -30, -0),  // end
+        fr::point_3d(0, -180, 0),   // start
+        fr::point_3d(150, -30, -0), // end
         100, 30, easing::EASE_IN);
     _timeline.add(_cmd_move);
 
@@ -73,6 +73,14 @@ mock_cutscene_scene::~mock_cutscene_scene()
 
 bn::optional<scene_type> mock_cutscene_scene::update()
 {
+    // Skip cutscene on Start press — begin fade out if not already fading
+    if (bn::keypad::start_pressed() && !_bgs_fade_out_action)
+    {
+        // _timeline.clear();
+        _bgs_fade_out_action.emplace(45, 1);
+        _sprites_fade_out_action.emplace(45, 1);
+    }
+
     // Tick the letterbox animation
     _letterbox.update();
 
@@ -80,20 +88,21 @@ bn::optional<scene_type> mock_cutscene_scene::update()
     {
         _timeline.update();
     }
-    else if (!_bgs_fade_out_action)
+
+    // Update fade out if active
+    if (!_timeline.is_running() && !_bgs_fade_out_action)
     {
         // Timeline done — begin fade to black
         _bgs_fade_out_action.emplace(45, 1);
         _sprites_fade_out_action.emplace(45, 1);
     }
-    else if (!_bgs_fade_out_action->done())
+    else if (_bgs_fade_out_action && _sprites_fade_out_action && !_bgs_fade_out_action->done())
     {
         _bgs_fade_out_action->update();
         _sprites_fade_out_action->update();
     }
-    else
+    else if (!_timeline.is_running() && _bgs_fade_out_action && _bgs_fade_out_action->done())
     {
-        BN_LOG("mock_cutscene_scene: done, returning to TITLE");
         return scene_type::ALPHA_STAGE_V1;
     }
 
