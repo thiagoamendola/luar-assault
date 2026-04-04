@@ -88,13 +88,13 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
             // Instantiate enemies in this section
             _last_section_start_y = section->starting_pos();
 
-            BN_LOG("[SECTION] Entering section at start=" + bn::to_string<64>(int(section->starting_pos())) +
+            BN_LOG("[section] Entering section at start=" + bn::to_string<64>(int(section->starting_pos())) +
                    " enemies=" + bn::to_string<64>(section->enemies_count()));
 
             for (int e = 0; e < section->enemies_count(); ++e)
             {
                 const enemy_def &enemy = section->enemies()[e];
-                BN_LOG("[ENEMY] type=" + bn::to_string<64>(static_cast<int>(enemy.type)));
+                BN_LOG("[enemy] type=" + bn::to_string<64>(static_cast<int>(enemy.type)));
                 // <-- Make switch case
                 if (enemy.type == enemy_type::ASTEROID)
                 {
@@ -138,7 +138,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                             _enemies[slot].ptr = nullptr;
                             _enemies[slot].used = false;
                             _enemies[slot].source = nullptr;
-                            BN_LOG("[DESTROY] Section enemy destroyed at ending_pos=" + bn::to_string<64>(int(section->ending_pos())));
+                            BN_LOG("[destroy] Section enemy destroyed at ending_pos=" + bn::to_string<64>(int(section->ending_pos())));
                             // Check if ready to finish stage.
                             if (is_end_section_current){
                                 check_end_section_cleaned();
@@ -172,7 +172,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                 _enemies[slot].ptr = nullptr;
                 _enemies[slot].used = false;
                 _enemies[slot].source = nullptr;
-                BN_LOG("[DESTROY] Refless object destroyed at y=" + bn::to_string<64>(int(camera_y)));
+                BN_LOG("[destroy] Refless object destroyed at y=" + bn::to_string<64>(int(camera_y)));
                 // Check if ready to finish stage.
                 if (is_end_section_current){
                     check_end_section_cleaned();
@@ -195,7 +195,7 @@ void enemy_manager::create_bullet(fr::point_3d position, fr::point_3d target)
             _enemies[slot].ptr = new enemy_bullet(position, target, _models, _controller); // <-- Convert to a proper object pool later
             _enemies[slot].used = true;
             _enemies[slot].source = nullptr; // Bullets may not need a source descriptor
-            BN_LOG("[SPAWN] BULLET: y DEPTH=" + bn::to_string<64>(int(position.y())) +
+            BN_LOG("[spawn] BULLET: y DEPTH=" + bn::to_string<64>(int(position.y())) +
                     " x=" + bn::to_string<64>(int(position.x())) +
                     " z=" + bn::to_string<64>(int(position.z())));
             break;
@@ -214,7 +214,7 @@ void enemy_manager::spawn_asteroid(const enemy_def &enemy)
             _enemies[slot].ptr = new asteroid(enemy.position, movement, _models, _controller, _base_scene); // <-- Convert to a proper object pool later
             _enemies[slot].used = true;
             _enemies[slot].source = &enemy;
-            BN_LOG("[SPAWN] ASTEROID: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
+            BN_LOG("[spawn] ASTEROID: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
                    " x=" + bn::to_string<64>(int(enemy.position.x())) +
                    " z=" + bn::to_string<64>(int(enemy.position.z())));
             break;
@@ -241,7 +241,7 @@ void enemy_manager::spawn_oyster(const enemy_def &enemy)
             _enemies[slot].ptr = new oyster(enemy.position, movement, _models, _controller, this, _base_scene, props); // <-- Convert to a proper object pool later
             _enemies[slot].used = true;
             _enemies[slot].source = &enemy;
-            BN_LOG("[SPAWN] OYSTER: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
+            BN_LOG("[spawn] OYSTER: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
                    " x=" + bn::to_string<64>(int(enemy.position.x())) +
                    " z=" + bn::to_string<64>(int(enemy.position.z())));
             break;
@@ -267,7 +267,7 @@ void enemy_manager::spawn_scorpion(const enemy_def &enemy)
             _enemies[slot].ptr = new scorpion(enemy.position, movement, _models, _controller, this, _base_scene, props);
             _enemies[slot].used = true;
             _enemies[slot].source = &enemy;
-            BN_LOG("[SPAWN] SCORPION: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
+            BN_LOG("[spawn] SCORPION: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +
                    " x=" + bn::to_string<64>(int(enemy.position.x())) +
                    " z=" + bn::to_string<64>(int(enemy.position.z())));
             break;

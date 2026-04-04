@@ -15,6 +15,9 @@ namespace fr::model_3d_items
 
 constexpr inline bn::color laser_colors[] = {
     bn::color(31, 31, 0),
+    bn::color(31, 31, 0),
+    bn::color(31, 31, 0),
+    bn::color(31, 31, 0),
 };
 
 }

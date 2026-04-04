@@ -36,13 +36,8 @@ constexpr inline bn::color scorpion_alt_colors[] = {
             bn::color(24,24,24),
 };
 
-constexpr inline bn::color scorpion_hit_colors[] = {
-    bn::color(18, 0, 0),
-    bn::color(18, 0, 0),
-};
-
 constexpr const sphere_collider scorpion_colliders[] = {
-    sphere_collider(fr::point_3d(0, 0, 0), 12),
+    sphere_collider(fr::point_3d(0, 0, 0), 10),
 };
 
 constexpr size_t scorpion_colliders_count = sizeof(scorpion_colliders) / sizeof(scorpion_colliders[0]);
