@@ -33,13 +33,15 @@ enemy_bullet::enemy_bullet(fr::point_3d position, fr::point_3d target, fr::model
         target.z() - position.z()
     );
 
+    // <-- Use unit_vector() from utils.h
+
     bn::fixed distance_mag = bn::sqrt(distance_target.x() * distance_target.x() + distance_target.y() * distance_target.y() + distance_target.z() * distance_target.z()); // <-- Can be optimized to avoid sqrt?
     
     // Normalize to unit vector and multiply by movement speed
     if (distance_mag > 0)
     {
         // <-- Optimize to avoid divisions? It's only in the constructor though.
-        const bn::fixed test_x = distance_target.x().division(distance_mag);
+        const bn::fixed test_x = distance_target.x().division(distance_mag); // <-- REMOVE. NOT USED
         _movement = fr::point_3d(
             (distance_target.x().division(distance_mag)) * MOVEMENT_SPEED,
             (distance_target.y().division(distance_mag)) * MOVEMENT_SPEED,
@@ -51,7 +53,7 @@ enemy_bullet::enemy_bullet(fr::point_3d position, fr::point_3d target, fr::model
         _movement = fr::point_3d(MOVEMENT_SPEED, 0, 0);
     }
     
-    // Add the ship movement to ensure bullet intercepts it.
+    // Add player ship movement to ensure bullet intercepts it.
     _movement.set_y(_movement.y() - player_ship::FORWARD_SPEED); // <-- If speed varies, we'll maybe need to update this.
 
     // Calculate shot rotation towards target

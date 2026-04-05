@@ -4,16 +4,20 @@
 #include "bn_fixed_point.h"
 #include "bn_log.h"
 #include "bn_math.h"
+#include "bn_random.h"
 #include "bn_sound_items.h"
 #include "bn_string.h"
 #include "bn_sprite_animate_actions.h"
+#include "bn_profiler.h"
 
 #include "fr_point_3d.h"
 
 #include "player_laser.h"
+#include "player_ship.h"
 #include "explosion_effect.h"
 #include "enemy_manager.h"
 #include "base_game_scene.h"
+#include "utils.h"
 
 #include "bn_sprite_items_explosion1.h"
 #include "bn_sprite_items_boom.h"
@@ -41,6 +45,11 @@ scorpion::scorpion(fr::point_3d position, fr::point_3d movement, fr::models_3d *
     _model->set_position(position);
     // _model->set_palette(fr::model_3d_items::scorpion_alt_colors);
     _state = enemy_state::ACTIVE;
+
+    // Random theta tilts the local Z axis; psi will spin around it each frame
+    bn::random random;
+    _initial_angle_theta = random.get_int(65536);
+    _model->set_theta(_initial_angle_theta);
 }
 
 void scorpion::destroy()
@@ -112,17 +121,15 @@ void scorpion::update_active(player_ship *player)
     {
     case scorpion_behavior_state::APPROACHING:
     {
-        // Move
-        _position.set_y(_position.y() + MOVEMENT_SPEED);
-        _model->set_position(_position);
+
+        // Spin around local Z (cylinder body axis), tilted by theta
+        _model->set_psi(_model->psi() + 900);
 
         // Transition to ATTACKING state based on distance to player
         const bn::fixed distance_to_player_y = bn::abs(player->get_position().y() - _model->position().y());
-
         if (distance_to_player_y < _player_distance)
         {
             _behavior_state = scorpion_behavior_state::ATTACKING;
-            _initial_attacking_distance = player->get_position().y();
             BN_LOG("[scorpion] Proximity reached, switching to ATTACKING state.");
         }
 
@@ -131,9 +138,31 @@ void scorpion::update_active(player_ship *player)
 
     case scorpion_behavior_state::ATTACKING:
     {
-        // <-- Rotate scorpion so it points to player
-
         // <-- Pursue player
+
+        BN_PROFILER_START("scorpion_attack");
+
+        const auto player_pos = player->get_position();
+        const auto distance_to_player = player_pos - _model->position();
+        const auto unit_direction = unit_vector(distance_to_player);
+
+        auto movement_vector = unit_direction * MOVEMENT_SPEED;
+        
+        // Add the player movement so scorpion intercepts it.
+        movement_vector.set_y(movement_vector.y() - player_ship::FORWARD_SPEED); // <-- If speed varies, we'll maybe need to update this
+
+        // Ensure scorpion doesn't attack from behind the player.
+        if (movement_vector.y() < 0)
+        {
+            movement_vector.set_y(0);
+        }
+
+        _model->set_position(_model->position() + movement_vector);
+
+        BN_PROFILER_STOP();
+        // OG approach: 26-27 ticks
+
+        // <-- Rotate scorpion so it points to player
 
         break;
     }
