@@ -8,6 +8,7 @@
 #include "bn_sprite_animate_actions.h"
 
 #include "fr_models_3d.h"
+#include "fr_point_3d.h"
 
 #include "colliders.h"
 #include "controller.h"
@@ -49,7 +50,7 @@ constexpr size_t scorpion_colliders_count = sizeof(scorpion_colliders) / sizeof(
 class scorpion : public base_enemy
 {
   public:
-    scorpion(fr::point_3d position, fr::point_3d movement, fr::models_3d *models,
+    scorpion(fr::point_3d position, fr::models_3d *models,
         controller *controller, enemy_manager *enemy_manager, 
         base_game_scene *base_scene, const scorpion_properties* props = nullptr);
 
@@ -75,15 +76,13 @@ class scorpion : public base_enemy
     }
 
     const bn::fixed MOVEMENT_SPEED = 2.5;
-    const bn::fixed ROTATION_SPEED_IDLE = 1.5;
+    const bn::fixed ROTATION_SPEED_IDLE = 900;
+    const bn::fixed DIRECTION_CORRECTION_SPEED = 0.035;
     const int DAMAGE_COOLDOWN = 3;
     const int MAX_HEALTH = 3;
     const int TOTAL_EXPLODE_FRAMES = 10;
 
   private:
-    fr::point_3d _movement;
-    const bn::color *_current_palette;
-
     base_game_scene *_base_scene;
     fr::models_3d *_models;
     fr::model_3d *_model;
@@ -92,16 +91,20 @@ class scorpion : public base_enemy
 
     scorpion_behavior_state _behavior_state = scorpion_behavior_state::APPROACHING;
 
+    const bn::color *_current_palette;
+
     int _health = MAX_HEALTH;
     int _damage_cooldown = 0;
     int _explode_frames = 0;
 
     bn::fixed _player_distance = 300; // <-- MAGIC NUMBER
     bn::fixed _initial_angle_theta;
+    fr::point_3d _current_movement_vector;
 
     bn::optional<explosion_effect> _explosion;
-
     sphere_collider_set _sphere_collider_set;
+
+    const fr::point_3d calculate_target_vector(player_ship* player);
 };
 
 #endif // SCORPION_H

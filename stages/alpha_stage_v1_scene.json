@@ -389,16 +389,6 @@
           "rotation": 500
         },
         {
-          "type": "SCORPION",
-          "enabled": true,
-          "position": {
-            "x": -20,
-            "y": -880,
-            "z": 30
-          },
-          "rotation": 100
-        },
-        {
           "type": "OYSTER",
           "enabled": true,
           "position": {
@@ -424,8 +414,18 @@
           "enabled": true,
           "position": {
             "x": -20,
-            "y": -880,
-            "z": 30
+            "y": -1000,
+            "z": 40
+          },
+          "rotation": 100
+        },
+        {
+          "type": "SCORPION",
+          "enabled": true,
+          "position": {
+            "x": 20,
+            "y": -600,
+            "z": 10
           },
           "rotation": 100
         }

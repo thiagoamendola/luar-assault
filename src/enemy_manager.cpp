@@ -255,8 +255,6 @@ void enemy_manager::spawn_scorpion(const enemy_def &enemy)
     {
         if (!_enemies[slot].used)
         {
-            fr::point_3d movement(0, 25, 0); // placeholder movement
-
             // Get scorpion-specific properties if available
             const scorpion_properties *props = nullptr;
             if (enemy.properties)
@@ -264,7 +262,7 @@ void enemy_manager::spawn_scorpion(const enemy_def &enemy)
                 props = get_enemy_properties<scorpion_properties>(enemy);
             }
 
-            _enemies[slot].ptr = new scorpion(enemy.position, movement, _models, _controller, this, _base_scene, props);
+            _enemies[slot].ptr = new scorpion(enemy.position, _models, _controller, this, _base_scene, props);
             _enemies[slot].used = true;
             _enemies[slot].source = &enemy;
             BN_LOG("[spawn] SCORPION: y DEPTH=" + bn::to_string<64>(int(enemy.position.y())) +

@@ -23,10 +23,10 @@
 #include "bn_sprite_items_boom.h"
 #include "models/scorpion.h"
 
-scorpion::scorpion(fr::point_3d position, fr::point_3d movement, fr::models_3d *models,
+scorpion::scorpion(fr::point_3d position, fr::models_3d *models,
                    controller *controller, enemy_manager *enemy_manager,
                    base_game_scene *base_scene, const scorpion_properties *props)
-    : _movement(movement), _models(models), _controller(controller), _enemy_manager(enemy_manager),
+    : _models(models), _controller(controller), _enemy_manager(enemy_manager),
       _base_scene(base_scene),
       _sphere_collider_set(fr::model_3d_items::scorpion_colliders)
 {
@@ -43,7 +43,6 @@ scorpion::scorpion(fr::point_3d position, fr::point_3d movement, fr::models_3d *
         &_models->create_dynamic_model(fr::model_3d_items::scorpion_full,
                                        _current_palette);
     _model->set_position(position);
-    // _model->set_palette(fr::model_3d_items::scorpion_alt_colors);
     _state = enemy_state::ACTIVE;
 
     // Random theta tilts the local Z axis; psi will spin around it each frame
@@ -123,7 +122,7 @@ void scorpion::update_active(player_ship *player)
     {
 
         // Spin around local Z (cylinder body axis), tilted by theta
-        _model->set_psi(_model->psi() + 900);
+        _model->set_psi(_model->psi() + ROTATION_SPEED_IDLE);
 
         // Transition to ATTACKING state based on distance to player
         const bn::fixed distance_to_player_y = bn::abs(player->get_position().y() - _model->position().y());
@@ -131,6 +130,9 @@ void scorpion::update_active(player_ship *player)
         {
             _behavior_state = scorpion_behavior_state::ATTACKING;
             BN_LOG("[scorpion] Proximity reached, switching to ATTACKING state.");
+            // <--
+            _current_movement_vector = calculate_target_vector(player);
+
         }
 
         break;
@@ -138,15 +140,22 @@ void scorpion::update_active(player_ship *player)
 
     case scorpion_behavior_state::ATTACKING:
     {
-        // <-- Pursue player
+        // Pursue player
 
         BN_PROFILER_START("scorpion_attack");
 
-        const auto player_pos = player->get_position();
-        const auto distance_to_player = player_pos - _model->position();
-        const auto unit_direction = unit_vector(distance_to_player);
+        // Get unit vector to target.
+        const auto unit_target_direction = calculate_target_vector(player);
+        // Get diff with current movement vector
+        const auto direction_diff = unit_target_direction - _current_movement_vector;
+        // Gradually adjust movement vector towards target direction.
+        const auto direction_diff_unit = unit_vector(direction_diff);
+        const auto direction_diff_magnitude = bn::fixed(bn::sqrt((direction_diff.x() * direction_diff.x()) + (direction_diff.y() * direction_diff.y()) + (direction_diff.z() * direction_diff.z()))); // <-- OPTIMIZE
+        _current_movement_vector += direction_diff_unit * bn::min(direction_diff_magnitude, DIRECTION_CORRECTION_SPEED);
+        // Make it unit vector again after direction correction.
+        _current_movement_vector = unit_vector(_current_movement_vector);
 
-        auto movement_vector = unit_direction * MOVEMENT_SPEED;
+        auto movement_vector = _current_movement_vector * MOVEMENT_SPEED;
         
         // Add the player movement so scorpion intercepts it.
         movement_vector.set_y(movement_vector.y() - player_ship::FORWARD_SPEED); // <-- If speed varies, we'll maybe need to update this
@@ -160,7 +169,7 @@ void scorpion::update_active(player_ship *player)
         _model->set_position(_model->position() + movement_vector);
 
         BN_PROFILER_STOP();
-        // OG approach: 26-27 ticks
+        // OG approach: 50 ticks
 
         // <-- Rotate scorpion so it points to player
 
@@ -230,4 +239,11 @@ void scorpion::kill()
     // Remove scorpion model
     _models->destroy_dynamic_model(*_model);
     _model = nullptr;
+}
+
+const fr::point_3d scorpion::calculate_target_vector(player_ship* player)
+{
+    const auto player_pos = player->get_position();
+    const auto distance_to_player = player_pos - _model->position();
+    return unit_vector(distance_to_player);
 }
