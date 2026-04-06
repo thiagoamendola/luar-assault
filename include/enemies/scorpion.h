@@ -77,7 +77,7 @@ class scorpion : public base_enemy
 
     const bn::fixed MOVEMENT_SPEED = 2.5;
     const bn::fixed ROTATION_SPEED_IDLE = 900;
-    const bn::fixed DIRECTION_CORRECTION_SPEED = 0.035;
+    const bn::fixed DIRECTION_CORRECTION_SPEED = 0.03;
     const int POINT_STOP_DISTANCE = 75;
     const int DAMAGE_COOLDOWN = 3;
     const int MAX_HEALTH = 3;
