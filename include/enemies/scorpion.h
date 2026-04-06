@@ -78,9 +78,12 @@ class scorpion : public base_enemy
     const bn::fixed MOVEMENT_SPEED = 2.5;
     const bn::fixed ROTATION_SPEED_IDLE = 900;
     const bn::fixed DIRECTION_CORRECTION_SPEED = 0.035;
+    const int POINT_STOP_DISTANCE = 75;
     const int DAMAGE_COOLDOWN = 3;
     const int MAX_HEALTH = 3;
     const int TOTAL_EXPLODE_FRAMES = 10;
+    
+    const int DEFAULT_ATTACK_DISTANCE = 300;
 
   private:
     base_game_scene *_base_scene;
@@ -97,7 +100,7 @@ class scorpion : public base_enemy
     int _damage_cooldown = 0;
     int _explode_frames = 0;
 
-    bn::fixed _player_distance = 300; // <-- MAGIC NUMBER
+    bn::fixed _player_distance = DEFAULT_ATTACK_DISTANCE;
     bn::fixed _initial_angle_theta;
     fr::point_3d _current_movement_vector;
 

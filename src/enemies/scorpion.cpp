@@ -130,8 +130,8 @@ void scorpion::update_active(player_ship *player)
         {
             _behavior_state = scorpion_behavior_state::ATTACKING;
             BN_LOG("[scorpion] Proximity reached, switching to ATTACKING state.");
-            // <--
             _current_movement_vector = calculate_target_vector(player);
+            _model->set_theta(0); // Clear random tilt so phi gives clean heading in ATTACKING
 
         }
 
@@ -143,6 +143,8 @@ void scorpion::update_active(player_ship *player)
         // Pursue player
 
         BN_PROFILER_START("scorpion_attack");
+
+        auto should_rotate_towards_target = true;
 
         // Get unit vector to target.
         const auto unit_target_direction = calculate_target_vector(player);
@@ -161,17 +163,46 @@ void scorpion::update_active(player_ship *player)
         movement_vector.set_y(movement_vector.y() - player_ship::FORWARD_SPEED); // <-- If speed varies, we'll maybe need to update this
 
         // Ensure scorpion doesn't attack from behind the player.
-        if (movement_vector.y() < 0)
+        if (_model->position().y() > player->get_position().y())
         {
             movement_vector.set_y(0);
+        }
+        // Stop pointing towards target a bit earlier.
+        if (_model->position().y() + POINT_STOP_DISTANCE > player->get_position().y()) // <-- MAGIC NUMBER
+        {
+            should_rotate_towards_target = false;
         }
 
         _model->set_position(_model->position() + movement_vector);
 
-        BN_PROFILER_STOP();
-        // OG approach: 50 ticks
+        // Rotate scorpion to face movement direction (only in front of player)
+        bn::fixed angle_phi;
+        if (should_rotate_towards_target)
+        {
+            // Scorpion model faces -Y by default, so atan2(dir.x, -dir.y) maps directly to phi with no offset.
+            // (Bullet model faces +X, hence its -90deg offset. Scorpion needs 0deg offset.)
+            const auto raw_direction = player->get_position() - _model->position();
+            bn::fixed angle_phi_degrees = bn::degrees_atan2(
+                raw_direction.x().integer(),
+                -raw_direction.y().integer());
+            bn::rule_of_three_approximation rotation_units(360, 65536);
+            angle_phi = rotation_units.calculate(angle_phi_degrees);
 
-        // <-- Rotate scorpion so it points to player
+            _model->set_phi(0);                                        // Reset phi first to avoid gimbal lock
+            _model->set_psi(_model->psi() + ROTATION_SPEED_IDLE);      // Roll around body axis
+            _model->set_phi(-16384 + angle_phi);                       // Yaw towards target
+        }
+        else
+        {
+            // Just roll around body axis without yawing to look at target.
+            angle_phi = _model->phi();;
+            _model->set_phi(0);                                   // Reset phi first to avoid gimbal lock
+            _model->set_psi(_model->psi() + ROTATION_SPEED_IDLE); // Roll around body axis
+            _model->set_phi(angle_phi);
+        }
+
+        BN_PROFILER_STOP();
+        // OG approach: 69 ticks
 
         break;
     }
