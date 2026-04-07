@@ -46,9 +46,9 @@ public:
     const int TARGET_MAX_Y = 75;
 
     // Target animation constants
-    const bn::fixed TARGET_INITIAL_SCALE = 1.4;
+    const bn::fixed TARGET_INITIAL_SCALE = 1.3;
     const int TARGET_GROWTH_STEPS = 15;
-    const bn::fixed TARGET_GROWTH_MAX_SCALE = 1.8;
+    const bn::fixed TARGET_GROWTH_MAX_SCALE = 1.5;
 
     // Fade constants
     const int FADE_FRAMES = 30;
