@@ -11,6 +11,7 @@
 #include "bn_profiler.h"
 
 #include "fr_point_3d.h"
+#include "fr_sin_cos.h"
 
 #include "player_laser.h"
 #include "player_ship.h"
@@ -130,9 +131,19 @@ void scorpion::update_active(player_ship *player)
         {
             _behavior_state = scorpion_behavior_state::ATTACKING;
             BN_LOG("[scorpion] Proximity reached, switching to ATTACKING state.");
+            // Movement always points toward player — no catapulting.
             _current_movement_vector = calculate_target_vector(player);
-            _model->set_theta(0); // Clear random tilt so phi gives clean heading in ATTACKING
 
+            // Derive rotation vector from the current phi during state transition.
+            // (+16384 undoes the -16384 offset applied in the ATTACKING rotation block)
+            int current_phi_angle = _model->phi().integer() + 16384;
+            _current_rotation_vector = fr::point_3d(
+                fr::sin(current_phi_angle),
+                -fr::cos(current_phi_angle),
+                0
+            );
+            // theta and phi are intentionally left unchanged here.
+            // theta will decay gradually to 0 inside the ATTACKING update.
         }
 
         break;
@@ -175,17 +186,33 @@ void scorpion::update_active(player_ship *player)
 
         _model->set_position(_model->position() + movement_vector);
 
+        // Gradually decay theta toward 0 for clean XY heading (avoids the snap of an instant reset).
+        {
+            bn::fixed theta = _model->theta();
+            if (theta > 32768) theta -= 65536; // normalize to [-32768, 32768] for shortest path
+            _model->set_theta(theta - theta / 32); // proportional decay: ~32 frames to reach near-zero
+        }
+
         // Rotate scorpion to face movement direction (only in front of player)
         bn::fixed angle_phi;
         if (should_rotate_towards_target)
         {
-            // Scorpion model faces -Y by default, so atan2(dir.x, -dir.y) maps directly to phi with no offset.
-            // (Bullet model faces +X, hence its -90deg offset. Scorpion needs 0deg offset.)
-            const auto raw_direction = player->get_position() - _model->position();
-            bn::fixed angle_phi_degrees = bn::degrees_atan2(
-                raw_direction.x().integer(),
-                -raw_direction.y().integer());
+            // Steer _current_rotation_vector toward _current_movement_vector at the same
+            // rate as the movement steering, so phi rotates smoothly rather than snapping.
+            const auto rot_diff = _current_movement_vector - _current_rotation_vector;
+            const auto rot_diff_unit = unit_vector(rot_diff);
+            const auto rot_diff_magnitude = bn::fixed(bn::sqrt(
+                (rot_diff.x() * rot_diff.x()) +
+                (rot_diff.y() * rot_diff.y()) +
+                (rot_diff.z() * rot_diff.z())));
+            _current_rotation_vector += rot_diff_unit * bn::min(rot_diff_magnitude, ROTATION_TRANSITION_SPEED);
+            _current_rotation_vector = unit_vector(_current_rotation_vector);
+
+            // Drive phi from the smoothly-interpolated rotation vector.
             bn::rule_of_three_approximation rotation_units(360, 65536);
+            bn::fixed angle_phi_degrees = bn::degrees_atan2(
+                (_current_rotation_vector.x() * 100).integer(),
+                (-_current_rotation_vector.y() * 100).integer());
             angle_phi = rotation_units.calculate(angle_phi_degrees);
 
             _model->set_phi(0);                                        // Reset phi first to avoid gimbal lock
@@ -202,7 +229,7 @@ void scorpion::update_active(player_ship *player)
         }
 
         BN_PROFILER_STOP();
-        // OG approach: 69 ticks
+        // OG approach: 97 ticks
 
         break;
     }
