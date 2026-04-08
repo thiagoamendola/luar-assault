@@ -18,6 +18,7 @@
 #include "enemy_manager.h"
 #include "scene_type.h"
 #include "letterbox_manager.h"
+#include "banner_manager.h"
 
 class alpha_stage_v1_scene : public fr::scene
 {
@@ -40,6 +41,7 @@ class alpha_stage_v1_scene : public fr::scene
     // fr::sprite_3d_item _test_sprite_sprite_3d_item;
 
     letterbox_manager _letterbox_manager;
+    banner_manager _banner_manager { 180, 180 }; // 3s delay, 3s display
     
     // Background
     // bn::regular_bg_ptr _scene_bg;

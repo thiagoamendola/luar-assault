@@ -76,6 +76,7 @@ bn::optional<scene_type> alpha_stage_v1_scene::update()
     bn::optional<scene_type> result;
 
     _anim_bg_action.update(); // <-- Pause on pause
+    _banner_manager.update();
 
     bool change_scene = _base_game_scene.update();
 
@@ -85,7 +86,7 @@ bn::optional<scene_type> alpha_stage_v1_scene::update()
     }
 
     // Fade out letterbox after a while
-    if (!_no_letterbox && _base_game_scene.get_current_position() < 1050)
+    if (!_no_letterbox && _base_game_scene.get_current_position() < 1650)
     {
         _no_letterbox = true;
         _letterbox_manager.fade_out();
