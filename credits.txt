@@ -22,6 +22,7 @@ André Tuffo
 - Fonts
 Vonwaon Bitmap by Haoyu Qiu
 k12x8 from littlelimit.net
+Tanklager from Tunera. Copyright © 2024, Ariel Martín Pérez <contact@tainome.com>
 
 
 - Additional Thanks
