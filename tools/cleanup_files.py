@@ -7,6 +7,7 @@ from termcolor import colored
 # File patterns to delete
 UNWANTED_PATTERNS = [
     "*.bmp~",
+    "*.kra~",
     "*.blend1",
     "*-autosave.kra",
 ]
