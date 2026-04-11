@@ -12,8 +12,7 @@ base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
             _game_over_manager(this), _end_stage_banner(this), _prepare_to_leave(false)
 {
     // Initialize camera position.
-    _player_ship.set_position(fr::point_3d(0, initial_position, 0)); // <-- Starting position. CHANGE THAT
-    // _player_ship.set_position(fr::point_3d(0, 860, 0)); // <-- Starting position. CHANGE THAT
+    _player_ship.set_position(fr::point_3d(0, initial_position, 0));
 
     // Load 3D model colors.
     _models.load_colors(scene_colors, color_mapping);

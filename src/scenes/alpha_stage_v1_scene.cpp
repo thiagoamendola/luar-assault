@@ -30,20 +30,20 @@
 #include "models/shot.h"
 #include "bn_regular_bg_items_black.h"
 // #include "bn_regular_bg_items_moon.h"
-#include "bn_regular_bg_items_bg_anim.h"
+#include "bn_regular_bg_items_stage1_bg_anim.h"
 #include "common_variable_8x16_sprite_font.h"
 
 
 alpha_stage_v1_scene::alpha_stage_v1_scene()
-    : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count, 1160),
+    : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count, 1900), // <-- MAGIC NUMBER
     //   _enemy_manager(&_models, &_controller),
       _prepare_to_leave(false),
       _letterbox_manager(),
     //   _ninja_action(bn::create_sprite_animate_action_forever(
     //       _ninja_spr, 16, bn::sprite_items::ninja.tiles_item(), 0, 1, 2, 3)),
-      _anim_bg(bn::regular_bg_items::bg_anim.create_bg(0, 0)),
+      _anim_bg(bn::regular_bg_items::stage1_bg_anim.create_bg(0, 0)),
       _anim_bg_action(bn::create_regular_bg_cached_animate_action_forever(
-            _anim_bg, 6, bn::regular_bg_items::bg_anim.map_item(), 0, 1, 2, 3))
+            _anim_bg, 4, bn::regular_bg_items::stage1_bg_anim.map_item(), 0, 1, 2, 3))
     //   _scene_bg(bn::regular_bg_items::floor.create_bg(0, 0)),
 //   _moon_bg(bn::regular_bg_items::moon.create_bg(0, 20))
 //   _test_sprite_sprite_3d_item(bn::sprite_items::butano_background_2, 0)
