@@ -28,8 +28,35 @@ def task_generate_scenes() -> int:
 def task_import_models() -> int:
     return batch_import_models.main([])
 
+def _invalidate_font_cache_if_png_changed() -> None:
+    """
+    butano_fonts_tool only tracks .fnt files for change detection — PNG atlas
+    changes are invisible to it and silently skipped.  We fix that here by
+    checking every PNG inside the font folders: if any PNG is newer than the
+    cached font-info file we delete that cache file so the tool is forced to
+    do a full regeneration on the next run.
+    """
+    font_info_path = os.path.join(build_dir, '_bn_fonts_files_info.txt')
+    if not os.path.exists(font_info_path):
+        return  # no cache yet – nothing to invalidate
+
+    cache_mtime = os.path.getmtime(font_info_path)
+
+    for folder in fonts_path.split():
+        if not os.path.isdir(folder):
+            continue
+        for fname in os.listdir(folder):
+            if fname.lower().endswith('.png') or fname.lower().endswith('.bmp'):
+                fpath = os.path.join(folder, fname)
+                if os.path.getmtime(fpath) > cache_mtime:
+                    print(f"{colored('[precompile]', 'light_blue')} Font PNG changed ({fname}), invalidating font cache.")
+                    os.remove(font_info_path)
+                    return  # one hit is enough
+
+
 def task_generate_fonts() -> int:
     try:
+        _invalidate_font_cache_if_png_changed()
         butano_fonts_tool.process_fonts(fonts_path, build_dir, texts_path)
         return 0
     except Exception as ex:
