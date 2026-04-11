@@ -2,12 +2,12 @@
 
 #include "bn_sprite_builder.h"
 #include "bn_sprite_items_banner_background.h"
-#include "vonwaon_bitmap_black_sprite_font.h"
+#include "tanklager_sprite_font.h"
 
 banner_manager::banner_manager(int delay_frames, int display_frames) :
     _banner_tiles(bn::sprite_items::banner_background.tiles_item().create_tiles()),
     _banner_palette(bn::sprite_items::banner_background.palette_item().create_palette()),
-    _text_generator(vonwaon_bitmap_black_sprite_font),
+    _text_generator(tanklager_sprite_font),
     _delay_frames(delay_frames),
     _display_frames(display_frames)
 {
@@ -24,7 +24,7 @@ void banner_manager::update()
         --_banner_delay_timer;
         if (_banner_delay_timer == 0)
         {
-            _show_banner(15, 4);
+            _show_banner(15, 3);
         }
     }
     else if (_banner_timer > 0)
@@ -71,7 +71,7 @@ void banner_manager::_show_banner(int cols, int rows)
     _text_generator.set_one_sprite_per_character(true);
     _text_generator.generate(0, 0, "MISSION START", _text_sprites);
     _text_generator.set_one_sprite_per_character(false);
-    constexpr bn::fixed text_scale = 1.5;
+    constexpr bn::fixed text_scale = 1;
     for (bn::sprite_ptr& spr : _text_sprites)
     {
         spr.set_x(spr.x() * text_scale);
