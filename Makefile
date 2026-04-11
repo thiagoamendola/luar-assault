@@ -30,7 +30,7 @@
 #
 # All directories are specified relative to the project directory where the makefile is found.
 #---------------------------------------------------------------------------------------------------------------------
-TARGET      	:=  luar-assault-v0.5.1
+TARGET      	:=  luar-assault-v0.5.2
 BUILD       	:=  build
 LIBBUTANO   	:=  ../butano/butano
 PYTHON      	:=  python
