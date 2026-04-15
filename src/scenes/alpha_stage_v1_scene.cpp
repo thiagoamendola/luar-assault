@@ -32,13 +32,22 @@
 // #include "bn_regular_bg_items_moon.h"
 #include "bn_regular_bg_items_stage1_bg_anim.h"
 #include "common_variable_8x16_sprite_font.h"
+#include "bn_sprite_items_intro_banner_alpha.h"
 
+
+// Static banner configuration - 3 sprites from spritesheet, spaced 64px apart
+static const banner_sprite_entry intro_banner_entries[] = {
+    { &bn::sprite_items::intro_banner_alpha, -54, 10, 0, 0 },  // Left sprite (index 0)
+    { &bn::sprite_items::intro_banner_alpha,   10, 10, 0, 1 },  // Center sprite (index 1)
+    { &bn::sprite_items::intro_banner_alpha,  74, 10, 0, 2 },  // Right sprite (index 2)
+};
 
 alpha_stage_v1_scene::alpha_stage_v1_scene()
     : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count, 1900), // <-- MAGIC NUMBER
     //   _enemy_manager(&_models, &_controller),
       _prepare_to_leave(false),
       _letterbox_manager(),
+      _banner_manager(180, 180, bn::nullopt, bn::nullopt, intro_banner_entries), // 3s delay, 3s display
     //   _ninja_action(bn::create_sprite_animate_action_forever(
     //       _ninja_spr, 16, bn::sprite_items::ninja.tiles_item(), 0, 1, 2, 3)),
       _anim_bg(bn::regular_bg_items::stage1_bg_anim.create_bg(0, 0)),
