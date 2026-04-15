@@ -84,7 +84,15 @@ bn::optional<scene_type> alpha_stage_v1_scene::update()
 {
     bn::optional<scene_type> result;
 
-    _anim_bg_action.update(); // <-- Pause on pause
+    // Only animate background during normal gameplay
+    bool should_animate_bg = !_base_game_scene.get_pause_manager()->is_paused() &&
+                             !_base_game_scene.get_game_over_manager()->is_shown() &&
+                             !_base_game_scene.get_end_stage_banner()->is_shown();
+    if (should_animate_bg)
+    {
+        _anim_bg_action.update();
+    }
+    
     _banner_manager.update();
 
     bool change_scene = _base_game_scene.update();
