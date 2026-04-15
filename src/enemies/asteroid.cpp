@@ -28,10 +28,11 @@ asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *
       _sphere_collider_set(fr::model_3d_items::asteroid_colliders)
 {
     _position = position;
+    _current_palette = fr::model_3d_items::asteroid_alt1_colors;
     _model =
-        &_models->create_dynamic_model(fr::model_3d_items::asteroid1_full);
+        &_models->create_dynamic_model(fr::model_3d_items::asteroid1_full, _current_palette);
     _model->set_position(position);
-    _model->set_palette(fr::model_3d_items::asteroid1_colors);
+    // _model->set_palette(fr::model_3d_items::asteroid1_colors);
     _state = enemy_state::ACTIVE;
 }
 
@@ -69,7 +70,7 @@ void asteroid::update(player_ship* player)
         {
            _damage_cooldown--;
             if (_damage_cooldown <= 0) {
-                _model->set_palette(fr::model_3d_items::asteroid1_colors);
+                _model->set_palette(_current_palette);
             }
         }   
     

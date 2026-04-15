@@ -33,10 +33,10 @@ oyster::oyster(fr::point_3d position, fr::point_3d movement, fr::models_3d *mode
     }
     
     _position = position;
+    _current_palette = fr::model_3d_items::oyster_alt1_colors;
     _model =
-        &_models->create_dynamic_model(fr::model_3d_items::moon_oyster_full);
+        &_models->create_dynamic_model(fr::model_3d_items::moon_oyster_full, _current_palette);
     _model->set_position(position);
-    _model->set_palette(fr::model_3d_items::moon_oyster_colors);
     _state = enemy_state::ACTIVE;
 }
 
@@ -103,7 +103,7 @@ void oyster::update_active(player_ship* player)
     {
         _damage_cooldown--;
         if (_damage_cooldown <= 0) {
-            _model->set_palette(fr::model_3d_items::moon_oyster_colors);
+            _model->set_palette(_current_palette);
         }
     }   
 

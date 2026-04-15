@@ -32,6 +32,11 @@ enum class oyster_behavior_state {
 namespace fr::model_3d_items
 {
 
+constexpr inline bn::color oyster_alt1_colors[] = {
+    bn::color(16,17,6),
+    bn::color(16,17,6),
+};
+
 constexpr inline bn::color oyster_hit_colors[] = {
     bn::color(18, 0, 0),
     bn::color(18, 0, 0),
@@ -94,6 +99,7 @@ class oyster : public base_enemy
     controller *_controller;
     enemy_manager *_enemy_manager;
 
+    const bn::color *_current_palette;
     oyster_behavior_state _behavior_state = oyster_behavior_state::APPROACHING;
 
     int _health = MAX_HEALTH;

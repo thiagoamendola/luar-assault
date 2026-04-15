@@ -22,6 +22,10 @@ class base_game_scene;
 namespace fr::model_3d_items
 {
 
+constexpr inline bn::color asteroid_alt1_colors[] = {
+    bn::color(18,14,2),
+};
+
 constexpr inline bn::color asteroid_hit_colors[] = {
     bn::color(18, 0, 0),
 };
@@ -76,6 +80,8 @@ class asteroid : public base_enemy
     fr::models_3d *_models;
     fr::model_3d *_model;
     controller *_controller;
+
+    const bn::color *_current_palette;
 
     int _damage_cooldown = 0;
     int _health = MAX_HEALTH;

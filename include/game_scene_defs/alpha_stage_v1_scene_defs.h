@@ -12,9 +12,9 @@
 #include "colliders.h"
 #include "player_laser.h"
 #include "player_ship.h"
+#include "enemies/asteroid.h"
+#include "enemies/oyster.h"
 #include "enemies/scorpion.h"
-#include "models/asteroid1.h"
-#include "models/moon_oyster.h"
 #include "models/player_ship_02.h"
 #include "models/shot.h"
 
@@ -254,8 +254,8 @@ constexpr const auto raw_scene_colors = {
     bn::span<const bn::color>(fr::model_3d_items::laser_colors),
     bn::span<const bn::color>(fr::model_3d_items::hurt_colors),
     bn::span<const bn::color>(fr::model_3d_items::player_ship_02_colors),
-    bn::span<const bn::color>(fr::model_3d_items::asteroid1_colors),
-    bn::span<const bn::color>(fr::model_3d_items::moon_oyster_colors),
+    bn::span<const bn::color>(fr::model_3d_items::asteroid_alt1_colors),
+    bn::span<const bn::color>(fr::model_3d_items::oyster_alt1_colors),
     bn::span<const bn::color>(fr::model_3d_items::scorpion_alt_colors),
     bn::span<const bn::color>(fr::model_3d_items::shot_colors)
 };

@@ -34,7 +34,7 @@ namespace fr::model_3d_items
 
 constexpr inline bn::color scorpion_alt_colors[] = {
             bn::color(24,0,2),
-            bn::color(24,24,24),
+            bn::color(16,17,6),
 };
 
 constexpr const sphere_collider scorpion_colliders[] = {
