@@ -40,30 +40,57 @@ mock_cutscene_scene::mock_cutscene_scene() :
     // Timeline commands
     move_model_cmd *_cmd_move = nullptr;
     rotate_model_combined_cmd *_cmd_rotate = nullptr;
+    move_camera_cmd *_cmd_move_camera = nullptr;
+    rotate_camera_cmd *_cmd_rotate_camera = nullptr;
+
+    // _cmd_rotate_camera = new rotate_camera_cmd(
+    //     _camera,
+    //     model_rotation{.phi = 0, .theta = -6000, .psi = 0}, // start
+    //     model_rotation{.phi = 0, .theta = 3000, .psi = 0}, // end
+    //     0, 90, easing::EASE_OUT);
+    // _timeline.add(_cmd_rotate_camera);
 
     _cmd_move = new move_model_cmd(
         *_model,
         fr::point_3d(-30, -210, -60), // start
         fr::point_3d(0, -180, 0),     // end
-        0, 50, easing::EASE_OUT);
+        50, 70, easing::EASE_OUT);
     _timeline.add(_cmd_move);
 
     _cmd_rotate = new rotate_model_combined_cmd(
         *_model,
         model_rotation{.phi = -8000, .theta = 0, .psi = -16383},     // start
         model_rotation{.phi = -8000, .theta = 67000, .psi = -16383}, // end
-        60, 30, easing::EASE_IN_OUT);
+        130, 30, easing::EASE_IN_OUT);
     _timeline.add(_cmd_rotate);
 
     _cmd_move = new move_model_cmd(
         *_model,
         fr::point_3d(0, -180, 0),   // start
         fr::point_3d(150, -30, -0), // end
-        100, 30, easing::EASE_IN);
+        170, 30, easing::EASE_IN);
     _timeline.add(_cmd_move);
 
+    _cmd_rotate_camera = new rotate_camera_cmd(
+        _camera,
+        model_rotation{.phi = 0, .theta = 3000, .psi = 0}, // start
+        model_rotation{.phi = 0, .theta = 2500, .psi = -6000}, // end
+        170, 30, easing::EASE_IN_OUT);
+    _timeline.add(_cmd_rotate_camera);
+
+    _cmd_move_camera = new move_camera_cmd(
+        _camera,
+        _camera.position(),
+        fr::point_3d(-50, 0, -35),
+        170, 30, easing::EASE_IN_OUT);
+    _timeline.add(_cmd_move_camera);
+
     _timeline.add(new play_sound_cmd(
-        bn::sound_items::player_death, 1, 95));
+        bn::sound_items::mc_test_04, 1, 0));
+    _timeline.add(new play_sound_cmd(
+        bn::sound_items::mc_test_05, 1, 100));
+    _timeline.add(new play_sound_cmd(
+        bn::sound_items::player_death, 1, 160));
 
     // Letterbox
     _letterbox.show();
@@ -122,8 +149,8 @@ bn::optional<scene_type> mock_cutscene_scene::update()
     if (!_timeline.is_running() && !_bgs_fade_out_action)
     {
         // Timeline done — begin fade to black
-        _bgs_fade_out_action.emplace(45, 1);
-        _sprites_fade_out_action.emplace(45, 1);
+        _bgs_fade_out_action.emplace(30, 1);
+        _sprites_fade_out_action.emplace(30, 1);
     }
     else if (_bgs_fade_out_action && _sprites_fade_out_action && !_bgs_fade_out_action->done())
     {

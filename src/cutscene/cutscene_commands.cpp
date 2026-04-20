@@ -1,5 +1,6 @@
 #include "cutscene/cutscene_commands.h"
 
+#include "bn_log.h"
 #include "bn_utility.h"
 
 // ---------------------------------------------------------------------------
@@ -89,6 +90,45 @@ void move_camera_cmd::update(int local_frame)
 void move_camera_cmd::end()
 {
     camera.set_position(end_pos);
+}
+
+// ---------------------------------------------------------------------------
+// rotate_camera_cmd
+// ---------------------------------------------------------------------------
+
+rotate_camera_cmd::rotate_camera_cmd(fr::camera_3d& cam,
+                                     model_rotation s,
+                                     model_rotation e,
+                                     int start, int dur,
+                                     easing ease) :
+    timeline_command(start, dur),
+    camera(cam), start_rot(s), end_rot(e), ease(ease) {}
+
+void rotate_camera_cmd::_apply(const model_rotation& r)
+{
+    camera.set_phi(r.phi);
+    camera.set_theta(r.theta);
+    camera.set_psi(r.psi);
+}
+
+void rotate_camera_cmd::start()
+{
+    _apply(start_rot);
+}
+
+void rotate_camera_cmd::update(int local_frame)
+{
+    bn::fixed t = apply_easing(bn::fixed(local_frame) / duration, ease);
+    model_rotation r;
+    r.phi   = start_rot.phi   + (end_rot.phi   - start_rot.phi)   * t;
+    r.theta = start_rot.theta + (end_rot.theta - start_rot.theta) * t;
+    r.psi   = start_rot.psi   + (end_rot.psi   - start_rot.psi)   * t;
+    _apply(r);
+}
+
+void rotate_camera_cmd::end()
+{
+    _apply(end_rot);
 }
 
 // ---------------------------------------------------------------------------

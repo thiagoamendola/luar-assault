@@ -104,7 +104,7 @@ title_scene::title_scene() : _prepare_to_leave(false)
     // crazy after. Prob a instrument! (.it, BB)
     // bn::music_items::title2.play(0.3); // WORKS!!! (.it, BB)
     
-    bn::music_items::title_v2.play(0.2); // WORKS!!! With lower HH (.it, BB)
+    bn::music_items::title_v2.play(0.3); // WORKS!!! With lower HH (.it, BB)
     // bn::music_items::gameplay2.play(0.3); 
     // bn::music_items::gameplay2c1.play(0.3); // WORKS!!!
 
@@ -131,7 +131,6 @@ bn::optional<scene_type> title_scene::update()
             _leave_scene_frame_counter++;
             if (_leave_scene_frame_counter > 20)
             {
-                bn::sound_items::mc_test_05.play(1.0); // <-- Test voice playback. Move to cutscene later.
                 _leave_scene_frame_counter = -2000; // <-- Very hacky. Remove later.
             }
         }

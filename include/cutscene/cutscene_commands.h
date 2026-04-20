@@ -86,6 +86,31 @@ public:
 };
 
 /**
+ * Interpolates phi, theta AND psi of a camera together in a single command.
+ *
+ * Uses the same model_rotation struct as rotate_model_combined_cmd.
+ */
+class rotate_camera_cmd : public timeline_command
+{
+public:
+    fr::camera_3d& camera;
+    model_rotation start_rot;
+    model_rotation end_rot;
+    easing         ease;
+
+    rotate_camera_cmd(fr::camera_3d& cam,
+                      model_rotation s, model_rotation e,
+                      int start, int dur, easing ease = easing::LINEAR);
+
+    void start() override;
+    void update(int local_frame) override;
+    void end() override;
+
+private:
+    void _apply(const model_rotation& r);
+};
+
+/**
  * Plays a bn::sound_item once on its start frame.
  * Volume in [0..1], speed in [0..64], panning in [-1..1].
  */
