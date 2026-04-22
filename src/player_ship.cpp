@@ -53,8 +53,19 @@ void player_ship::update()
 
         // Directional movement
 
-        ship_pos.set_x(ship_pos.x() + dir_input.x() * MANEUVER_SPEED);
-        ship_pos.set_z(ship_pos.z() + dir_input.y() * MANEUVER_SPEED);
+        const bn::fixed dodge_boost_x = _is_dodging ? (
+            DODGE_MOVEMENT_BOOST_X // Dodge will work for any side
+            // _dodge_speed < 0 ? DODGE_MOVEMENT_BOOST_X : -DODGE_MOVEMENT_BOOST_X // if button choice matters
+        ) : 0; 
+        const bn::fixed dodge_boost_y = _is_dodging ?
+             DODGE_MOVEMENT_BOOST_Y : 0; // Does not care about dodge button choice. 
+        
+        ship_pos.set_x(ship_pos.x()
+             + dir_input.x() * MANEUVER_SPEED
+             + dir_input.x() * dodge_boost_x);
+        ship_pos.set_z(ship_pos.z()
+             + dir_input.y() * MANEUVER_SPEED
+             + dir_input.y() * dodge_boost_y);
 
         if (ship_pos.x() < -65) // <-- Magic number
         {
@@ -197,7 +208,6 @@ void player_ship::update()
         // <-- Add more visual feedback for dodge???
         // <-- Add sound for dodge
         // <-- Add easing to dodge
-        // <-- Add speed boost to dodge
         // <-- Add invincibility frames to dodge??? Or maybe remove some hitboxes temporarily?
         // <-- Fix vertical rotation direction during rotation (it doesn't rotate within the ship axis)
     }

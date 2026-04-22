@@ -90,12 +90,14 @@ public:
 
     // - Movement
     constexpr static bn::fixed FORWARD_SPEED = 2.5;
-    const bn::fixed MANEUVER_SPEED = 3.5;
+    const bn::fixed MANEUVER_SPEED = 3;
     const bn::fixed FOCUS_DISTANCE = 200;
 
     // - Dodge
     constexpr static int DODGE_DURATION = 15; // frames
     constexpr static int DODGE_COOLDOWN = 30; // frames
+    constexpr static bn::fixed DODGE_MOVEMENT_BOOST_X = 2;
+    constexpr static bn::fixed DODGE_MOVEMENT_BOOST_Y = 0.5;
     constexpr static bn::fixed DODGE_SPEED = 65532 / DODGE_DURATION; // full rotation within dodge duration
 
     // - Damage
