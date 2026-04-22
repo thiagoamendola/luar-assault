@@ -16,6 +16,7 @@
 #include "enemy_manager.h"
 #include "controller.h"
 #include "utils.h"
+#include "easing.h"
 
 #include "models/shot.h"
 // #include "models/player_ship_01.h"
@@ -33,7 +34,7 @@ player_ship::player_ship(base_game_scene *base_scene)
     _model->set_psi(16383); // 90 degrees // <-- Magic number
 
     _dodge_timeout = 0;
-    _dodge_speed = 0;
+    _dodge_progress = 0;
     _is_dodging = false;
 }
 
@@ -177,19 +178,23 @@ void player_ship::update()
             {
                 _dodge_timeout = DODGE_DURATION;
                 _is_dodging = true;
-                _dodge_speed = -DODGE_SPEED;
+                _dodge_rotation_direction = -1;
+                _dodge_progress = 0;
             }
             else if (_controller->is_dodge_left_button_pressed())
             {
                 _dodge_timeout = DODGE_DURATION;
                 _is_dodging = true;
-                _dodge_speed = DODGE_SPEED;
+                _dodge_rotation_direction = 1;
+                _dodge_progress = 0;
             }
         }
         else if (_is_dodging)
         {
             // Player is currently dodging. Continue dodge movement.
-            _model->set_theta(_model->theta() + _dodge_speed);
+            _dodge_progress += DODGE_STEPS;
+            const bn::fixed dodge_rotation = _dodge_rotation_direction * apply_easing(_dodge_progress, easing::EASE_IN_OUT) * 65532;
+            _model->set_theta(dodge_rotation);
             _dodge_timeout--;
 
             if (_dodge_timeout <= 0)
@@ -207,7 +212,6 @@ void player_ship::update()
         }
         // <-- Add more visual feedback for dodge???
         // <-- Add sound for dodge
-        // <-- Add easing to dodge
         // <-- Add invincibility frames to dodge??? Or maybe remove some hitboxes temporarily?
         // <-- Fix vertical rotation direction during rotation (it doesn't rotate within the ship axis)
     }
