@@ -93,9 +93,14 @@ public:
     const bn::fixed MANEUVER_SPEED = 3.5;
     const bn::fixed FOCUS_DISTANCE = 200;
 
-    // - Cooldowns
-    constexpr static int DAMAGE_COOLDOWN = 60;   // 1 second
-    constexpr static int HIT_STOP_COOLDOWN = 20;
+    // - Dodge
+    constexpr static int DODGE_DURATION = 15; // frames
+    constexpr static int DODGE_COOLDOWN = 30; // frames
+    constexpr static bn::fixed DODGE_SPEED = 65532 / DODGE_DURATION; // full rotation within dodge duration
+
+    // - Damage
+    constexpr static int DAMAGE_COOLDOWN = 60;   // frames
+    constexpr static int HIT_STOP_COOLDOWN = 20; // frames
 
 private:
     bool check_collision_with_enemies(enemy_manager &enemies);
@@ -108,13 +113,16 @@ private:
     fr::model_3d *_model;
     fr::model_3d *_test;
 
-    player_laser _player_laser;
-
     sphere_collider_set _sphere_collider_set;
+    player_laser _player_laser;
 
     int health = 5;
     int _damage_cooldown = 0;
     bn::fixed_point target_position;
+
+    bool _is_dodging = false;
+    int _dodge_timeout = 0;
+    bn::fixed _dodge_speed = 0;
 };
 
 #endif

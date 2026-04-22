@@ -12,10 +12,11 @@
 
 #include "player_ship.h"
 #include "enemy_manager.h"
+#include "controller.h"
 
-player_laser::player_laser(player_ship *player_ship)
+player_laser::player_laser(player_ship *player_ship, controller *controller)
     : laser_full(laser_vertices, laser_faces, fr::model_3d_items::laser_colors),
-      _player_ship(player_ship)
+      _player_ship(player_ship), _controller(controller)
 {
     laser_duration_count = 0;
 }
@@ -26,7 +27,7 @@ void player_laser::update(enemy_manager &enemies)
     {
     case laser_state::PAUSED:
         // We can start the laser
-        if (bn::keypad::a_held())
+        if (_controller->is_laser_button_held())
         {
             // Ready to shoot
             render_laser = true;

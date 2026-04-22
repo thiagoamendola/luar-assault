@@ -7,15 +7,22 @@
 class controller
 {
   public:
-    bn::fixed_point get_norm_directional();
-    bn::fixed_point get_smooth_directional();
-
+  
     void update();
 
+    bool is_laser_button_held();
+    bool is_missiles_button_pressed();
+    bool is_dodge_right_button_pressed();
+    bool is_dodge_left_button_pressed();
+
+    bn::fixed_point get_norm_directional();
+    bn::fixed_point get_smooth_directional();
+    
+    bool is_pause_pressed();
+
+    // Debug toggles
     bool is_collider_display_enabled();
     bool is_debug_text_enabled();
-
-    bool is_pause_pressed();
 
   private:
     const bn::fixed INTERP_STEP = 0.1;

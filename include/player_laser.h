@@ -6,6 +6,8 @@
 #include "fr_model_3d_item.h"
 #include "fr_model_colors.h"
 
+#include "controller.h"
+
 // - Forward declaration
 class player_ship; 
 class enemy_manager;
@@ -32,7 +34,7 @@ enum class laser_state {
 class player_laser
 {
   public:
-    player_laser(player_ship *player_ship);
+    player_laser(player_ship *player_ship, controller *controller);
 
     // Calculates wether laser is being used, collision and so on.
     void update(enemy_manager& enemies);
@@ -62,6 +64,7 @@ class player_laser
 
     fr::model_3d_item laser_full;
     player_ship *_player_ship;
+    controller *_controller;
 
     const int LASER_DURATION = 3;
     const int COOLDOWN_DURATION = 3;

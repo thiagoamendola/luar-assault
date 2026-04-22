@@ -12,6 +12,54 @@
 
 #include "utils.h"
 
+void controller::update()
+{
+    // Toggle collider visibility
+#if SHOW_COLLIDERS
+    if (bn::keypad::select_pressed())
+    {
+        enable_collider_display = !enable_collider_display;
+    }
+#endif
+
+    // Toggle debug text
+#if SHOW_DEBUG_TEXT
+    if (bn::keypad::select_pressed())
+    {
+        enable_debug_text = !enable_debug_text;
+    }
+#endif
+
+#if FR_DETAILED_PROFILE
+    if (bn::keypad::start_pressed() && bn::keypad::select_held())
+    {
+        bn::profiler::show();
+    }
+#endif
+}
+
+
+bool controller::is_laser_button_held()
+{
+    return bn::keypad::a_held();
+}
+
+bool controller::is_missiles_button_pressed()
+{
+    return bn::keypad::b_pressed();
+}
+
+bool controller::is_dodge_right_button_pressed()
+{
+    return bn::keypad::r_pressed();
+}
+
+bool controller::is_dodge_left_button_pressed()
+{
+    return bn::keypad::l_pressed();
+}
+
+
 bn::fixed_point controller::get_norm_directional()
 {
     bn::fixed_point raw_dir_input(0.0, 0.0);
@@ -91,32 +139,6 @@ bn::fixed_point controller::get_smooth_directional()
     _previous_raw_dir_input = current_raw_dir_input;
 
     return _smooth_dir_input;
-}
-
-void controller::update()
-{
-    // Toggle collider visibility
-#if SHOW_COLLIDERS
-    if (bn::keypad::select_pressed())
-    {
-        enable_collider_display = !enable_collider_display;
-    }
-#endif
-
-    // Toggle debug text
-#if SHOW_DEBUG_TEXT
-    if (bn::keypad::select_pressed())
-    {
-        enable_debug_text = !enable_debug_text;
-    }
-#endif
-
-#if FR_DETAILED_PROFILE
-    if (bn::keypad::start_pressed() && bn::keypad::select_held())
-    {
-        bn::profiler::show();
-    }
-#endif
 }
 
 bool controller::is_collider_display_enabled()

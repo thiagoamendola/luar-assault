@@ -25,12 +25,16 @@ player_ship::player_ship(base_game_scene *base_scene)
     : _base_scene(base_scene), _controller(base_scene->get_controller()),
       _camera(base_scene->get_camera()), _models(base_scene->get_models()),
       _sphere_collider_set(fr::model_3d_items::ship_colliders),
-      _player_laser(this)
+      _player_laser(this, _controller)
 {
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::player_ship_02_full);
     // x, y (back/forward), z (down/up)
     _model->set_psi(16383); // 90 degrees // <-- Magic number
+
+    _dodge_timeout = 0;
+    _dodge_speed = 0;
+    _is_dodging = false;
 }
 
 void player_ship::destroy()
@@ -151,6 +155,51 @@ void player_ship::update()
         // {
         //     bn::sound_items::enemy_death.play();
         // }
+    }
+
+    {
+        // - Dodge
+        if (!_is_dodging && _dodge_timeout <= 0)
+        {
+            // Player is dodge ready. Check for player input.
+            if (_controller->is_dodge_right_button_pressed())
+            {
+                _dodge_timeout = DODGE_DURATION;
+                _is_dodging = true;
+                _dodge_speed = -DODGE_SPEED;
+            }
+            else if (_controller->is_dodge_left_button_pressed())
+            {
+                _dodge_timeout = DODGE_DURATION;
+                _is_dodging = true;
+                _dodge_speed = DODGE_SPEED;
+            }
+        }
+        else if (_is_dodging)
+        {
+            // Player is currently dodging. Continue dodge movement.
+            _model->set_theta(_model->theta() + _dodge_speed);
+            _dodge_timeout--;
+
+            if (_dodge_timeout <= 0)
+            {
+                // Dodge ended
+                _is_dodging = false;
+                _model->set_theta(0); // Reset to default orientation
+                _dodge_timeout = DODGE_COOLDOWN; // Start cooldown
+            }
+        }
+        else if (_dodge_timeout > 0)
+        {
+            // Player is in dodge cooldown. Decrease cooldown timer.
+            _dodge_timeout--;
+        }
+        // <-- Add more visual feedback for dodge???
+        // <-- Add sound for dodge
+        // <-- Add easing to dodge
+        // <-- Add speed boost to dodge
+        // <-- Add invincibility frames to dodge??? Or maybe remove some hitboxes temporarily?
+        // <-- Fix vertical rotation direction during rotation (it doesn't rotate within the ship axis)
     }
 
     {
