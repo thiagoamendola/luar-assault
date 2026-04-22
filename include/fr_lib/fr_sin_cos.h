@@ -24,6 +24,10 @@ extern const int16_t* sin_lut_ptr;
     else
     {
         angle = (angle % 65536);
+        if(angle < 0)
+        {
+            angle += 65536;
+        }
 
         return bn::fixed::from_data(sin_lut_ptr[angle]);
     }
