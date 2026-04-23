@@ -30,10 +30,10 @@ GValiente
 João Baptista de Paula e Silva
 nikku4211
 simon-paris
-pixelglade
 
 
 
 Made using Butano (C) 2020-2025 Gustavo Valiente
 gba-free-fonts by laqieer
+Dithering Brushes by pixelglade
 VisualBoyAdvance - Nintendo Gameboy/GameboyAdvance (TM) emulator. Copyright (C) 1999-2018 VBA & VBA-M Contributors
