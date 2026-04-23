@@ -118,7 +118,8 @@ void player_ship::update()
         {
             // Player is currently dodging. Continue dodge movement.
             _dodge_progress += DODGE_STEPS;
-            dodge_rotation = _dodge_rotation_direction * apply_easing(_dodge_progress, easing::EASE_IN_OUT) * 65532;
+            dodge_rotation = _dodge_rotation_direction * 65532
+                 * apply_easing(_dodge_progress, easing::EASE_CUSTOM_DODGE);
             // _model->set_theta(dodge_rotation);
             _dodge_timeout--;
 
@@ -140,7 +141,6 @@ void player_ship::update()
         // <-- Add sound for dodge
         // <-- Add invincibility frames to dodge??? Or maybe remove some hitboxes temporarily?
         // <-- Fix laser start location while rotating
-        // <-- Add a back and forth curve for dodge
     }
 
     {

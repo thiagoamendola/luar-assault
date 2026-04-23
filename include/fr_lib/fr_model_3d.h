@@ -92,7 +92,11 @@ class model_3d : public bn::intrusive_list_node_type
         }
         else if (theta < 0)
         {
-            theta += 0xFFFF;
+            do
+            {
+                theta += 0xFFFF;
+            }
+            while (theta < 0);
         }
 
         BN_ASSERT(theta >= 0 && theta <= 0xFFFF, "Invalid theta: ", theta);

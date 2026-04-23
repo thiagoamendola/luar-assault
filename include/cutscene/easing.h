@@ -8,7 +8,10 @@ enum class easing
     LINEAR,
     EASE_IN,
     EASE_OUT,
-    EASE_IN_OUT
+    EASE_IN_OUT,
+    EASE_IN_OUT_BACK,
+    EASE_IN_OUT_BACK_QUAD,
+    EASE_CUSTOM_DODGE,
 };
 
 /**
@@ -32,10 +35,49 @@ inline bn::fixed apply_easing(bn::fixed t, easing e)
             return t * (bn::fixed(2) - t);
 
         case easing::EASE_IN_OUT:
-            if(t < (bn::fixed(1) / 2))
+            if(t < bn::fixed(.5))
                 return bn::fixed(2) * t * t;
             else
                 return bn::fixed(-1) + (bn::fixed(4) - bn::fixed(2) * t) * t;
+
+        case easing::EASE_IN_OUT_BACK:
+        {
+            const bn::fixed c1 = 1.70158;
+            const bn::fixed c2 = c1 * 1.525;
+            if(t < bn::fixed(.5))
+            {
+                return (bn::fixed(4) * t * t * ((c2 + bn::fixed(1)) * t - c2)) / 2; // <-- MULTIPLY BY 0.5?
+            }
+            else
+            {
+                return ((bn::fixed(4) * t * t - bn::fixed(8) * t + bn::fixed(4))
+                     * ((c2 + bn::fixed(1)) * (t * bn::fixed(2) - bn::fixed(2)) + c2) + 2) / 2; // <-- MULTIPLY BY 0.5?
+            }
+        }
+
+        case easing::EASE_IN_OUT_BACK_QUAD:
+        {
+            if(t < bn::fixed(.5))
+            {
+                return bn::fixed(3.33) * t * t - bn::fixed(0.67) * t;
+            }
+            else
+            {
+                return bn::fixed(-3.33) * t * t + bn::fixed(6) * t - bn::fixed(1.67);
+            }
+        }
+        
+        case easing::EASE_CUSTOM_DODGE:
+        {
+            if(t < bn::fixed(.5))
+            {
+                return bn::fixed(3.33) * t * t - bn::fixed(0.67) * t;
+            }
+            else
+            {
+                return bn::fixed(-1) + (bn::fixed(4) - bn::fixed(2) * t) * t;
+            }
+        }
 
         case easing::LINEAR:
         default:
