@@ -248,14 +248,41 @@ int player_laser::render_player_laser(
     {
         fr::point_3d player_ship_pos = _player_ship->get_position();
 
-        // Update vertices.
-        //<-- Make const for these points for easy changing later
-        laser_vertices[0].reset(player_ship_pos + fr::point_3d(10, 0, 2)); // <-- magic numbers
-        laser_vertices[1].reset(player_ship_pos + fr::point_3d(10, 0, -2));
-        laser_vertices[2].reset(laser_target + fr::point_3d(3, 0, 0)); // <-- magic numbers
-        laser_vertices[3].reset(player_ship_pos + fr::point_3d(-10, 0, 2));
-        laser_vertices[4].reset(player_ship_pos + fr::point_3d(-10, 0, -2));
-        laser_vertices[5].reset(laser_target + fr::point_3d(-3, 0, 0));
+        // Get ship's theta (roll) rotation for barrel roll offset adjustment
+        int theta_raw = _player_ship->get_model()->theta().right_shift_integer();
+        bn::fixed cos_theta = fr::cos(theta_raw);
+        bn::fixed sin_theta = fr::sin(theta_raw);
+
+        // Helper lambda to rotate a point around Y axis (in X-Z plane)
+        auto rotate_xz = [&](bn::fixed x, bn::fixed z) -> fr::point_3d {
+            // 2D rotation in X-Z plane (negated for correct direction): 
+            // x' = x * cos(theta) + z * sin(theta)
+            // z' = -x * sin(theta) + z * cos(theta)
+            bn::fixed new_x = x * cos_theta + z * sin_theta;
+            bn::fixed new_z = -x * sin_theta + z * cos_theta;
+            return fr::point_3d(new_x, 0, new_z);
+        };
+
+        // Base offsets for laser spawn points (relative to ship)
+        constexpr bn::fixed LASER_X_OFFSET = 10;
+        constexpr bn::fixed LASER_Z_OFFSET = 2;
+        constexpr bn::fixed LASER_TIP_X_OFFSET = 3;
+
+        // Calculate rotated offsets for each vertex
+        fr::point_3d offset0 = rotate_xz(LASER_X_OFFSET, LASER_Z_OFFSET);
+        fr::point_3d offset1 = rotate_xz(LASER_X_OFFSET, -LASER_Z_OFFSET);
+        fr::point_3d offset2 = rotate_xz(LASER_TIP_X_OFFSET, 0);
+        fr::point_3d offset3 = rotate_xz(-LASER_X_OFFSET, LASER_Z_OFFSET);
+        fr::point_3d offset4 = rotate_xz(-LASER_X_OFFSET, -LASER_Z_OFFSET);
+        fr::point_3d offset5 = rotate_xz(-LASER_TIP_X_OFFSET, 0);
+
+        // Update vertices with rotated offsets
+        laser_vertices[0].reset(player_ship_pos + offset0);
+        laser_vertices[1].reset(player_ship_pos + offset1);
+        laser_vertices[2].reset(laser_target + offset2);
+        laser_vertices[3].reset(player_ship_pos + offset3);
+        laser_vertices[4].reset(player_ship_pos + offset4);
+        laser_vertices[5].reset(laser_target + offset5);
 
         // Update faces.
         laser_faces[0].reset(laser_vertices, fr::vertex_3d(0, 1, 0), 0, 1, 2, 0,
