@@ -122,8 +122,8 @@ bn::optional<scene_type> mock_cutscene_scene::update()
             // Second press — trigger skip
             _skip_prompt_timer = 0;
             _skip_text_sprites.clear();
-            _bgs_fade_out_action.emplace(45, 1);
-            _sprites_fade_out_action.emplace(45, 1);
+            _bgs_fade_out_action.emplace(20, 1);
+            _sprites_fade_out_action.emplace(20, 1);
         }
     }
 
