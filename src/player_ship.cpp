@@ -140,7 +140,6 @@ void player_ship::update()
         // <-- Add more visual feedback for dodge???
         // <-- Add sound for dodge
         // <-- Add invincibility frames to dodge??? Or maybe remove some hitboxes temporarily?
-        // <-- Fix laser start location while rotating
     }
 
     {
@@ -187,6 +186,10 @@ void player_ship::update()
         bn::rule_of_three_approximation rotation_units(360, 65536); // <-- Reutilize this for entire project
         bn::fixed angle_psi = rotation_units.calculate(angle_psi_degrees);
         bn::fixed angle_phi = rotation_units.calculate(angle_phi_degrees);
+
+        // Store true aiming angles for laser to use (unaffected by dodge)
+        _aim_phi = angle_phi;
+        _aim_psi = 16383 + angle_psi; // Include the 90-degree base offset
 
         const bn::fixed rotation_cos = fr::cos(dodge_rotation.right_shift_integer());
         angle_psi *= rotation_cos;

@@ -73,8 +73,9 @@ void player_laser::update(enemy_manager &enemies)
 void player_laser::raycast_laser(enemy_manager &enemies)
 {
     fr::point_3d player_ship_pos = _player_ship->get_position();
-    bn::fixed psi = _player_ship->get_model()->psi();
-    bn::fixed phi = _player_ship->get_model()->phi();
+    // Use true aiming angles (not affected by dodge rotation)
+    bn::fixed psi = _player_ship->get_aim_psi();
+    bn::fixed phi = _player_ship->get_aim_phi();
 
     // - Create laser vector (world-space end point of full-length beam before collision truncation)
     {

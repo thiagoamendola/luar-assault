@@ -88,13 +88,17 @@ public:
         target_position.set_y(target_pos.y());
     }
 
+    // True aiming angles (not affected by dodge rotation)
+    bn::fixed get_aim_phi() const { return _aim_phi; }
+    bn::fixed get_aim_psi() const { return _aim_psi; }
+
     // - Movement
     constexpr static bn::fixed FORWARD_SPEED = 2.5;
     const bn::fixed MANEUVER_SPEED = 2.5;
     const bn::fixed FOCUS_DISTANCE = 200;
 
     // - Dodge
-    constexpr static int DODGE_DURATION = 20; // frames
+    constexpr static int DODGE_DURATION = 40; // frames
     constexpr static int DODGE_COOLDOWN = 30; // frames
     constexpr static bn::fixed DODGE_MOVEMENT_BOOST_X = 2;
     constexpr static bn::fixed DODGE_MOVEMENT_BOOST_Y = 0.5;
@@ -126,6 +130,10 @@ private:
     int _dodge_timeout = 0;
     bn::fixed _dodge_progress = 0;
     int _dodge_rotation_direction = 0;
+
+    // True aiming angles (before dodge compensation)
+    bn::fixed _aim_phi = 0;
+    bn::fixed _aim_psi = 0;
 };
 
 #endif
