@@ -13,6 +13,7 @@
 
 #include "fr_camera_3d.h"
 #include "fr_point_3d.h"
+#include "fr_constants_3d.h"
 
 #include "controller.h"
 #include "player_ship.h"
@@ -34,12 +35,17 @@ hud_manager::hud_manager(base_game_scene *base_scene)
       _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
       _target_growth_action()
 {
-    _is_hidden = false;
+    _is_hidden = HIDE_HUD;
     //common::variable_8x16_sprite_font
     // Setup target sprite
     _target_spr.set_horizontal_scale(TARGET_INITIAL_SCALE);
     _target_spr.set_vertical_scale(TARGET_INITIAL_SCALE);
     _target_growth_action = bn::sprite_scale_loop_action(_target_spr, TARGET_GROWTH_STEPS, TARGET_GROWTH_MAX_SCALE);
+    
+    if (_is_hidden)
+    {
+        _target_spr.set_visible(false);
+    }
 }
 
 void hud_manager::destroy()
@@ -49,6 +55,8 @@ void hud_manager::destroy()
 
 void hud_manager::update(fr::models_3d *models)
 {
+    _move_target();
+
     if (_is_hidden)
     {
         return;
@@ -88,8 +96,6 @@ void hud_manager::update(fr::models_3d *models)
             spr.set_blending_enabled(true);
         }
     }
-
-    _move_target();
 
     // Tick blending fade actions
     if (_fade_in_action)
@@ -166,6 +172,10 @@ void hud_manager::_move_target()
 
 void hud_manager::show()
 {
+    if constexpr (HIDE_HUD)
+    {
+        return;
+    }
     _is_hidden = false;
     // <-- text should auto-gen on update
     _target_spr.set_visible(true);
@@ -181,6 +191,10 @@ void hud_manager::hide()
 
 void hud_manager::fade_in()
 {
+    if constexpr (HIDE_HUD)
+    {
+        return;
+    }
     _is_hidden = false;
     _fade_out_action.reset();
 
@@ -197,6 +211,10 @@ void hud_manager::fade_in()
 
 void hud_manager::fade_out()
 {
+    if constexpr (HIDE_HUD)
+    {
+        return;
+    }
     _is_hidden = false;
     _fade_in_action.reset();
 

@@ -44,19 +44,24 @@
 #define FR_DETAILED_PROFILE true
 #endif
 
-//
+// Enables debug of static model rendering steps // <-- REMOVE?
 #ifndef LOG_STATIC_RENDER_STEPS
 #define LOG_STATIC_RENDER_STEPS false
 #endif
 
 // Enables player collider debug by pressing SELECT
 #ifndef SHOW_COLLIDERS
-#define SHOW_COLLIDERS false
+#define SHOW_COLLIDERS true
 #endif
 
 // Enables debug text by pressing SELECT
 #ifndef SHOW_DEBUG_TEXT
 #define SHOW_DEBUG_TEXT true
+#endif
+
+// Hides HUD (health, score, etc). Useful for screenshots.
+#ifndef HIDE_HUD
+#define HIDE_HUD false
 #endif
 
 
