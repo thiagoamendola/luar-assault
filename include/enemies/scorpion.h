@@ -75,7 +75,7 @@ class scorpion : public base_enemy
         return &_sphere_collider_set;
     }
 
-    const bn::fixed MOVEMENT_SPEED = 2.5;
+    const bn::fixed MOVEMENT_SPEED = 4;
     const bn::fixed ROTATION_SPEED_IDLE = 900;
     const bn::fixed DIRECTION_CORRECTION_SPEED = 0.03;
     const int ROTATION_TRANSITION_SPEED_ANGLE = 1000; // ~equivalent to 0.1 vector step, in 0-65536 angle units

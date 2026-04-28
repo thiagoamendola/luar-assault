@@ -26,11 +26,11 @@ namespace fr::model_3d_items
     };
 
     constexpr const sphere_collider ship_colliders[] = {
+        sphere_collider(fr::point_3d(0, 0, 0), 8),
         sphere_collider(fr::point_3d(-15, 0, 5), 2),
         sphere_collider(fr::point_3d(15, 0, 5), 2),
         sphere_collider(fr::point_3d(-15, 0, -5), 2),
-        sphere_collider(fr::point_3d(15, 0, -5), 2),
-        sphere_collider(fr::point_3d(0, 0, 0), 8)
+        sphere_collider(fr::point_3d(15, 0, -5), 2)
 
     };
 
@@ -94,12 +94,12 @@ public:
 
     // - Movement
     constexpr static bn::fixed FORWARD_SPEED = 2.5;
-    const bn::fixed MANEUVER_SPEED = 2.5;
+    const bn::fixed MANEUVER_SPEED = 2.25;
     const bn::fixed FOCUS_DISTANCE = 200;
 
     // - Dodge
-    constexpr static int DODGE_DURATION = 40; // frames
-    constexpr static int DODGE_COOLDOWN = 30; // frames
+    constexpr static int DODGE_DURATION = 20; // frames
+    constexpr static int DODGE_COOLDOWN = 20; // frames
     constexpr static bn::fixed DODGE_MOVEMENT_BOOST_X = 2;
     constexpr static bn::fixed DODGE_MOVEMENT_BOOST_Y = 0.5;
     constexpr static bn::fixed DODGE_STEPS = 1.0 / DODGE_DURATION;
