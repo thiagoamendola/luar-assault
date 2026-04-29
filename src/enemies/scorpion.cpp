@@ -268,7 +268,6 @@ void scorpion::handle_laser_hit()
         _model->set_palette(fr::model_3d_items::laser_colors);
         _damage_cooldown = DAMAGE_COOLDOWN;
     }
-    // bn::sound_items::scorpion_hit.play(); // <-- Get scorpion hit sound
 }
 
 void scorpion::kill()
@@ -284,6 +283,9 @@ void scorpion::kill()
 
     // Create explosion effect
     _explosion.emplace(_position, _models);
+
+    // Play explosion sound
+    bn::sound_items::enemy_death.play();
 
     // Remove scorpion model
     _models->destroy_dynamic_model(*_model);

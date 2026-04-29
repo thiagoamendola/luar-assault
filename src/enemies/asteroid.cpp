@@ -7,6 +7,7 @@
 #include "bn_sound_items.h"
 #include "bn_string.h"
 #include "bn_sprite_animate_actions.h"
+#include "bn_sound_items.h"
 
 #include "fr_point_3d.h"
 
@@ -155,6 +156,9 @@ void asteroid::kill()
 
     // Create explosion effect
     _explosion.emplace(_position, _models);
+
+    // Play explosion sound
+    bn::sound_items::enemy_death.play();
 
     // Remove asteroid model
     _models->destroy_dynamic_model(*_model);
