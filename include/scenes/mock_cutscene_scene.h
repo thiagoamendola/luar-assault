@@ -42,7 +42,7 @@ private:
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_ptr, 20> _skip_text_sprites;
     int _skip_prompt_timer = 0;
-
+    bool _skip_triggered = false;
 
     bn::optional<bn::bg_palettes_fade_to_action>     _bgs_fade_out_action;
     bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;

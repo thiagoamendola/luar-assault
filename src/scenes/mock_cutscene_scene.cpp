@@ -121,6 +121,7 @@ bn::optional<scene_type> mock_cutscene_scene::update()
         {
             // Second press — trigger skip
             _skip_prompt_timer = 0;
+            _skip_triggered = true;
             _skip_text_sprites.clear();
             _bgs_fade_out_action.emplace(20, 1);
             _sprites_fade_out_action.emplace(20, 1);
@@ -157,7 +158,7 @@ bn::optional<scene_type> mock_cutscene_scene::update()
         _bgs_fade_out_action->update();
         _sprites_fade_out_action->update();
     }
-    else if (!_timeline.is_running() && _bgs_fade_out_action && _bgs_fade_out_action->done())
+    else if ((!_timeline.is_running() || _skip_triggered) && _bgs_fade_out_action && _bgs_fade_out_action->done())
     {
         return scene_type::ALPHA_STAGE_V1;
     }
