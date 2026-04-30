@@ -43,7 +43,7 @@ class banner_manager
 {
 public:
     // Constructor with optional configs
-    banner_manager(int delay_frames, int display_frames,
+    banner_manager(int delay_frames, int display_frames, bool play_sound_effect = false,
                    const bn::optional<banner_sprite_background_config>& sprite_bg_config = bn::nullopt,
                    const bn::optional<banner_regular_bg_config>& regular_bg_config = bn::nullopt,
                    const bn::span<const banner_sprite_entry>& sprite_entries = {});
@@ -54,6 +54,10 @@ public:
     [[nodiscard]] bool is_done() const { return _banner_delay_timer == 0 && _banner_timer == 0; }
 
 private:
+    int _delay_frames = 0;
+    int _display_frames = 0;
+    bool _play_sound_effect = false;
+
     // Sprite-based tiled background
     bn::optional<bn::sprite_tiles_ptr> _banner_tiles;
     bn::optional<bn::sprite_palette_ptr> _banner_palette;
@@ -68,8 +72,6 @@ private:
     
     int _banner_delay_timer = 0;
     int _banner_timer = 0;
-    int _delay_frames = 0;
-    int _display_frames = 0;
     
     bn::optional<banner_sprite_background_config> _sprite_bg_config;
     bn::optional<banner_regular_bg_config> _regular_bg_config;

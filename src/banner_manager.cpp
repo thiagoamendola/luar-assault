@@ -1,13 +1,15 @@
 #include "banner_manager.h"
 
+#include "bn_sound_items.h"
 #include "bn_sprite_builder.h"
 
-banner_manager::banner_manager(int delay_frames, int display_frames,
+banner_manager::banner_manager(int delay_frames, int display_frames, bool play_sound_effect,
                                const bn::optional<banner_sprite_background_config>& sprite_bg_config,
                                const bn::optional<banner_regular_bg_config>& regular_bg_config,
                                const bn::span<const banner_sprite_entry>& sprite_entries) :
     _delay_frames(delay_frames),
     _display_frames(display_frames),
+    _play_sound_effect(play_sound_effect),
     _sprite_bg_config(sprite_bg_config),
     _regular_bg_config(regular_bg_config)
 {
@@ -43,6 +45,11 @@ void banner_manager::update()
             if (_regular_bg_config.has_value())
             {
                 _show_regular_background();
+            }
+            // Play sound effect
+            if (_play_sound_effect)
+            {
+                bn::sound_items::impact.play();
             }
             _banner_timer = _display_frames;
         }

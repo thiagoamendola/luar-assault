@@ -47,7 +47,7 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     //   _enemy_manager(&_models, &_controller),
       _prepare_to_leave(false),
       _letterbox_manager(),
-      _banner_manager(180, 180, bn::nullopt, bn::nullopt, intro_banner_entries), // 3s delay, 3s display
+      _banner_manager(180, 180, true, bn::nullopt, bn::nullopt, intro_banner_entries), // 3s delay, 3s display
     //   _ninja_action(bn::create_sprite_animate_action_forever(
     //       _ninja_spr, 16, bn::sprite_items::ninja.tiles_item(), 0, 1, 2, 3)),
       _anim_bg(bn::regular_bg_items::stage1_bg_anim.create_bg(0, 0)),
