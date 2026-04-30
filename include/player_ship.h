@@ -98,10 +98,10 @@ public:
     const bn::fixed FOCUS_DISTANCE = 200;
 
     // - Dodge
-    constexpr static int DODGE_DURATION = 20; // frames
-    constexpr static int DODGE_COOLDOWN = 20; // frames
-    constexpr static bn::fixed DODGE_MOVEMENT_BOOST_X = 2;
-    constexpr static bn::fixed DODGE_MOVEMENT_BOOST_Y = 0.5;
+    constexpr static int DODGE_DURATION = 17; // frames
+    constexpr static int DODGE_COOLDOWN = 12; // frames
+    constexpr static bn::fixed DODGE_MOVEMENT_BOOST_X = 3;
+    constexpr static bn::fixed DODGE_MOVEMENT_BOOST_Y = 1.25;
     constexpr static bn::fixed DODGE_STEPS = 1.0 / DODGE_DURATION;
 
     // - Damage
