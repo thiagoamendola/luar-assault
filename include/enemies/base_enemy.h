@@ -28,6 +28,9 @@ public:
 
     virtual void handle_laser_hit() = 0;
 
+    // Returns true if the laser should pass through this enemy without stopping
+    virtual bool is_laser_passthrough() const { return false; }
+
     virtual sphere_collider_set *get_collider() = 0;
     
     fr::point_3d get_position() const

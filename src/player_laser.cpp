@@ -127,6 +127,11 @@ void player_laser::raycast_laser(enemy_manager &enemies)
             {
                 continue;
             }
+            // Skip enemies that laser should pass through
+            if (enemy_slots[i].ptr->is_laser_passthrough())
+            {
+                continue;
+            }
             auto *target = enemy_slots[i].ptr->get_collider();
             if (!target)
             {

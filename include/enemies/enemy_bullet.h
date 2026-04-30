@@ -51,14 +51,17 @@ class enemy_bullet : public base_enemy
         return _model;
     };
 
-    void handle_laser_hit();
+    void handle_laser_hit() override;
+
+    // Laser passes through bullets without stopping
+    bool is_laser_passthrough() const override { return true; }
 
     sphere_collider_set *get_collider() override
     {
         return &_sphere_collider_set;
     }
 
-    const bn::fixed MOVEMENT_SPEED = 6;
+    const bn::fixed MOVEMENT_SPEED = 8;
     const bn::fixed ROTATION_ANIM_SPEED = 900;
 
   private:
