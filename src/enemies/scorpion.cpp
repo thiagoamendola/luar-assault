@@ -281,8 +281,8 @@ void scorpion::kill()
     _explode_frames = TOTAL_EXPLODE_FRAMES;
     _base_scene->increment_score(20); // <-- MAGIC NUMBERS
 
-    // Create explosion effect
-    _explosion.emplace(_position, _models);
+    // Create explosion effect at model's current position (not stored _position which may be stale)
+    _explosion.emplace(_model->position(), _models);
 
     // Play explosion sound
     bn::sound_items::enemy_death.play();
