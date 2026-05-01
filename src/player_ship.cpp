@@ -105,6 +105,7 @@ void player_ship::update()
                 _is_dodging = true;
                 _dodge_rotation_direction = -1;
                 _dodge_progress = 0;
+                bn::sound_items::dodge.play();
             }
             else if (_controller->is_dodge_left_button_pressed())
             {
@@ -112,6 +113,7 @@ void player_ship::update()
                 _is_dodging = true;
                 _dodge_rotation_direction = 1;
                 _dodge_progress = 0;
+                bn::sound_items::dodge.play();
             }
         }
         else if (_is_dodging)
