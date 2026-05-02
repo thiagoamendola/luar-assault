@@ -25,12 +25,25 @@ void hyperlight_background::_init_stars()
 {
     bn::random random;
     
-    for (int i = 0; i < NUM_STARS; ++i)
+    // Grid-based jittering: divide screen into cells, place one star per cell
+    // Calculate grid size based on NUM_STARS (try to keep cells roughly square)
+    constexpr int GRID_COLS = 8;
+    constexpr int GRID_ROWS = (NUM_STARS + GRID_COLS - 1) / GRID_COLS;  // Ceiling division
+    constexpr int CELL_WIDTH = 240 / GRID_COLS;
+    constexpr int CELL_HEIGHT = 160 / GRID_ROWS;
+    
+    int stars_created = 0;
+    for (int row = 0; row < GRID_ROWS && stars_created < NUM_STARS; ++row)
     {
-        star s;
-        s.x = random.get_int(240);  // 0 to 239
-        s.y = random.get_int(160);  // 0 to 159
-        _stars.push_back(s);
+        for (int col = 0; col < GRID_COLS && stars_created < NUM_STARS; ++col)
+        {
+            star s;
+            // Random position within this cell
+            s.x = col * CELL_WIDTH + random.get_int(CELL_WIDTH);
+            s.y = row * CELL_HEIGHT + random.get_int(CELL_HEIGHT);
+            _stars.push_back(s);
+            ++stars_created;
+        }
     }
 }
 
