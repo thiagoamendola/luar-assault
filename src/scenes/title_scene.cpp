@@ -18,6 +18,7 @@
 #include "fr_model_colors.h"
 
 #include "scene_type.h"
+#include "hyperlight_background.h"
 #include "alpha_stage_v1_scene_defs.h"
 
 #include "source_han_sans_jp_sprite_font.h"
@@ -170,6 +171,7 @@ bn::optional<scene_type> title_scene::update()
 
     _model->set_phi(_model->phi() + 300); // <-- Magic number
 
+    _hyperlight_bg.update();
     _models.update(_camera);
 
     return result;

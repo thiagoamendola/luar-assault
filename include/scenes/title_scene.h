@@ -8,6 +8,7 @@
 #include "bn_vector.h"
 
 #include "controller.h"
+#include "hyperlight_background.h"
 #include "player_ship.h"
 #include "scene_type.h"
 
@@ -29,6 +30,7 @@ class title_scene : public fr::scene
     bn::vector<bn::sprite_ptr, 32> _text_sprites;
 
     controller _controller;
+    hyperlight_background _hyperlight_bg{bn::fixed_point(-0.5, -0.5), 4};  // Speed + trail length
 
     fr::camera_3d _camera;
     fr::models_3d _models;
