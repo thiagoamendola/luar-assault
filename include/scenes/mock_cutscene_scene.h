@@ -15,6 +15,7 @@
 
 #include "scene_type.h"
 #include "letterbox_manager.h"
+#include "hyperlight_background.h"
 
 #include "cutscene/cutscene_timeline.h"
 #include "cutscene/cutscene_commands.h"
@@ -36,9 +37,9 @@ private:
     fr::model_3d *_model = nullptr;
 
     letterbox_manager _letterbox;
-
     cutscene_timeline _timeline;
-
+    
+    // <-- Move this to a more general cutscene manager
     bn::sprite_text_generator _text_generator;
     bn::vector<bn::sprite_ptr, 20> _skip_text_sprites;
     int _skip_prompt_timer = 0;
@@ -46,6 +47,8 @@ private:
 
     bn::optional<bn::bg_palettes_fade_to_action>     _bgs_fade_out_action;
     bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;
+
+    hyperlight_background _hyperlight_bg{bn::fixed_point(-4, -.5), 4};  // Speed + trail length
 };
 
 #endif // MOCK_CUTSCENE_SCENE_H
