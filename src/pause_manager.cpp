@@ -14,7 +14,6 @@
 
 #include "bn_regular_bg_items_black.h"
 #include "common_variable_8x16_sprite_font.h"
-#include "source_han_mono_jp_sprite_font.h"
 #include "vonwaon_bitmap_sprite_font.h"
 #include "k8x8_sprite_font.h"
 // #include "bn_sprite_items_variable_8x16_font_red.h"
@@ -24,7 +23,6 @@ pause_manager::pause_manager(base_game_scene *base_scene) :
     _base_scene(base_scene),
     _hud_manager(base_scene->get_hud_manager()),
     _controller(base_scene->get_controller()),
-    // _text_generator(source_han_mono_jp_sprite_font),
     // _text_generator(vonwaon_bitmap_sprite_font),
     _text_generator(k8x8_sprite_font),
     _pause_bg(bn::regular_bg_items::black.create_bg(0, 0))
