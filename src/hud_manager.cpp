@@ -20,6 +20,8 @@
 #include "base_game_scene.h"
 
 #include "bn_sprite_items_target_ui.h"
+#include "bn_sprite_items_lifebar_frame.h"
+#include "bn_sprite_items_lifebar_tile.h"
 #include "source_han_sans_jp_sprite_font.h"
 #include "vonwaon_bitmap_sprite_font.h"
 #include "k8x8_sprite_font.h"
@@ -33,18 +35,26 @@ hud_manager::hud_manager(base_game_scene *base_scene)
       _text_generator(vonwaon_bitmap_sprite_font), 
     //   _text_generator(k8x8_sprite_font),
       _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
+      _lifebar_frame(bn::sprite_items::lifebar_frame.create_sprite(0, 0)),
       _target_growth_action()
 {
     _is_hidden = HIDE_HUD;
-    //common::variable_8x16_sprite_font
+
     // Setup target sprite
     _target_spr.set_horizontal_scale(TARGET_INITIAL_SCALE);
     _target_spr.set_vertical_scale(TARGET_INITIAL_SCALE);
     _target_growth_action = bn::sprite_scale_loop_action(_target_spr, TARGET_GROWTH_STEPS, TARGET_GROWTH_MAX_SCALE);
     
+    // Setup lifebar
+    _lifebar_frame.set_top_left_x(LIFEBAR_START_X);
+    _lifebar_frame.set_top_left_y(LIFEBAR_START_Y);
+
     if (_is_hidden)
     {
         _target_spr.set_visible(false);
+        _lifebar_frame.set_visible(false);
+        _lifebar_tiles.clear();
+        _displayed_health = -1;
     }
 }
 
@@ -81,10 +91,9 @@ void hud_manager::update(fr::models_3d *models)
     }
     else
     {
-        _text_generator.generate(-7 * 16, -72, "HEALTH: " + bn::to_string<64>(_player_ship->get_health()),
-                                 _text_sprites);
-        _text_generator.generate(-7 * 16, -60, bn::to_string<64>(_base_scene->get_score()),
-                                 _text_sprites); // <-- SCORE
+        _update_lifebar();
+        _text_generator.generate(-115, -58, bn::to_string<64>(_base_scene->get_score()),
+                                 _text_sprites); // <-- Get another font?
     }
 
     // While fading, opt every freshly-created text sprite into blending so
@@ -108,6 +117,11 @@ void hud_manager::update(fr::models_3d *models)
         {
             // Fade-in complete: sprites are fully opaque, clean up blending.
             _target_spr.set_blending_enabled(false);
+            _lifebar_frame.set_blending_enabled(false);
+            for (bn::sprite_ptr& tile : _lifebar_tiles)
+            {
+                tile.set_blending_enabled(false);
+            }
             _is_blending_active = false;
             _fade_in_action.reset();
         }
@@ -179,14 +193,18 @@ void hud_manager::show()
     _is_hidden = false;
     // <-- text should auto-gen on update
     _target_spr.set_visible(true);
+    _lifebar_frame.set_visible(true);
 }
 
 void hud_manager::hide()
 {
     _is_hidden = true;
     _text_sprites.clear();
+    _lifebar_tiles.clear();
+    _displayed_health = -1;
     // <-- Hide other HUD elements like score, target sprite, etc.
     _target_spr.set_visible(false);
+    _lifebar_frame.set_visible(false);
 }
 
 void hud_manager::fade_in()
@@ -201,7 +219,9 @@ void hud_manager::fade_in()
     // Opt the persistent target sprite into blending.
     // Text sprites are opted in each frame inside update() while fading.
     _target_spr.set_visible(true);
+    _lifebar_frame.set_visible(true);
     _target_spr.set_blending_enabled(true);
+    _lifebar_frame.set_blending_enabled(true);
     _is_blending_active = true;
 
     // Start fully transparent and animate to opaque (alpha 0 → 1).
@@ -221,10 +241,48 @@ void hud_manager::fade_out()
     // Opt the persistent target sprite into blending.
     // Text sprites are opted in each frame inside update() while fading.
     _target_spr.set_visible(true);
+    _lifebar_frame.set_visible(true);
     _target_spr.set_blending_enabled(true);
+    _lifebar_frame.set_blending_enabled(true);
     _is_blending_active = true;
 
     // Animate from fully opaque to fully transparent (alpha 1 → 0).
     bn::blending::set_transparency_alpha(1);
     _fade_out_action.emplace(FADE_FRAMES, bn::fixed(0));
+}
+
+void hud_manager::_update_lifebar()
+{
+    int health = _player_ship->get_health();
+
+    int tiles_to_show = health * 4; // Generalize for different health values
+    if (tiles_to_show > LIFEBAR_MAX_TILES)
+    {
+        tiles_to_show = LIFEBAR_MAX_TILES;
+    }
+    if (tiles_to_show < 0)
+    {
+        tiles_to_show = 0;
+    }
+
+    // Only rebuild if health changed
+    if (tiles_to_show == _displayed_health)
+    {
+        return;
+    }
+
+    _displayed_health = tiles_to_show;
+    _lifebar_tiles.clear();
+
+    for (int i = 0; i < tiles_to_show; ++i)
+    {
+        bn::sprite_ptr tile = bn::sprite_items::lifebar_tile.create_sprite(0, 0);
+        tile.set_top_left_x(LIFEBAR_START_X + i * 3);
+        tile.set_top_left_y(LIFEBAR_START_Y);
+        if (_is_blending_active)
+        {
+            tile.set_blending_enabled(true);
+        }
+        _lifebar_tiles.push_back(bn::move(tile));
+    }
 }

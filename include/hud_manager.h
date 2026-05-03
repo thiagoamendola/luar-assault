@@ -9,6 +9,7 @@
 #include "bn_point.h"
 #include "bn_fixed.h"
 #include "bn_optional.h"
+#include "bn_vector.h"
 
 #include "fr_camera_3d.h"
 #include "fr_models_3d.h"
@@ -60,23 +61,29 @@ private:
     player_ship *_player_ship;
     bool _is_hidden = false;
 
-    // UI
+    // HUD
     bn::sprite_text_generator _text_generator; // <-- move to common stuff?
     bn::vector<bn::sprite_ptr, 32> _text_sprites;
+    bn::sprite_ptr _lifebar_frame;
+    bn::vector<bn::sprite_ptr, 20> _lifebar_tiles;
+    int _displayed_health = -1;
+
+    static constexpr int LIFEBAR_MAX_TILES = 20;
+    static constexpr int LIFEBAR_START_X = 5;
+    static constexpr int LIFEBAR_START_Y = 5;
 
     // Target animated sprite
-    // bn::sprite_animate_action<4> _target_action;
     bn::sprite_ptr _target_spr;
     bn::optional<bn::sprite_scale_loop_action> _target_growth_action;
 
     // Fade actions
-    // Each HUD sprite is individually opted into blending so only HUD elements
-    // are affected. Text sprites are re-created every frame, so blending is
-    // re-applied to them inside update() while a fade is active.
     bn::optional<bn::blending_transparency_alpha_to_action> _fade_in_action;
     bn::optional<bn::blending_transparency_alpha_to_action> _fade_out_action;
     bool _is_blending_active = false;
 
+    void _update_lifebar();
+
+    // Target calculation
     void _move_target();
     bn::fixed_point _compute_target_return();
     bn::fixed_point _compute_target_move(const bn::fixed_point& dir_input);
