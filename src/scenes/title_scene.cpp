@@ -152,16 +152,16 @@ bn::optional<scene_type> title_scene::update()
         _target_scene = scene_type::MOCK_CUTSCENE;
         bn::sound_items::menu_confirm.play(0.4);
         _leave_scene_frame_counter = 0;
-        _bgs_fade_out_action.emplace(90, 1);
-        _sprites_fade_out_action.emplace(90, 1);
+        _bgs_fade_out_action.emplace(50, 1);
+        _sprites_fade_out_action.emplace(50, 1);
     }
     else if (bn::keypad::select_pressed())
     {
         // Transition to audio viewer
         _target_scene = scene_type::AUDIO_VIEWER;
         bn::sound_items::menu_confirm.play();
-        _bgs_fade_out_action.emplace(60, 1);
-        _sprites_fade_out_action.emplace(60, 1);
+        _bgs_fade_out_action.emplace(50, 1);
+        _sprites_fade_out_action.emplace(50, 1);
     }
     else if (bn::keypad::any_pressed())
     {
