@@ -68,7 +68,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
         *_model,
         fr::point_3d(0, -180, 0),   // start
         fr::point_3d(150, -30, -0), // end
-        170, 30, easing::EASE_IN);
+        170, 50, easing::EASE_IN_OUT_BACK_QUAD);
     _timeline.add(_cmd_move);
 
     _cmd_rotate_camera = new rotate_camera_cmd(
