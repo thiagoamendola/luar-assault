@@ -7,6 +7,7 @@
 #include "fr_model_colors.h"
 
 #include "controller.h"
+#include "colliders.h"
 
 // - Forward declaration
 class player_ship; 
@@ -37,9 +38,11 @@ class player_laser
     player_laser(player_ship *player_ship, controller *controller);
 
     // Calculates wether laser is being used, collision and so on.
-    void update(enemy_manager& enemies);
+    void update(enemy_manager& enemies,
+               const sphere_collider *static_colliders = nullptr, int static_collider_count = 0);
 
-    void raycast_laser(enemy_manager& enemies);
+    void raycast_laser(enemy_manager& enemies,
+                       const sphere_collider *static_colliders, int static_collider_count);
 
     // Controls laser mesh render as a static model (at the end of update)
     int render_player_laser(const fr::model_3d_item **static_model_items,

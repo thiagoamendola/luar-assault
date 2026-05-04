@@ -243,7 +243,7 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
 {
     {
         // - Player Laser
-        _player_laser.update(enemies);
+        _player_laser.update(enemies, static_colliders, static_collider_count);
     }
 
     {

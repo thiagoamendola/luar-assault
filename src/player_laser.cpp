@@ -21,7 +21,8 @@ player_laser::player_laser(player_ship *player_ship, controller *controller)
     laser_duration_count = 0;
 }
 
-void player_laser::update(enemy_manager &enemies)
+void player_laser::update(enemy_manager &enemies,
+                          const sphere_collider *static_colliders, int static_collider_count)
 {
     switch (state)
     {
@@ -36,7 +37,7 @@ void player_laser::update(enemy_manager &enemies)
             bn::sound_items::player_laser.play();
 
             // Check for collision
-            raycast_laser(enemies);
+            raycast_laser(enemies, static_colliders, static_collider_count);
         }
         break;
     case laser_state::SHOOTING:
@@ -70,7 +71,8 @@ void player_laser::update(enemy_manager &enemies)
     }
 }
 
-void player_laser::raycast_laser(enemy_manager &enemies)
+void player_laser::raycast_laser(enemy_manager &enemies,
+                                  const sphere_collider *static_colliders, int static_collider_count)
 {
     fr::point_3d player_ship_pos = _player_ship->get_position();
     // Use true aiming angles (not affected by dodge rotation)
@@ -224,6 +226,61 @@ void player_laser::raycast_laser(enemy_manager &enemies)
             }
         }
 
+        // === Check laser against static sphere colliders ===
+        for (int i = 0; i < static_collider_count; ++i)
+        {
+            const sphere_collider &sc = static_colliders[i];
+            fr::point_3d col_position = sc.position;
+            int col_radius = sc.radius;
+            int64_t col_radius2 = int64_t(col_radius) * col_radius;
+
+            int cp_lo_x = col_position.x().integer() - laser_origin.x().integer();
+            int cp_lo_y = col_position.y().integer() - laser_origin.y().integer();
+            int cp_lo_z = col_position.z().integer() - laser_origin.z().integer();
+            int64_t cp_lo_len2 = int64_t(cp_lo_x) * cp_lo_x + int64_t(cp_lo_y) * cp_lo_y + int64_t(cp_lo_z) * cp_lo_z;
+
+            int64_t raw_proj_cp_lv = int64_t(cp_lo_x) * lvx + int64_t(cp_lo_y) * lvy + int64_t(cp_lo_z) * lvz;
+
+            bool hit = false;
+            int64_t clamped_proj_dist = 0;
+            if (raw_proj_cp_lv <= 0)
+            {
+                if (cp_lo_len2 <= col_radius2)
+                {
+                    hit = true;
+                    clamped_proj_dist = 0;
+                }
+            }
+            else if (raw_proj_cp_lv >= laser_len2)
+            {
+                int cp_lt_x = col_position.x().integer() - laser_target.x().integer();
+                int cp_lt_y = col_position.y().integer() - laser_target.y().integer();
+                int cp_lt_z = col_position.z().integer() - laser_target.z().integer();
+                int64_t cp_lt_len2 = int64_t(cp_lt_x) * cp_lt_x + int64_t(cp_lt_y) * cp_lt_y + int64_t(cp_lt_z) * cp_lt_z;
+                if (cp_lt_len2 <= col_radius2)
+                {
+                    hit = true;
+                    clamped_proj_dist = laser_len2;
+                }
+            }
+            else
+            {
+                int64_t dist_collider_laser_scaled = cp_lo_len2 * laser_len2 - raw_proj_cp_lv * raw_proj_cp_lv;
+                if (dist_collider_laser_scaled <= col_radius2 * laser_len2)
+                {
+                    hit = true;
+                    clamped_proj_dist = raw_proj_cp_lv;
+                }
+            }
+
+            if (hit && (!found_hit || clamped_proj_dist < clamped_closest_proj_dist))
+            {
+                found_hit = true;
+                clamped_closest_proj_dist = clamped_proj_dist;
+                best_enemy_index = -1; // static, no enemy to damage
+            }
+        }
+
         if (found_hit)
         {
             // We want t = clamped_closest_proj_dist / laser_len2  (0..1) in fixed.
@@ -242,7 +299,10 @@ void player_laser::raycast_laser(enemy_manager &enemies)
             laser_target = laser_origin + hit_offset;
 
             // BN_LOG("Laser hit: enemy=" + bn::to_string<64>(best_enemy_index) + " t=" + bn::to_string<64>(t));
-            enemy_slots[best_enemy_index].ptr->handle_laser_hit();
+            if (best_enemy_index >= 0)
+            {
+                enemy_slots[best_enemy_index].ptr->handle_laser_hit();
+            }
         }
     }
 }
