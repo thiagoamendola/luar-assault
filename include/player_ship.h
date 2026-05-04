@@ -50,6 +50,7 @@ public:
     void update();
 
     void collision_update(const fr::model_3d_item **static_model_items, size_t static_items_count,
+                          const sphere_collider *static_colliders, int static_collider_count,
                           enemy_manager &enemies);
 
     void take_damage();

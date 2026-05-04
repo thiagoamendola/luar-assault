@@ -429,6 +429,81 @@
           },
           "rotation": 100
         }
+      ]
+    },
+    {
+      "id": 13,
+      "comment": "Test some static models",
+      "range": {
+        "start": -4250,
+        "end": -5350
+      },
+      "staticModels": [
+        {
+          "model": "big_asteroid_1_full",
+          "enabled": true,
+          "position": {
+            "x": 30,
+            "y": -950,
+            "z": 40
+          },
+          "rotation": 0,
+          "paletteOverride": "asteroid_alt1",
+          "collider": [
+            {
+              "type": "SPHERE",
+              "center": {
+                "x": -10,
+                "y": 0,
+                "z": 0
+              },
+              "radius": 40
+            }
+          ]
+        },
+        {
+          "model": "big_asteroid_1_full",
+          "enabled": true,
+          "position": {
+            "x": -40,
+            "y": -750,
+            "z": -30
+          },
+          "rotation": 16000,
+          "paletteOverride": "asteroid_alt1",
+          "collider": [
+            {
+              "type": "SPHERE",
+              "center": {
+                "x": -10,
+                "y": 0,
+                "z": 0
+              },
+              "radius": 40
+            }
+          ]
+        }
+      ],
+      "enemies": []
+    },
+    {
+      "id": 14,
+      "range": {
+        "start": -5400,
+        "end": -6400
+      },
+      "staticModels": [],
+      "enemies": [
+        {
+          "type": "ASTEROID",
+          "enabled": true,
+          "position": {
+            "x": -30,
+            "y": -700,
+            "z": 40
+          },
+          "rotation": 100
+        }
       ],
       "end_section": true
     }

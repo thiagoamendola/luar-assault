@@ -32,6 +32,8 @@ class base_game_scene // : public fr::scene
 
     void set_hit_stop(int hit_stop_frames);
 
+    int debug_render_static_colliders(const fr::model_3d_item **static_model_items, int static_count);
+
     void restart_scene();
     void return_to_main_menu();
     void prepare_to_finish_stage();
@@ -103,6 +105,11 @@ class base_game_scene // : public fr::scene
 
     bn::span<const fr::model_3d_item> _model_items; // <-- CAN BEW REMOVED NOW?
     const fr::model_3d_item *_static_model_items[fr::constants_3d::max_static_models];
+
+    static constexpr int MAX_STATIC_COLLIDERS = 16;
+    sphere_collider _static_colliders[MAX_STATIC_COLLIDERS] = {};
+    int _static_collider_count = 0;
+    bn::array<sphere_collider_debugger, MAX_STATIC_COLLIDERS> _static_collider_debuggers;
 
     bool _prepare_to_leave = false;
     bn::optional<scene_type> _next_scene_override;

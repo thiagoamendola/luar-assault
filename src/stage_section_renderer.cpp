@@ -74,3 +74,35 @@ int stage_section_renderer::manage_section_render(
     return stage_section_renderer::render_sections(
         camera_position, sections, sections_count, static_model_items);
 }
+
+int stage_section_renderer::collect_section_colliders(
+    stage_section_list_ptr sections, size_t sections_count,
+    bn::fixed camera_position,
+    sphere_collider *out_colliders, int max_colliders)
+{
+    int current = 0;
+
+    for (size_t section_iter = 0; section_iter < sections_count; section_iter++)
+    {
+        const stage_section *current_section = sections[section_iter];
+        if (camera_position <= current_section->starting_pos() &&
+            camera_position > current_section->ending_pos())
+        {
+            int col_count = current_section->static_collider_count();
+            const sphere_collider *col_data = current_section->static_colliders();
+
+            for (int i = 0; i < col_count; i++)
+            {
+                if (current >= max_colliders)
+                {
+                    BN_LOG("Stage Section Renderer: reached static collider max limit");
+                    return current;
+                }
+                out_colliders[current] = col_data[i];
+                current++;
+            }
+        }
+    }
+
+    return current;
+}

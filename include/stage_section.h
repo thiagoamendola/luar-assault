@@ -3,6 +3,7 @@
 
 #include "static_model_3d_item.h"
 #include "enemy_def.h"
+#include "colliders.h"
 
 class stage_section
 {
@@ -17,7 +18,26 @@ class stage_section
           _enemies(enemies.begin()),
           _enemies_count(enemies.size()),
           _starting_pos(starting_pos), _ending_pos(ending_pos),
-          _end_section(end_section)
+          _end_section(end_section),
+          _static_colliders(nullptr),
+          _static_collider_count(0)
+    {
+    }
+
+    constexpr stage_section(
+        const int starting_pos, const int ending_pos,
+        const std::initializer_list<fr::model_3d_item> &static_model_items,
+        const std::initializer_list<enemy_def> &enemies,
+        const sphere_collider *static_colliders, int static_collider_count,
+        const bool end_section = false)
+        : _static_model_items(static_model_items.begin()),
+          _static_model_count(static_model_items.size()),
+          _enemies(enemies.begin()),
+          _enemies_count(enemies.size()),
+          _starting_pos(starting_pos), _ending_pos(ending_pos),
+          _end_section(end_section),
+          _static_colliders(static_colliders),
+          _static_collider_count(static_collider_count)
     {
     }
 
@@ -56,6 +76,16 @@ class stage_section
       return _end_section;
     }
 
+    constexpr const sphere_collider *static_colliders() const
+    {
+      return _static_colliders;
+    }
+
+    constexpr int static_collider_count() const
+    {
+      return _static_collider_count;
+    }
+
   private:
     const fr::model_3d_item *_static_model_items;
     const int _static_model_count;
@@ -64,6 +94,8 @@ class stage_section
     int _starting_pos;
     int _ending_pos;
     bool _end_section;
+    const sphere_collider *_static_colliders;
+    int _static_collider_count;
 };
 
 typedef const stage_section *const *stage_section_list_ptr;

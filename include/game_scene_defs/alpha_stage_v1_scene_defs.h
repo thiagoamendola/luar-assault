@@ -15,6 +15,7 @@
 #include "enemies/asteroid.h"
 #include "enemies/oyster.h"
 #include "enemies/scorpion.h"
+#include "models/big_asteroid_1.h"
 #include "models/player_ship_02.h"
 #include "models/shot.h"
 
@@ -221,11 +222,56 @@ constexpr std::initializer_list<enemy_def> _section_12_enemies = {
 
 constexpr int _section_12_start = -3950;
 constexpr int _section_12_end = -5000;
-constexpr bool _section_12_end_section = true;
+constexpr bool _section_12_end_section = false;
 
 constexpr stage_section section_12(_section_12_start, _section_12_end,
                                   _section_12_static_model_items, _section_12_enemies,
                                   _section_12_end_section);
+
+constexpr auto _s13_model_1 =
+    static_model_3d_item<fr::model_3d_items::big_asteroid_1_full>(
+        fr::point_3d(30, -5200, 40), 0, fr::model_3d_items::asteroid_alt1_colors);
+constexpr auto _s13_model_2 =
+    static_model_3d_item<fr::model_3d_items::big_asteroid_1_full>(
+        fr::point_3d(-40, -5000, -30), 16000, fr::model_3d_items::asteroid_alt1_colors);
+
+constexpr std::initializer_list<fr::model_3d_item> _section_13_static_model_items = {
+    _s13_model_1.item(),
+    _s13_model_2.item()
+};
+
+constexpr std::initializer_list<enemy_def> _section_13_enemies = {};
+
+constexpr sphere_collider _section_13_static_colliders[] = {
+    sphere_collider(fr::point_3d(20, -5200, 40), 40),
+    sphere_collider(fr::point_3d(-50, -5000, -30), 40)
+};
+constexpr int _section_13_static_colliders_count =
+    sizeof(_section_13_static_colliders) / sizeof(_section_13_static_colliders[0]);
+
+constexpr int _section_13_start = -4250;
+constexpr int _section_13_end = -5350;
+constexpr bool _section_13_end_section = false;
+
+constexpr stage_section section_13(_section_13_start, _section_13_end,
+                                  _section_13_static_model_items, _section_13_enemies,
+                                  _section_13_static_colliders, _section_13_static_colliders_count,
+                                  _section_13_end_section);
+
+
+constexpr std::initializer_list<fr::model_3d_item> _section_14_static_model_items = {};
+
+constexpr std::initializer_list<enemy_def> _section_14_enemies = {
+    enemy_def{fr::point_3d(-30, -6100, 40), 100, enemy_type::ASTEROID, nullptr}
+};
+
+constexpr int _section_14_start = -5400;
+constexpr int _section_14_end = -6400;
+constexpr bool _section_14_end_section = true;
+
+constexpr stage_section section_14(_section_14_start, _section_14_end,
+                                  _section_14_static_model_items, _section_14_enemies,
+                                  _section_14_end_section);
 
 // # Sections List
 
@@ -242,6 +288,8 @@ constexpr const auto sections_full = {
     &section_10,
     &section_11,
     &section_12,
+    &section_13,
+    &section_14,
 };
 
 constexpr stage_section_list_ptr sections = sections_full.begin();

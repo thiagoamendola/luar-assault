@@ -25,6 +25,7 @@ STRUCTURAL_INCLUDES = [
     'enemy_def.h',
     'bn_color.h',
     'bn_span.h',
+    'colliders.h',
 ]
 
 # Palette-driven headers (map palette name -> header providing fr::model_3d_items::<name>_colors symbol)
@@ -177,6 +178,29 @@ def generate_header(scene: Dict[str, Any]) -> str:
             # remove last comma for neatness (optional)
             model_items_lines[-1] = model_items_lines[-1].rstrip(',')
 
+        # Collect sphere colliders from static models (convert to world-space)
+        collider_lines: List[str] = []
+        collider_index = 0
+        for m in static_models:
+            if not m.get('enabled', True):
+                continue
+            pos = m['position']
+            section_start_y = start
+            model_world_y = section_start_y + pos['y']
+            for col in m.get('collider', []):
+                if col.get('type') != 'SPHERE':
+                    continue
+                center = col.get('center', {'x': 0, 'y': 0, 'z': 0})
+                radius = col['radius']
+                # World-space = model position + collider center offset
+                wx = pos['x'] + center['x']
+                wy = model_world_y + center['y']
+                wz = pos['z'] + center['z']
+                collider_lines.append(
+                    f"    sphere_collider(fr::point_3d({wx}, {wy}, {wz}), {radius})")
+                collider_index += 1
+        has_colliders = len(collider_lines) > 0
+
         enemy_property_const_lines: List[str] = []
         enemy_lines: List[str] = []
         enemy_index = 1
@@ -238,16 +262,32 @@ def generate_header(scene: Dict[str, Any]) -> str:
         else:
             section_src.append(f"constexpr std::initializer_list<enemy_def> _section_{sid}_enemies = {{}};")
         section_src.append("")
+        # Emit collider array if any colliders were found
+        if has_colliders:
+            section_src.append(f"constexpr sphere_collider _section_{sid}_static_colliders[] = {{")
+            section_src.append(',\n'.join(collider_lines))
+            section_src.append("};")
+            section_src.append(f"constexpr int _section_{sid}_static_colliders_count =\n"
+                               f"    sizeof(_section_{sid}_static_colliders) / sizeof(_section_{sid}_static_colliders[0]);")
+            section_src.append("")
+
         section_src.append(f"constexpr int _section_{sid}_start = {start};")
         section_src.append(f"constexpr int _section_{sid}_end = {end};")
         end_section = s.get('end_section', False)
         end_section_str = 'true' if end_section else 'false'
         section_src.append(f"constexpr bool _section_{sid}_end_section = {end_section_str};")
         section_src.append("")
-        section_src.append(
-            f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
-            f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
-            f"                                  _section_{sid}_end_section);")
+        if has_colliders:
+            section_src.append(
+                f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
+                f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
+                f"                                  _section_{sid}_static_colliders, _section_{sid}_static_colliders_count,\n"
+                f"                                  _section_{sid}_end_section);")
+        else:
+            section_src.append(
+                f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
+                f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
+                f"                                  _section_{sid}_end_section);")
         section_blocks.append('\n'.join(section_src))
 
     # Sections list

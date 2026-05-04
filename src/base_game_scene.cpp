@@ -78,7 +78,17 @@ bool base_game_scene::update()
         static_count =
             stage_section_renderer::manage_section_render(_sections, _sections_count, _camera, _static_model_items);
 
-        _player_ship.collision_update(_static_model_items, static_count, _enemy_manager);
+        _static_collider_count =
+            stage_section_renderer::collect_section_colliders(
+                _sections, _sections_count, _camera.position().y(),
+                _static_colliders, MAX_STATIC_COLLIDERS);
+
+        _player_ship.collision_update(_static_model_items, static_count,
+                                      _static_colliders, _static_collider_count,
+                                      _enemy_manager);
+
+        // - Debug render static colliders
+        static_count = debug_render_static_colliders(_static_model_items, static_count);
 
         // - Static object rendering
         static_count = _player_ship.statics_render(_static_model_items, static_count);
@@ -99,6 +109,43 @@ void base_game_scene::destroy()
 
     _player_ship.destroy();
     _enemy_manager.destroy();
+}
+
+int base_game_scene::debug_render_static_colliders(
+    const fr::model_3d_item **static_model_items, int static_count)
+{
+    if (!_controller.is_collider_display_enabled())
+    {
+        return static_count;
+    }
+
+    for (int i = 0; i < _static_collider_count; i++)
+    {
+        auto &col = _static_colliders[i];
+        auto &dbg = _static_collider_debuggers[i];
+
+        dbg.debug_vertices[0].reset(
+            col.position + fr::point_3d(col.radius, 0, 0));
+        dbg.debug_vertices[1].reset(
+            col.position + fr::point_3d(0, 0, col.radius));
+        dbg.debug_vertices[2].reset(
+            col.position + fr::point_3d(-col.radius, 0, 0));
+        dbg.debug_vertices[3].reset(
+            col.position + fr::point_3d(0, 0, -col.radius));
+
+        dbg.debug_faces[0].reset(
+            dbg.debug_vertices, fr::vertex_3d(0, 1, 0), 2, 1, 0, 0, 7);
+        dbg.debug_faces[1].reset(
+            dbg.debug_vertices, fr::vertex_3d(0, 1, 0), 0, 3, 2, 0, 7);
+
+        if (static_count < fr::constants_3d::max_static_models)
+        {
+            static_model_items[static_count] = &dbg.debug_model;
+            static_count++;
+        }
+    }
+
+    return static_count;
 }
 
 void base_game_scene::set_hit_stop(int hit_stop_frames)

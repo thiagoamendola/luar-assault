@@ -55,6 +55,11 @@ struct sphere_collider
     fr::point_3d position;
     int radius;
 
+    constexpr sphere_collider()
+        : position(fr::point_3d(0, 0, 0)), radius(0)
+    {
+    }
+
     constexpr sphere_collider(fr::point_3d _position, int _radius)
         : position(_position), radius(_radius)
     {
@@ -151,6 +156,38 @@ class sphere_collider_set
             if (colliding_with_static_model(*static_model_items[i]))
             {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool colliding_with_static_colliders(const sphere_collider *static_colliders, size_t static_collider_count)
+    {
+        size_t collider_count = _sphere_collider_list.size();
+
+        for (size_t i = 0; i < collider_count; i++)
+        {
+            auto this_collider = _sphere_collider_list[i];
+            fr::point_3d this_center = _origin_pos + this_collider.position;
+
+            for (size_t j = 0; j < static_collider_count; j++)
+            {
+                auto static_col = static_colliders[j];
+
+                fr::point_3d dist_vec = this_center - static_col.position;
+                int xv = dist_vec.x().integer();
+                int yv = dist_vec.y().integer();
+                int zv = dist_vec.z().integer();
+                int dist_squared = (xv * xv) + (yv * yv) + (zv * zv);
+                int radii_sum = this_collider.radius + static_col.radius;
+                int radii_sum_squared = radii_sum * radii_sum;
+
+                if (dist_squared <= radii_sum_squared)
+                {
+                    BN_LOG("[colliding_with_static_colliders] COLLIDED!!!");
+                    return true;
+                }
             }
         }
 

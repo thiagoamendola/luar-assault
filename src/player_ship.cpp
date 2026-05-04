@@ -237,7 +237,9 @@ void player_ship::update()
 }
 
 void player_ship::collision_update(const fr::model_3d_item **static_model_items,
-                                   size_t static_items_count, enemy_manager &enemies)
+                                   size_t static_items_count,
+                                   const sphere_collider *static_colliders, int static_collider_count,
+                                   enemy_manager &enemies)
 {
     {
         // - Player Laser
@@ -262,8 +264,14 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
             return;
         }
 
-        // - Collision with statics
-        if (_sphere_collider_set.colliding_with_statics(static_model_items, static_items_count))
+        // - Collision with static sphere colliders
+        if (static_collider_count > 0 &&
+            _sphere_collider_set.colliding_with_static_colliders(static_colliders, static_collider_count))
+        {
+            take_damage();
+        }
+        // - Collision with statics (vertex fallback) // <-- STILL NEEDED????
+        else if (_sphere_collider_set.colliding_with_statics(static_model_items, static_items_count))
         {
             take_damage();
             // return;
