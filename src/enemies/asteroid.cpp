@@ -77,6 +77,10 @@ void asteroid::update(player_ship* player)
     
         // Rotate.
         _model->set_phi(_model->phi() + 600); // <-- Magic number
+
+        // Move.
+        _position = _position + _movement;
+        _model->set_position(_position);
     
         // Update colliders.
         _sphere_collider_set.set_origin(get_model()->position());

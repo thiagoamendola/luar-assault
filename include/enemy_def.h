@@ -23,6 +23,11 @@ struct scorpion_properties
     bn::fixed player_distance;
 };
 
+struct asteroid_properties
+{
+    bn::fixed speed;
+};
+
 struct enemy_def
 {
     fr::point_3d position;

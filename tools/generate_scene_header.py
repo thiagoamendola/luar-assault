@@ -229,6 +229,13 @@ def generate_header(scene: Dict[str, Any]) -> str:
                     enemy_property_const_lines.append(
                         f"constexpr scorpion_properties {props_const_name} = {{{player_distance}}};")
                     props_ptr = f"&{props_const_name}"
+            elif etype == 'ASTEROID':
+                speed = e.get('speed')
+                if speed is not None:
+                    props_const_name = f"_s{sid}_enemy_{enemy_index}_props"
+                    enemy_property_const_lines.append(
+                        f"constexpr asteroid_properties {props_const_name} = {{{speed}}};")
+                    props_ptr = f"&{props_const_name}"
             elif etype == 'NAIAH':
                 # Add naiah property parsing here when needed
                 pass

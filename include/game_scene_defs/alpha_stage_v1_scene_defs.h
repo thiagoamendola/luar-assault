@@ -230,21 +230,16 @@ constexpr stage_section section_12(_section_12_start, _section_12_end,
 
 constexpr auto _s13_model_1 =
     static_model_3d_item<fr::model_3d_items::big_asteroid_1_full>(
-        fr::point_3d(30, -5200, 40), 0, fr::model_3d_items::asteroid_alt1_colors);
-constexpr auto _s13_model_2 =
-    static_model_3d_item<fr::model_3d_items::big_asteroid_1_full>(
-        fr::point_3d(-40, -5000, -30), 16000, fr::model_3d_items::asteroid_alt1_colors);
+        fr::point_3d(30, -5100, 40), 0, fr::model_3d_items::asteroid_alt1_colors);
 
 constexpr std::initializer_list<fr::model_3d_item> _section_13_static_model_items = {
-    _s13_model_1.item(),
-    _s13_model_2.item()
+    _s13_model_1.item()
 };
 
 constexpr std::initializer_list<enemy_def> _section_13_enemies = {};
 
 constexpr sphere_collider _section_13_static_colliders[] = {
-    sphere_collider(fr::point_3d(20, -5200, 40), 40),
-    sphere_collider(fr::point_3d(-50, -5000, -30), 40)
+    sphere_collider(fr::point_3d(20, -5100, 40), 40)
 };
 constexpr int _section_13_static_colliders_count =
     sizeof(_section_13_static_colliders) / sizeof(_section_13_static_colliders[0]);
@@ -259,10 +254,12 @@ constexpr stage_section section_13(_section_13_start, _section_13_end,
                                   _section_13_end_section);
 
 
+constexpr asteroid_properties _s14_enemy_1_props = {10};
+
 constexpr std::initializer_list<fr::model_3d_item> _section_14_static_model_items = {};
 
 constexpr std::initializer_list<enemy_def> _section_14_enemies = {
-    enemy_def{fr::point_3d(-30, -6100, 40), 100, enemy_type::ASTEROID, nullptr}
+    enemy_def{fr::point_3d(-30, -6100, 40), 100, enemy_type::ASTEROID, &_s14_enemy_1_props}
 };
 
 constexpr int _section_14_start = -5400;

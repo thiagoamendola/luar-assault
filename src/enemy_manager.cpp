@@ -209,7 +209,13 @@ void enemy_manager::spawn_asteroid(const enemy_def &enemy)
     {
         if (!_enemies[slot].used)
         {
-            fr::point_3d movement(0, 30, 0); // placeholder movement
+            bn::fixed speed = 0; // default speed // <-- IMPROVE THIS LATER
+            if (enemy.properties)
+            {
+                const auto *props = get_enemy_properties<asteroid_properties>(enemy);
+                speed = props->speed;
+            }
+            fr::point_3d movement(0, speed, 0);
             // <-- DO NOT INSTANTIATE. This is no true pooling since we're just holding an array of pointers.
             _enemies[slot].ptr = new asteroid(enemy.position, movement, _models, _controller, _base_scene); // <-- Convert to a proper object pool later
             _enemies[slot].used = true;
