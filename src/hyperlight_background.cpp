@@ -55,11 +55,15 @@ void hyperlight_background::update()
         s.x += _speed.x();
         s.y += _speed.y();
         
-        // Wrap around screen edges
-        if (s.x >= 240) s.x -= 240;
-        if (s.x < 0) s.x += 240;
-        if (s.y >= 160) s.y -= 160;
-        if (s.y < 0) s.y += 160;
+        // Wrap around screen edges, extended by trail length so the
+        // entire trail scrolls off-screen before the star respawns.
+        int trail_margin_x = bn::abs((_speed.x() * _trail_length)).integer();
+        int trail_margin_y = bn::abs((_speed.y() * _trail_length)).integer();
+        
+        if (s.x >= 240 + trail_margin_x) s.x -= 240 + trail_margin_x;
+        if (s.x < -trail_margin_x) s.x += 240 + trail_margin_x;
+        if (s.y >= 160 + trail_margin_y) s.y -= 160 + trail_margin_y;
+        if (s.y < -trail_margin_y) s.y += 160 + trail_margin_y;
     }
     
     // Redraw stars with trails
