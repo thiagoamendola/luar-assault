@@ -253,7 +253,7 @@ void hud_manager::_update_lifebar()
 {
     int health = _player_ship->get_health();
 
-    int tiles_to_show = health * 4; // Generalize for different health values
+    int tiles_to_show = health; // 1 health = 1 tile, 20 tiles max
     if (tiles_to_show > LIFEBAR_MAX_TILES)
     {
         tiles_to_show = LIFEBAR_MAX_TILES;

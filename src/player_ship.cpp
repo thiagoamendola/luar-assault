@@ -292,7 +292,7 @@ void player_ship::take_damage()
 {
     bn::sound_items::player_damage.play();
     _damage_cooldown = DAMAGE_COOLDOWN;
-    health--;
+    health -= 3; // <-- MAGIC NUMBER
     _base_scene->set_hit_stop(HIT_STOP_COOLDOWN);
     _model->set_palette(fr::model_3d_items::hurt_colors);
     if (health <= 0)

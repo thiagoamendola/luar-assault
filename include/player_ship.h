@@ -123,7 +123,7 @@ private:
     sphere_collider_set _sphere_collider_set;
     player_laser _player_laser;
 
-    int health = 5;
+    int health = 20;
     int _damage_cooldown = 0;
     bn::fixed_point target_position;
 
