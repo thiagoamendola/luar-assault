@@ -3,6 +3,7 @@
 #include "bn_keypad.h"
 
 #include "scene_type.h"
+#include "sram_data.h"
 
 base_game_scene::base_game_scene(const bn::span<const bn::color> &scene_colors,
                                      scene_colors_generator::color_mapping_handler *color_mapping,
@@ -106,6 +107,13 @@ bool base_game_scene::update()
 void base_game_scene::destroy()
 {
     _prepare_to_leave = true;
+
+    // Save high score if stage was cleared
+    if (_end_stage_banner.is_shown())
+    {
+        sram_data data = sram_data::load();
+        data.try_update_high_score(_score);
+    }
 
     _player_ship.destroy();
     _enemy_manager.destroy();

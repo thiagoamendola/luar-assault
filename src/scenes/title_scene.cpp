@@ -13,6 +13,7 @@
 #include "bn_music_items.h"
 #include "bn_sound_items.h"
 #include "bn_sprite_text_generator.h"
+#include "bn_string.h"
 
 #include "fr_model_3d_item.h"
 #include "fr_model_colors.h"
@@ -21,6 +22,7 @@
 #include "hyperlight_background.h"
 #include "alpha_stage_v1_scene_defs.h"
 
+#include "sram_data.h"
 #include "editundo_sprite_font.h"
 #include "common_variable_8x16_sprite_font.h"
 #include "common_variable_8x8_sprite_font.h"
@@ -95,6 +97,14 @@ title_scene::title_scene() : _prepare_to_leave(false)
     text_generator2.generate(-100, -52, "LUAR", _text_sprites);
     text_generator2.generate(-100, -41, "ASSAULT", _text_sprites);
     text_generator3.generate(-100, -24, "Demo", _text_sprites);
+
+    // Display high score if one exists
+    sram_data save = sram_data::load();
+    if (save.high_score > 0)
+    {
+        text_generator3.generate(-100, 30, "Hi-Score: ", _text_sprites);
+        text_generator3.generate(-100, 39, bn::to_string<64>(save.high_score), _text_sprites);
+    }
 
     // Set music
     // bn::music_items::amayadori2.play(1); // Works flawless (.xm)
