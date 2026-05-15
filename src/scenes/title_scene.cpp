@@ -167,11 +167,13 @@ bn::optional<scene_type> title_scene::update()
     }
     else if (bn::keypad::select_pressed())
     {
+        #if FR_DETAILED_PROFILE
         // Transition to audio viewer
         _target_scene = scene_type::AUDIO_VIEWER;
         bn::sound_items::menu_confirm.play();
         _bgs_fade_out_action.emplace(50, 1);
         _sprites_fade_out_action.emplace(50, 1);
+        #endif
     }
     else if (bn::keypad::any_pressed())
     {
@@ -180,8 +182,10 @@ bn::optional<scene_type> title_scene::update()
     }
 
     _model->set_phi(_model->phi() + 300); // <-- Magic number
+    // _camera.set_theta(_camera.theta() + 100); // <-- TEST ONLY>
+    _camera.set_psi(_camera.psi() + 100); // <-- TEST ONLY
 
-    _hyperlight_bg.update();
+    _hyperlight_bg.update(_camera);
     _models.update(_camera);
 
     return result;

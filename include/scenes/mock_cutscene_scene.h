@@ -48,7 +48,7 @@ private:
     bn::optional<bn::bg_palettes_fade_to_action>     _bgs_fade_out_action;
     bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;
 
-    hyperlight_background _hyperlight_bg{bn::fixed_point(-4, -.5), 6};  // Speed + trail length
+    hyperlight_background _hyperlight_bg;
 };
 
 #endif // MOCK_CUTSCENE_SCENE_H

@@ -165,7 +165,7 @@ bn::optional<scene_type> mock_cutscene_scene::update()
 
     // Render 3D scene
     _models.update(_camera);
-    _hyperlight_bg.update();
+    _hyperlight_bg.update(_camera);
 
     return bn::nullopt;
 }

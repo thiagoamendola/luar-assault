@@ -30,7 +30,7 @@ class title_scene : public fr::scene
     bn::vector<bn::sprite_ptr, 32> _text_sprites;
 
     controller _controller;
-    hyperlight_background _hyperlight_bg{bn::fixed_point(-1, -1), 4};  // Speed + trail length
+    hyperlight_background _hyperlight_bg;
 
     fr::camera_3d _camera;
     fr::models_3d _models;
