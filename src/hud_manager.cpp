@@ -52,6 +52,10 @@ hud_manager::hud_manager(base_game_scene *base_scene)
         _target_spr.set_visible(false);
         _lifebar_frame.set_visible(false);
         _lifebar_tiles.clear();
+        _lifebar_damage_tiles.clear();
+        _damage_hold_frames = 0;
+        _damage_shrink_frames = 0;
+        _damage_shrink_per_tile = 0;
         _displayed_health = -1;
     }
 }
@@ -90,6 +94,7 @@ void hud_manager::update(fr::models_3d *models)
     else
     {
         _update_lifebar();
+        _update_lifebar_damage_tiles();
         _text_generator.generate(-115, -58, bn::to_string<64>(_base_scene->get_score()),
                                  _text_sprites); // <-- Get another font?
     }
@@ -119,6 +124,10 @@ void hud_manager::update(fr::models_3d *models)
             for (bn::sprite_ptr& tile : _lifebar_tiles)
             {
                 tile.set_blending_enabled(false);
+            }
+            for (lifebar_damage_tile& dt : _lifebar_damage_tiles)
+            {
+                dt.spr.set_blending_enabled(false);
             }
             _is_blending_active = false;
             _fade_in_action.reset();
@@ -199,6 +208,10 @@ void hud_manager::hide()
     _is_hidden = true;
     _text_sprites.clear();
     _lifebar_tiles.clear();
+    _lifebar_damage_tiles.clear();
+    _damage_hold_frames = 0;
+    _damage_shrink_frames = 0;
+    _damage_shrink_per_tile = 0;
     _displayed_health = -1;
     // <-- Hide other HUD elements like score, target sprite, etc.
     _target_spr.set_visible(false);
@@ -269,13 +282,44 @@ void hud_manager::_update_lifebar()
         return;
     }
 
+    // Spawn red damage tiles for each lost slot (rightmost first kept visually).
+    if (_displayed_health > 0 && tiles_to_show < _displayed_health)
+    {
+        int lost_start = tiles_to_show;
+        int lost_end = _displayed_health;
+        for (int i = lost_start; i < lost_end; ++i)
+        {
+            if (_lifebar_damage_tiles.full())
+            {
+                break;
+            }
+            bn::fixed left_x = LIFEBAR_START_X + i * LIFEBAR_TILE_SPACING;
+            lifebar_damage_tile dt{
+                bn::sprite_items::lifebar_tile.create_sprite(0, 0, LIFEBAR_RED_GRAPHICS_INDEX),
+                bn::fixed(0)
+            };
+            dt.spr.set_top_left_x(left_x);
+            dt.spr.set_top_left_y(LIFEBAR_START_Y);
+            // Capture the actual center coord (screen-center origin) after placement
+            // so the shrink phase can keep the visible left edge anchored correctly.
+            dt.center_x = dt.spr.x();
+            if (_is_blending_active)
+            {
+                dt.spr.set_blending_enabled(true);
+            }
+            _lifebar_damage_tiles.push_back(bn::move(dt));
+        }
+
+        _damage_hold_frames = LIFEBAR_DAMAGE_HOLD_FRAMES;
+    }
+
     _displayed_health = tiles_to_show;
     _lifebar_tiles.clear();
 
     for (int i = 0; i < tiles_to_show; ++i)
     {
         bn::sprite_ptr tile = bn::sprite_items::lifebar_tile.create_sprite(0, 0);
-        tile.set_top_left_x(LIFEBAR_START_X + i * 3);
+        tile.set_top_left_x(LIFEBAR_START_X + i * LIFEBAR_TILE_SPACING);
         tile.set_top_left_y(LIFEBAR_START_Y);
         if (_is_blending_active)
         {
@@ -283,4 +327,54 @@ void hud_manager::_update_lifebar()
         }
         _lifebar_tiles.push_back(bn::move(tile));
     }
+}
+
+void hud_manager::_update_lifebar_damage_tiles()
+{
+    if (_lifebar_damage_tiles.empty())
+    {
+        return;
+    }
+
+    // Phase 1: hold timer on red tiles
+    if (_damage_hold_frames > 0)
+    {
+        --_damage_hold_frames;
+        return;
+    }
+
+    // Phase 2: shrink one tile at a time, rightmost first.
+    if (_damage_shrink_per_tile == 0)
+    {
+        int n = _lifebar_damage_tiles.size();
+        _damage_shrink_per_tile = LIFEBAR_DAMAGE_SHRINK_FRAMES / n;
+        if (_damage_shrink_per_tile < 1)
+        {
+            _damage_shrink_per_tile = 1;
+        }
+        _damage_shrink_frames = _damage_shrink_per_tile;
+    }
+
+    auto active = _lifebar_damage_tiles.begin();
+    for (auto it = _lifebar_damage_tiles.begin(); it != _lifebar_damage_tiles.end(); ++it)
+    {
+        if (it->center_x > active->center_x)
+        {
+            active = it;
+        }
+    }
+
+    --_damage_shrink_frames;
+    if (_damage_shrink_frames <= 0)
+    {
+        _lifebar_damage_tiles.erase(active);
+        _damage_shrink_frames = _lifebar_damage_tiles.empty() ? 0 : _damage_shrink_per_tile;
+        return;
+    }
+
+    bn::fixed scale = bn::fixed(_damage_shrink_frames) / _damage_shrink_per_tile;
+    active->spr.set_horizontal_scale(scale);
+    // Keep the visible left edge anchored: as scale shrinks, the center
+    // shifts left by half-width * (1 - scale).
+    active->spr.set_x(active->center_x - bn::fixed(LIFEBAR_TILE_WIDTH) / 2 * (bn::fixed(1) - scale));
 }

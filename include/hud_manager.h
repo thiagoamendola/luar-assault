@@ -71,6 +71,21 @@ private:
     static constexpr int LIFEBAR_MAX_TILES = 20;
     static constexpr int LIFEBAR_START_X = 5;
     static constexpr int LIFEBAR_START_Y = 5;
+    static constexpr int LIFEBAR_TILE_SPACING = 3;
+    static constexpr int LIFEBAR_TILE_WIDTH = 8;
+    static constexpr int LIFEBAR_RED_GRAPHICS_INDEX = 1;
+    static constexpr int LIFEBAR_DAMAGE_HOLD_FRAMES = 30;
+    static constexpr int LIFEBAR_DAMAGE_SHRINK_FRAMES = 15;
+
+    struct lifebar_damage_tile
+    {
+        bn::sprite_ptr spr;
+        bn::fixed center_x;
+    };
+    bn::vector<lifebar_damage_tile, LIFEBAR_MAX_TILES> _lifebar_damage_tiles;
+    int _damage_hold_frames = 0;
+    int _damage_shrink_frames = 0;
+    int _damage_shrink_per_tile = 0;
 
     // Target animated sprite
     bn::sprite_ptr _target_spr;
@@ -82,6 +97,7 @@ private:
     bool _is_blending_active = false;
 
     void _update_lifebar();
+    void _update_lifebar_damage_tiles();
 
     // Target calculation
     void _move_target();
