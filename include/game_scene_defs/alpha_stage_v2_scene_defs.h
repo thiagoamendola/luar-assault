@@ -176,7 +176,7 @@ constexpr stage_section section_9(_section_9_start, _section_9_end,
 
 constexpr auto _s10_model_1 =
     static_model_3d_item<fr::model_3d_items::big_asteroid_1_full>(
-        fr::point_3d(-40, -3100, -30), 16000, fr::model_3d_items::asteroid_alt1_colors);
+        fr::point_3d(-40, -3100, -30), 16000, fr::model_3d_items::big_asteroid_alt_colors);
 
 constexpr std::initializer_list<fr::model_3d_item> _section_10_static_model_items = {
     _s10_model_1.item()
@@ -201,7 +201,7 @@ constexpr stage_section section_10(_section_10_start, _section_10_end,
 
 constexpr auto _s11_model_1 =
     static_model_3d_item<fr::model_3d_items::big_asteroid_1_full>(
-        fr::point_3d(40, -3550, 40), -8000, fr::model_3d_items::asteroid_alt1_colors);
+        fr::point_3d(40, -3550, 40), -8000, fr::model_3d_items::big_asteroid_alt_colors);
 
 constexpr asteroid_properties _s11_enemy_1_props = {3};
 
@@ -300,7 +300,7 @@ constexpr stage_section section_15(_section_15_start, _section_15_end,
 
 constexpr auto _s16_model_1 =
     static_model_3d_item<fr::model_3d_items::big_asteroid_1_full>(
-        fr::point_3d(45, -5500, -45), 18000, fr::model_3d_items::asteroid_alt1_colors);
+        fr::point_3d(45, -5500, -45), 18000, fr::model_3d_items::big_asteroid_alt_colors);
 
 constexpr std::initializer_list<fr::model_3d_item> _section_16_static_model_items = {
     _s16_model_1.item()
@@ -447,6 +447,7 @@ constexpr const auto raw_scene_colors = {
     bn::span<const bn::color>(fr::model_3d_items::hurt_colors),
     bn::span<const bn::color>(fr::model_3d_items::player_ship_02_colors),
     bn::span<const bn::color>(fr::model_3d_items::asteroid_alt1_colors),
+    bn::span<const bn::color>(fr::model_3d_items::big_asteroid_alt_colors),
     bn::span<const bn::color>(fr::model_3d_items::oyster_alt1_colors),
     bn::span<const bn::color>(fr::model_3d_items::scorpion_alt_colors),
     bn::span<const bn::color>(fr::model_3d_items::shot_colors)

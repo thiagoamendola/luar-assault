@@ -7,6 +7,7 @@
       "hurt",
       "player_ship_02",
       "asteroid_alt1",
+      "big_asteroid_alt",
       "oyster_alt1",
       "scorpion_alt",
       "shot"
@@ -278,7 +279,7 @@
             "z": -30
           },
           "rotation": 16000,
-          "paletteOverride": "asteroid_alt1",
+          "paletteOverride": "big_asteroid_alt",
           "collider": [
             {
               "type": "SPHERE",
@@ -310,7 +311,7 @@
             "z": 40
           },
           "rotation": -8000,
-          "paletteOverride": "asteroid_alt1",
+          "paletteOverride": "big_asteroid_alt",
           "collider": [
             {
               "type": "SPHERE",
@@ -451,7 +452,7 @@
             "z": -45
           },
           "rotation": 18000,
-          "paletteOverride": "asteroid_alt1",
+          "paletteOverride": "big_asteroid_alt",
           "collider": [
             {
               "type": "SPHERE",

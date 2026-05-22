@@ -26,6 +26,10 @@ constexpr inline bn::color asteroid_alt1_colors[] = {
     bn::color(18,14,2),
 };
 
+constexpr inline bn::color big_asteroid_alt_colors[] = {
+    bn::color(7,6,2),
+};
+
 constexpr inline bn::color asteroid_hit_colors[] = {
     bn::color(18, 0, 0),
 };

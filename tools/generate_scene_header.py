@@ -36,6 +36,7 @@ PALETTE_HEADER_MAP = {
     'hurt': 'player_ship.h',
     'scorpion_alt': 'enemies/scorpion.h',
     'asteroid_alt1': 'enemies/asteroid.h',
+    'big_asteroid_alt': 'enemies/asteroid.h',
     'oyster_alt1': 'enemies/oyster.h',
     # model palettes like 'bush', 'asteroid1', 'player_ship_02', 'shot' are provided by their model headers
 }
