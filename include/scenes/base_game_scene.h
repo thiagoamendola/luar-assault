@@ -71,6 +71,10 @@ class base_game_scene // : public fr::scene
     {
       return &_player_ship;
     }
+    enemy_manager* get_enemy_manager()
+    {
+      return &_enemy_manager;
+    }
     hud_manager* get_hud_manager()
     {
       return &_hud_manager;

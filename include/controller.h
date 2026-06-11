@@ -19,6 +19,7 @@ class controller
     bn::fixed_point get_smooth_directional();
     
     bool is_pause_pressed();
+    bool is_missiles_pressed();
 
     // Debug toggles
     bool is_collider_display_enabled();

@@ -155,3 +155,8 @@ bool controller::is_pause_pressed()
 {
     return bn::keypad::start_pressed() && !bn::keypad::select_held();
 }
+
+bool controller::is_missiles_pressed()
+{
+    return bn::keypad::b_pressed();
+}
