@@ -27,12 +27,14 @@ player_ship::player_ship(base_game_scene *base_scene)
     : _base_scene(base_scene), _controller(base_scene->get_controller()),
       _camera(base_scene->get_camera()), _models(base_scene->get_models()),
       _sphere_collider_set(fr::model_3d_items::ship_colliders),
-      _player_laser(this, _controller)
+      _player_laser(this, _controller),
+      _player_missiles(base_scene)
 {
     _model =
         &_models->create_dynamic_model(fr::model_3d_items::player_ship_02_full);
     // x, y (back/forward), z (down/up)
     _model->set_psi(16383); // 90 degrees // <-- Magic number
+    _sphere_collider_set.set_initial_rotation(0, 0, 16383);
 
     _dodge_timeout = 0;
     _dodge_progress = 0;
@@ -231,8 +233,12 @@ void player_ship::update()
         // Update general controller input.
         _controller->update();
 
+        // Update player missiles
+        _player_missiles.update();
+
         // Update colliders.
         _sphere_collider_set.set_origin(get_model()->position());
+        _sphere_collider_set.set_rotation(get_model()->phi(), get_model()->theta(), get_model()->psi());
     }
 }
 
@@ -274,7 +280,6 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
         else if (_sphere_collider_set.colliding_with_statics(static_model_items, static_items_count))
         {
             take_damage();
-            // return;
         }
         // - Collision with dynamic enemies
         else if (check_collision_with_enemies(enemies))
@@ -321,8 +326,9 @@ int player_ship::statics_render(const fr::model_3d_item **static_model_items,
     // Render debug collider models
     if (_controller->is_collider_display_enabled())
     {
-        current_static_count = _sphere_collider_set.debug_collider(
-            static_model_items, current_static_count);
+        // current_static_count = _sphere_collider_set.debug_collider(
+        //     static_model_items, current_static_count); // <-- UNDO THIS
+        current_static_count = _player_missiles.statics_render(static_model_items, current_static_count);
     }
 
 #if LOG_STATIC_RENDER_STEPS

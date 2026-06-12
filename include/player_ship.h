@@ -10,6 +10,7 @@
 #include "colliders.h"
 #include "controller.h"
 #include "player_laser.h"
+#include "player_missiles.h"
 
 // - Forward declaration
 class base_game_scene;
@@ -122,6 +123,7 @@ private:
 
     sphere_collider_set _sphere_collider_set;
     player_laser _player_laser;
+    player_missiles _player_missiles;
 
     int health = 20;
     int _damage_cooldown = 0;

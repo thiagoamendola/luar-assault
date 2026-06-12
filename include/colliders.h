@@ -13,6 +13,7 @@
 #include "fr_model_3d_item.h"
 #include "fr_models_3d.h"
 #include "fr_point_3d.h"
+#include "fr_sin_cos.h"
 
 namespace fr::model_3d_items
 {
@@ -88,6 +89,32 @@ class sphere_collider_set
         return _origin_pos;
     }
 
+    // Stores parent object's rotation for lazy rebuild later.
+    void set_rotation(bn::fixed phi, bn::fixed theta, bn::fixed psi)
+    {
+        bn::fixed rel_phi = phi - _initial_phi;
+        bn::fixed rel_theta = theta - _initial_theta;
+        bn::fixed rel_psi = psi - _initial_psi;
+
+        if (rel_phi != _phi || rel_theta != _theta || rel_psi != _psi)
+        {
+            _phi = rel_phi;
+            _theta = rel_theta;
+            _psi = rel_psi;
+            _rotation_dirty = true;
+        }
+    }
+
+    // Sets the reference (zero) rotation.
+    void set_initial_rotation(bn::fixed phi, bn::fixed theta, bn::fixed psi)
+    {
+        _initial_phi = phi;
+        _initial_theta = theta;
+        _initial_psi = psi;
+        _rotation_dirty = true;
+    }
+
+
     const bn::span<const sphere_collider> get_sphere_collider_list() const
     {
         return _sphere_collider_list;
@@ -111,21 +138,26 @@ class sphere_collider_set
                 bn::to_string<32>(_sphere_collider_debuggers.size()) + ")");
             collider_count = _sphere_collider_debuggers.size();
         }
-        
+
+        _update_rotation_matrix();
+
         for (size_t i = 0; i < collider_count; i++)
         {
             auto collider = _sphere_collider_list[i];
             auto& debugger = _sphere_collider_debuggers[i];
 
+            // Rotate the local collider offset and its radius axes by the
+            // parent object's rotation so the debug wireframe follows the model.
+            fr::point_3d rotated_offset = _rotate(collider.position);
+            fr::point_3d rx = _rotate(fr::point_3d(collider.radius, 0, 0));
+            fr::point_3d rz = _rotate(fr::point_3d(0, 0, collider.radius));
+            fr::point_3d center = _origin_pos + rotated_offset;
+
             // Calc vertices
-            debugger.debug_vertices[0].reset(
-                _origin_pos + collider.position + fr::point_3d(collider.radius, 0, 0));
-            debugger.debug_vertices[1].reset(
-                _origin_pos + collider.position + fr::point_3d(0, 0, collider.radius));
-            debugger.debug_vertices[2].reset(
-                _origin_pos + collider.position + fr::point_3d(-collider.radius, 0, 0));
-            debugger.debug_vertices[3].reset(
-                _origin_pos + collider.position + fr::point_3d(0, 0, -collider.radius));
+            debugger.debug_vertices[0].reset(center + rx);
+            debugger.debug_vertices[1].reset(center + rz);
+            debugger.debug_vertices[2].reset(center - rx);
+            debugger.debug_vertices[3].reset(center - rz);
 
             // Calc faces
             debugger.debug_faces[0].reset(
@@ -151,6 +183,7 @@ class sphere_collider_set
 
     bool colliding_with_statics(const fr::model_3d_item **static_model_items, size_t count)
     {
+        _update_rotation_matrix();
         for (size_t i = 0; i < count ; i++)
         {
             if (colliding_with_static_model(*static_model_items[i]))
@@ -165,11 +198,12 @@ class sphere_collider_set
     bool colliding_with_static_colliders(const sphere_collider *static_colliders, size_t static_collider_count)
     {
         size_t collider_count = _sphere_collider_list.size();
+        _update_rotation_matrix();
 
         for (size_t i = 0; i < collider_count; i++)
         {
             auto this_collider = _sphere_collider_list[i];
-            fr::point_3d this_center = _origin_pos + this_collider.position;
+            fr::point_3d this_center = _origin_pos + _rotate(this_collider.position);
 
             for (size_t j = 0; j < static_collider_count; j++)
             {
@@ -199,10 +233,13 @@ class sphere_collider_set
         // BN_LOG("[collision] STARTING ----------------- ");
 
         size_t collider_count = _sphere_collider_list.size();
-        
+        _update_rotation_matrix();
+        target->_update_rotation_matrix();
+
         for (size_t i = 0; i < collider_count; i++)
         {
             auto this_collider = _sphere_collider_list[i];
+            fr::point_3d this_center = _origin_pos + _rotate(this_collider.position);
 
             auto target_origin = target->get_origin();
             auto target_collider_list = target->get_sphere_collider_list();
@@ -211,9 +248,10 @@ class sphere_collider_set
             for (size_t j = 0; j < target_collider_count; j++)
             {
                 auto target_collider = target_collider_list[j];
+                fr::point_3d target_center = target_origin + target->_rotate(target_collider.position);
                 
                 fr::point_3d collider_center_distance_vec = 
-                    (_origin_pos + this_collider.position) - (target_origin + target_collider.position);
+                    this_center - target_center;
                 int xv = collider_center_distance_vec.x().integer();
                 int yv = collider_center_distance_vec.y().integer();
                 int zv = collider_center_distance_vec.z().integer();
@@ -246,7 +284,78 @@ class sphere_collider_set
     const bn::span<const sphere_collider> _sphere_collider_list;
     bn::array<sphere_collider_debugger, 8> _sphere_collider_debuggers;  // Max 8 colliders per entity
     fr::point_3d _origin_pos;
-    
+
+    // Parent rotation state (Euler angles in fr-lib encoding) and the cached
+    // 3x3 rotation matrix. Rebuilt only when angles change.
+    bn::fixed _phi = 0;
+    bn::fixed _theta = 0;
+    bn::fixed _psi = 0;
+    bn::fixed _initial_phi = 0;
+    bn::fixed _initial_theta = 0;
+    bn::fixed _initial_psi = 0;
+    bn::fixed _xx = 1, _xy = 0, _xz = 0;
+    bn::fixed _yx = 0, _yy = 1, _yz = 0;
+    bn::fixed _zx = 0, _zy = 0, _zz = 1;
+    bool _rotation_dirty = false;
+
+    // Rebuilds the cached 3x3 rotation matrix from the current Euler angles
+    // (_phi, _theta, _psi). The matrix follows the same Z-Y-X composition from fr::model_3d:
+    //   R = Rz(phi) * Ry(theta) * Rx(psi)
+    // Angles use the fr-lib encoding (right_shift_integer() of a bn::fixed
+    // gives the integer index passed to fr::sin/cos). Once built, _rotate()
+    // applies it to a local-space point as `R * v`.
+    void _update_rotation_matrix()
+    {
+        if (!_rotation_dirty)
+        {
+            return;
+        }
+        _rotation_dirty = false;
+
+        int phi_angle = _phi.right_shift_integer();
+        int theta_angle = _theta.right_shift_integer();
+        int psi_angle = _psi.right_shift_integer();
+
+        // Precompute the trig terms used by the rotation matrix below.
+        // Each Euler angle contributes a sin/cos pair, and the two cross-terms
+        // (phi_cos*theta_sin, phi_sin*theta_sin) appear in multiple matrix
+        // entries — caching them avoids redoing the same multiplication.
+        bn::fixed phi_sin = fr::sin(phi_angle);
+        bn::fixed phi_cos = fr::cos(phi_angle);
+        bn::fixed theta_sin = fr::sin(theta_angle);
+        bn::fixed theta_cos = fr::cos(theta_angle);
+        bn::fixed psi_sin = fr::sin(psi_angle);
+        bn::fixed psi_cos = fr::cos(psi_angle);
+        bn::fixed phi_cos_theta_sin = phi_cos.unsafe_multiplication(theta_sin);
+        bn::fixed phi_sin_theta_sin = phi_sin.unsafe_multiplication(theta_sin);
+
+        // Rebuild rotation matrix.
+        _xx = phi_cos.unsafe_multiplication(theta_cos);
+        _xy = phi_cos_theta_sin.unsafe_multiplication(psi_sin) -
+              phi_sin.unsafe_multiplication(psi_cos);
+        _xz = phi_cos_theta_sin.unsafe_multiplication(psi_cos) +
+              phi_sin.unsafe_multiplication(psi_sin);
+
+        _yx = phi_sin.unsafe_multiplication(theta_cos);
+        _yy = phi_sin_theta_sin.unsafe_multiplication(psi_sin) +
+              phi_cos.unsafe_multiplication(psi_cos);
+        _yz = phi_sin_theta_sin.unsafe_multiplication(psi_cos) -
+              phi_cos.unsafe_multiplication(psi_sin);
+
+        _zx = -theta_sin;
+        _zy = theta_cos.unsafe_multiplication(psi_sin);
+        _zz = theta_cos.unsafe_multiplication(psi_cos);
+    }
+
+    // Applies the cached rotation matrix to a local-space point.
+    fr::point_3d _rotate(const fr::point_3d &v) const
+    {
+        return fr::point_3d(
+            _xx.safe_multiplication(v.x()) + _xy.safe_multiplication(v.y()) + _xz.safe_multiplication(v.z()),
+            _yx.safe_multiplication(v.x()) + _yy.safe_multiplication(v.y()) + _yz.safe_multiplication(v.z()),
+            _zx.safe_multiplication(v.x()) + _zy.safe_multiplication(v.y()) + _zz.safe_multiplication(v.z()));
+    }
+
     bool colliding_with_point(fr::point_3d point)
     {
         size_t collider_count = _sphere_collider_list.size();
@@ -255,7 +364,7 @@ class sphere_collider_set
         {
             auto collider = _sphere_collider_list[i];
             
-            fr::point_3d collider_center_distance_vec = point - (_origin_pos + collider.position);
+            fr::point_3d collider_center_distance_vec = point - (_origin_pos + _rotate(collider.position));
             int xv = collider_center_distance_vec.x().integer();
             int yv = collider_center_distance_vec.y().integer();
             int zv = collider_center_distance_vec.z().integer();
