@@ -66,7 +66,7 @@ struct sphere_collider
     {
     }
 
-    int squared_radius(){
+    int squared_radius() const {
         return radius*radius;
     }
 };
@@ -214,12 +214,11 @@ class sphere_collider_set
                 int yv = dist_vec.y().integer();
                 int zv = dist_vec.z().integer();
                 int dist_squared = (xv * xv) + (yv * yv) + (zv * zv);
-                int radii_sum = this_collider.radius + static_col.radius;
-                int radii_sum_squared = radii_sum * radii_sum;
+                int radius_sum = this_collider.radius + static_col.radius;
+                int radius_sum_squared = radius_sum * radius_sum;
 
-                if (dist_squared <= radii_sum_squared)
+                if (dist_squared <= radius_sum_squared)
                 {
-                    BN_LOG("[colliding_with_static_colliders] COLLIDED!!!");
                     return true;
                 }
             }
@@ -274,6 +273,39 @@ class sphere_collider_set
                     BN_LOG("[colliding_with_dynamic] COLLIDED!!!");
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    // Variant of colliding_with_dynamic for single collider on target's index.
+    bool colliding_with_single_dynamic(sphere_collider_set* target, int index)
+    {
+        // Update dirty rotations.
+        _update_rotation_matrix();
+        target->_update_rotation_matrix();
+
+        auto target_collider_list = target->get_sphere_collider_list();
+        auto target_collider = target_collider_list[index];
+        fr::point_3d target_center = target->get_origin() + target->_rotate(target_collider.position);
+
+        size_t collider_count = _sphere_collider_list.size();
+        for (size_t i = 0; i < collider_count; i++)
+        {
+            auto this_collider = _sphere_collider_list[i];
+            fr::point_3d this_center = _origin_pos + _rotate(this_collider.position);
+
+            fr::point_3d dist_vec = this_center - target_center;
+            int xv = dist_vec.x().integer();
+            int yv = dist_vec.y().integer();
+            int zv = dist_vec.z().integer();
+            int dist_squared = (xv * xv) + (yv * yv) + (zv * zv);
+
+            if (dist_squared <= this_collider.squared_radius() + target_collider.squared_radius())
+            {
+                BN_LOG("[colliding_with_single_dynamic] COLLIDED!!!");
+                return true;
             }
         }
 

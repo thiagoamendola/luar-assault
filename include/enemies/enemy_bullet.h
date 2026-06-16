@@ -52,6 +52,7 @@ class enemy_bullet : public base_enemy
     };
 
     void handle_laser_hit() override;
+    void handle_missile_hit() override;
 
     // Laser passes through bullets without stopping
     bool is_laser_passthrough() const override { return true; }
@@ -60,6 +61,8 @@ class enemy_bullet : public base_enemy
     {
         return &_sphere_collider_set;
     }
+
+    const char* type_name() const override { return "enemy_bullet"; }
 
     const bn::fixed MOVEMENT_SPEED = 8;
     const bn::fixed ROTATION_ANIM_SPEED = 900;

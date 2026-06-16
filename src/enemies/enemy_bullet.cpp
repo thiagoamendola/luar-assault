@@ -140,6 +140,11 @@ void enemy_bullet::handle_laser_hit()
     return; // Bullets are never hit by lasers
 }
 
+void enemy_bullet::handle_missile_hit()
+{
+    return; // Bullets are never hit by missiles
+}
+
 void enemy_bullet::kill()
 {
     if(_state != enemy_state::ACTIVE)

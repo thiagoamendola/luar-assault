@@ -69,11 +69,14 @@ class scorpion : public base_enemy
     };
 
     void handle_laser_hit() override;
+    void handle_missile_hit() override;
 
     sphere_collider_set *get_collider() override
     {
         return &_sphere_collider_set;
     }
+
+    const char* type_name() const override { return "scorpion"; }
 
     const bn::fixed MOVEMENT_SPEED = 3.5;
     const bn::fixed ROTATION_SPEED_IDLE = 800;

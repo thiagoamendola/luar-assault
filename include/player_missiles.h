@@ -16,10 +16,10 @@ namespace fr::model_3d_items
 
     constexpr const sphere_collider missile_collider_detector[] = {
         sphere_collider(fr::point_3d(0, -20, 0), 60),
-        sphere_collider(fr::point_3d(0, -90, 0), 50),
-        sphere_collider(fr::point_3d(0, -160, 0), 50),
-        sphere_collider(fr::point_3d(0, -230, 0), 50),
-        sphere_collider(fr::point_3d(0, -300, 0), 50),
+        sphere_collider(fr::point_3d(0, -120, 0), 100),
+        sphere_collider(fr::point_3d(0, -220, 0), 200),
+        sphere_collider(fr::point_3d(0, -320, 0), 200),
+        sphere_collider(fr::point_3d(0, -420, 0), 400),
 
     };
 
@@ -44,6 +44,8 @@ class player_missiles
 
     bool is_active() const { return _is_active; }
     void set_active(bool active) { _is_active = active; }
+
+    void fire_missiles();
 
   private:
     base_game_scene *_base_scene;

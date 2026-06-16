@@ -151,6 +151,21 @@ void asteroid::handle_laser_hit()
     // bn::sound_items::asteroid_hit.play(); // <-- Get asteroid hit sound
 }
 
+void asteroid::handle_missile_hit()
+{
+    if(_state != enemy_state::ACTIVE)
+    {
+        return;
+    }
+
+    // Missiles instantly kill if the enemy still has health.
+    if(_health > 0)
+    {
+        _health = 0;
+        kill(); // <-- CHANGE
+    }
+}
+
 void asteroid::kill()
 {
     if(_state != enemy_state::ACTIVE)

@@ -24,6 +24,7 @@
 #include "bn_sprite_items_boom.h"
 #include "models/scorpion.h"
 
+// <- Retrieve stuff from base_scene
 scorpion::scorpion(fr::point_3d position, fr::models_3d *models,
                    controller *controller, enemy_manager *enemy_manager,
                    base_game_scene *base_scene, const scorpion_properties *props)
@@ -267,6 +268,21 @@ void scorpion::handle_laser_hit()
         }
         _model->set_palette(fr::model_3d_items::laser_colors);
         _damage_cooldown = DAMAGE_COOLDOWN;
+    }
+}
+
+void scorpion::handle_missile_hit()
+{
+    if (_state != enemy_state::ACTIVE)
+    {
+        return;
+    }
+
+    // Missiles instantly kill if the enemy still has health.
+    if (_health > 0)
+    {
+        _health = 0;
+        kill(); // <-- CHANGE
     }
 }
 

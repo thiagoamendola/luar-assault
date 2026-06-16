@@ -74,11 +74,14 @@ class oyster : public base_enemy
     };
 
     void handle_laser_hit();
+    void handle_missile_hit() override;
 
     sphere_collider_set *get_collider() override
     {
         return &_sphere_collider_set;
     }
+
+    const char* type_name() const override { return "oyster"; }
 
     const bn::fixed MOVEMENT_SPEED = 2.5;
     const bn::fixed ROTATION_SPEED = 1.5;

@@ -27,11 +27,14 @@ public:
     virtual void kill() = 0;
 
     virtual void handle_laser_hit() = 0;
+    virtual void handle_missile_hit() = 0;
 
     // Returns true if the laser should pass through this enemy without stopping
     virtual bool is_laser_passthrough() const { return false; }
 
     virtual sphere_collider_set *get_collider() = 0;
+
+    virtual const char* type_name() const { return "enemy"; }
     
     fr::point_3d get_position() const
     {
