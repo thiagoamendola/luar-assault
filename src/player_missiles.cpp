@@ -3,18 +3,115 @@
 #include "bn_log.h"
 #include "bn_string.h"
 #include "bn_vector.h"
+#include "bn_sprite_items_boom.h"
 
 #include "base_game_scene.h"
 #include "player_ship.h"
 #include "controller.h"
 #include "enemy_manager.h"
+#include "base_enemy.h"
+
+// - Missile
+
+missile::missile(fr::models_3d *models)
+    : _models(models),
+      _sprite_item(bn::sprite_items::boom, 0) // <-- REPLACE OR REMOVE
+{
+}
+
+void missile::activate(base_enemy *target_enemy, const fr::point_3d &starting_pos)
+{
+    if (!target_enemy)
+    {
+        deactivate();
+        return;
+    }
+
+    _target_enemy = target_enemy;
+    _starting_pos = starting_pos;
+    _end_pos = _target_enemy->get_position();
+    _position = _starting_pos;
+    _lerp = 0;
+    _is_active = true;
+
+    if (!_sprite)
+    {
+        _sprite = &_models->create_sprite(_sprite_item);
+    }
+
+    _sprite->set_position(_position);
+}
+
+void missile::deactivate()
+{
+    _is_active = false;
+    _target_enemy = nullptr;
+    _lerp = 0;
+
+    if (_sprite)
+    {
+        _models->destroy_sprite(*_sprite);
+        _sprite = nullptr;
+    }
+}
+
+void missile::update(bn::fixed delta_y)
+{
+    if (!_is_active)
+    {
+        return;
+    }
+
+    if (!_target_enemy)
+    {
+        deactivate();
+        return;
+    }
+
+    if (_target_enemy->is_killed())
+    {
+        deactivate();
+        return;
+    }
+
+    _starting_pos.set_y(_starting_pos.y() + delta_y);
+    _end_pos = _target_enemy->get_position();
+
+    _lerp += bn::fixed(1).division(MISSILE_PURSUE_DURATION);
+    if (_lerp > 1)
+    {
+        _lerp = 1;
+    }
+
+    _position = _starting_pos + (_end_pos - _starting_pos) * _lerp;
+
+    if (_sprite)
+    {
+        _sprite->set_position(_position);
+    }
+
+    // Check distance to enemy (squared, avoids sqrt).
+    fr::point_3d diff = _end_pos - _position;
+    bn::fixed dist_sq = diff.x() * diff.x() + diff.y() * diff.y() + diff.z() * diff.z();
+
+    if (_lerp >= 1 || dist_sq < 100) // 100 = 10^2
+    {
+        _target_enemy->handle_missile_hit();
+        deactivate();
+    }
+}
+
+// - Player Missiles
 
 player_missiles::player_missiles(base_game_scene *base_scene)
     : _base_scene(base_scene),
       _controller(base_scene->get_controller()),
       _player_ship(base_scene->get_player_ship()),
       _enemy_manager(base_scene->get_enemy_manager()),
-      _missile_collider_detector(fr::model_3d_items::missile_collider_detector)
+      _models(base_scene->get_models()),
+      _missile_collider_detector(fr::model_3d_items::missile_collider_detector),
+      _missile(_models),
+      _last_player_y(base_scene->get_player_ship()->get_position().y())
 {
     _is_active = false;
     _missile_collider_detector.set_initial_rotation(0, 0, 16383);
@@ -26,6 +123,13 @@ void player_missiles::update()
     {
         return;
     }
+
+    // Update missiles
+    // <-- Only if missiles are active
+    bn::fixed current_player_y = _player_ship->get_position().y();
+    bn::fixed delta_y = current_player_y - _last_player_y;
+    _last_player_y = current_player_y;
+    _missile.update(delta_y);
 
     // Check if it should start missiles launch
     // if (!_is_active){
@@ -115,6 +219,12 @@ void player_missiles::fire_missiles()
                 hit_enemies.push_back(slot.ptr);
             }
         }
+    }
+
+    if (!hit_enemies.empty())
+    {
+        // Activate items
+        _missile.activate(hit_enemies.front(), _player_ship->get_position());
     }
 
     BN_LOG("[fire_missiles] hit " + bn::to_string<64>(hit_enemies.size()) + " enemies");
