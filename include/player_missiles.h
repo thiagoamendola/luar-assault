@@ -94,7 +94,8 @@ class player_missiles
     bool _is_active = false;
 
     sphere_collider_set _missile_collider_detector;
-    missile _missile;
+    static constexpr int MAX_MISSILES = 4;
+    missile _missiles[MAX_MISSILES];
 
     bn::fixed _last_player_y;
 

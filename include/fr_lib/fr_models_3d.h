@@ -85,6 +85,21 @@ class models_3d
         return _dynamic_models_pool.max_size();
     }
 
+    int sprites_count() const
+    {
+        return _sprites_list.size();
+    }
+
+    int sprites_max_count() const
+    {
+        return _sprites_pool.max_size();
+    }
+
+    bool sprites_full() const
+    {
+        return _sprites_pool.full();
+    }
+
   private:
     static constexpr int _max_models =
         constants_3d::max_static_models + constants_3d::max_dynamic_models;

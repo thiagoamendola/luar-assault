@@ -110,7 +110,7 @@ player_missiles::player_missiles(base_game_scene *base_scene)
       _enemy_manager(base_scene->get_enemy_manager()),
       _models(base_scene->get_models()),
       _missile_collider_detector(fr::model_3d_items::missile_collider_detector),
-      _missile(_models),
+      _missiles{ missile(_models), missile(_models), missile(_models), missile(_models) },
       _last_player_y(base_scene->get_player_ship()->get_position().y())
 {
     _is_active = false;
@@ -129,7 +129,10 @@ void player_missiles::update()
     bn::fixed current_player_y = _player_ship->get_position().y();
     bn::fixed delta_y = current_player_y - _last_player_y;
     _last_player_y = current_player_y;
-    _missile.update(delta_y);
+    for (int i = 0; i < MAX_MISSILES; ++i)
+    {
+        _missiles[i].update(delta_y);
+    }
 
     // Check if it should start missiles launch
     // if (!_is_active){
@@ -221,10 +224,10 @@ void player_missiles::fire_missiles()
         }
     }
 
-    if (!hit_enemies.empty())
+    const int missile_count = bn::min(int(hit_enemies.size()), MAX_MISSILES);
+    for (int i = 0; i < missile_count; ++i)
     {
-        // Activate items
-        _missile.activate(hit_enemies.front(), _player_ship->get_position());
+        _missiles[i].activate(hit_enemies[i], _player_ship->get_position());
     }
 
     BN_LOG("[fire_missiles] hit " + bn::to_string<64>(hit_enemies.size()) + " enemies");

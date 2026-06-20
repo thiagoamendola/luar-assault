@@ -11,16 +11,22 @@ explosion_effect::explosion_effect(fr::point_3d position, fr::models_3d *models)
       _theta_1(INITIAL_THETA_1),
       _theta_2(INITIAL_THETA_2)
 {
-    // Create the sprites
-    _sprite_2 = &_models->create_sprite(_sprite_3d_item_2);
-    _sprite_2->set_position(_position);
-    _sprite_2->set_theta(_theta_2);
-    _sprite_2->set_scale(INITIAL_SCALE_2);
+    // Create explosion sprites only when there is pool capacity.
+    if (!_models->sprites_full())
+    {
+        _sprite_2 = &_models->create_sprite(_sprite_3d_item_2);
+        _sprite_2->set_position(_position);
+        _sprite_2->set_theta(_theta_2);
+        _sprite_2->set_scale(INITIAL_SCALE_2);
+    }
 
-    _sprite_1 = &_models->create_sprite(_sprite_3d_item_1);
-    _sprite_1->set_position(_position);
-    _sprite_1->set_theta(_theta_1);
-    _sprite_1->set_scale(INITIAL_SCALE_1);
+    if (!_models->sprites_full())
+    {
+        _sprite_1 = &_models->create_sprite(_sprite_3d_item_1);
+        _sprite_1->set_position(_position);
+        _sprite_1->set_theta(_theta_1);
+        _sprite_1->set_scale(INITIAL_SCALE_1);
+    }
 }
 
 explosion_effect::~explosion_effect()
@@ -48,14 +54,20 @@ bool explosion_effect::update()
     // Update sprite 1
     bn::fixed scale_1 = INITIAL_SCALE_1 + lerp * (FINAL_SCALE_1 - INITIAL_SCALE_1);
     _theta_1 += THETA_SPEED_1;
-    _sprite_1->set_scale(scale_1);
-    _sprite_1->set_theta(_theta_1);
+    if(_sprite_1)
+    {
+        _sprite_1->set_scale(scale_1);
+        _sprite_1->set_theta(_theta_1);
+    }
     
     // Update sprite 2
     bn::fixed scale_2 = INITIAL_SCALE_2 + lerp * (FINAL_SCALE_2 - INITIAL_SCALE_2);
     _theta_2 += THETA_SPEED_2;
-    _sprite_2->set_scale(scale_2);
-    _sprite_2->set_theta(_theta_2);
+    if(_sprite_2)
+    {
+        _sprite_2->set_scale(scale_2);
+        _sprite_2->set_theta(_theta_2);
+    }
 
     // // Update explosion graphics frame (8 frames total, cycling through animation)
     // int explosion_graphics_index = (-(_current_frame / ANIMATION_SPEED) % 8) + 7;
