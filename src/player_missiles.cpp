@@ -17,22 +17,24 @@ missile::missile(fr::models_3d *models)
     : _models(models),
       _sprite_item(bn::sprite_items::boom, 0) // <-- REPLACE OR REMOVE
 {
+    _missile_state = missile_state::idle;
 }
 
-void missile::activate(base_enemy *target_enemy, const fr::point_3d &starting_pos)
+void missile::launch(base_enemy *target_enemy, const fr::point_3d &starting_pos)
 {
     if (!target_enemy)
     {
-        deactivate();
+        // A target is necessary to launch.
         return;
     }
 
     _target_enemy = target_enemy;
+    _missile_state = missile_state::launched;
+
     _starting_pos = starting_pos;
     _end_pos = _target_enemy->get_position();
     _position = _starting_pos;
     _lerp = 0;
-    _is_active = true;
 
     if (!_sprite)
     {
@@ -42,9 +44,10 @@ void missile::activate(base_enemy *target_enemy, const fr::point_3d &starting_po
     _sprite->set_position(_position);
 }
 
+// <-- REVIEW THIS
 void missile::deactivate()
 {
-    _is_active = false;
+    _missile_state = missile_state::idle;
     _target_enemy = nullptr;
     _lerp = 0;
 
@@ -57,23 +60,18 @@ void missile::deactivate()
 
 void missile::update(bn::fixed delta_y)
 {
-    if (!_is_active)
+    if (!is_launched())
     {
         return;
     }
 
-    if (!_target_enemy)
-    {
-        deactivate();
-        return;
-    }
-
-    if (_target_enemy->is_killed())
+    if (!_target_enemy || _target_enemy->is_killed())
     {
         deactivate();
         return;
     }
 
+    // Update lerp positions.
     _starting_pos.set_y(_starting_pos.y() + delta_y);
     _end_pos = _target_enemy->get_position();
 
@@ -96,10 +94,18 @@ void missile::update(bn::fixed delta_y)
 
     if (_lerp >= 1 || dist_sq < 100) // 100 = 10^2
     {
+        // Enemy hit.
         _target_enemy->handle_missile_hit();
         deactivate();
     }
 }
+
+void missile::lock_target(base_enemy *target)
+{
+    _target_enemy = target;
+    _missile_state = missile_state::pending;
+}
+
 
 // - Player Missiles
 
@@ -113,42 +119,96 @@ player_missiles::player_missiles(base_game_scene *base_scene)
       _missiles{ missile(_models), missile(_models), missile(_models), missile(_models) },
       _last_player_y(base_scene->get_player_ship()->get_position().y())
 {
-    _is_active = false;
+    _player_missiles_state = player_missiles_state::charging;
     _missile_collider_detector.set_initial_rotation(0, 0, 16383);
 }
 
 void player_missiles::update()
 {
-    if (!_enabled)
+    if (!is_active())
     {
         return;
     }
 
-    // Update missiles
-    // <-- Only if missiles are active
-    bn::fixed current_player_y = _player_ship->get_position().y();
-    bn::fixed delta_y = current_player_y - _last_player_y;
-    _last_player_y = current_player_y;
-    for (int i = 0; i < MAX_MISSILES; ++i)
+    if (is_charging())
     {
-        _missiles[i].update(delta_y);
-    }
-
-    // Check if it should start missiles launch
-    // if (!_is_active){
+        // On button press: detect targets and queue them for staggered launch
         if (_controller->is_missiles_pressed())
         {
-            _is_active = true;
-            fire_missiles();
+            fire_missiles(); // assigns pending targets to missile slots
+        }
+    }
+    else
+    {
+        // Update launched missiles.
+        bn::fixed current_player_y = _player_ship->get_position().y();
+        bn::fixed delta_y = current_player_y - _last_player_y;
+        _last_player_y = current_player_y;
+        for (int i = 0; i < MAX_MISSILES; i++)
+        {
+            _missiles[i].update(delta_y);
+        }
+
+        if (is_launching())
+        {
+           // Check for next launch.
+            if (_launch_timer <= 0)
+            {
+                bool has_launched = false;
+                bool has_pending = false;
+                for (int i = 0; i < MAX_MISSILES; i++)
+                {
+                    if (_missiles[i].is_pending() && !_missiles[i].is_launched())
+                    {
+                        if (!has_launched)
+                        {
+                            // Launch first pending we find.
+                            _missiles[i].launch(_missiles[i].get_target(), _player_ship->get_position());
+                            _launch_timer = LAUNCH_INTERVAL;
+                            has_launched = true;
+                        }
+                        else
+                        {
+                            // If more pending, do not change state.
+                            has_pending = true;
+                        }
+                    }
+                }
+
+                if (!has_pending)
+                {
+                    // No more pending missiles to launch.
+                    _player_missiles_state = player_missiles_state::launched;
+                }
+            }
+            else
+            {
+                _launch_timer--;
+            }
         }
         else
         {
-            _is_active = false; // <-- REMOVE
-            return;
-        }
-    // }
+            // Check if all missiles have finished launching and hitting targets.
+            bool all_finished = true;
+            for (int i = 0; i < MAX_MISSILES; i++)
+            {
+                if (_missiles[i].is_launched() || _missiles[i].is_pending())
+                {
+                    all_finished = false;
+                    break;
+                }
+            }
 
-    // Update missiles
+            if (all_finished)
+            {
+                // All missiles have finished! Move to initial state.
+                _player_missiles_state = player_missiles_state::charging;
+            }
+        }
+
+    }
+
+    // Update missile collider detector.
     BN_LOG("[update][player_missiles] Update origin");
     _missile_collider_detector.set_origin(_player_ship->get_position()); // <-- MOVE
     fr::model_3d *ship_model = _player_ship->get_model();
@@ -167,7 +227,7 @@ int player_missiles::statics_render(const fr::model_3d_item **static_model_items
     int current_static_count = static_count;
 
     // TODO: render missile models into static_model_items
-    if (_controller->is_collider_display_enabled() && _is_active)
+    if (_controller->is_collider_display_enabled() && is_active())
     {
         BN_LOG("[statics_render][player_missiles] Initial value: " +
            bn::to_string<64>(static_count));
@@ -182,6 +242,8 @@ int player_missiles::statics_render(const fr::model_3d_item **static_model_items
 
 void player_missiles::fire_missiles()
 {
+    _player_missiles_state = player_missiles_state::launching;
+
     // Sync detection colliders position and rotation.
     fr::model_3d *ship_model = _player_ship->get_model();
     _missile_collider_detector.set_origin(_player_ship->get_position());
@@ -224,10 +286,16 @@ void player_missiles::fire_missiles()
         }
     }
 
-    const int missile_count = bn::min(int(hit_enemies.size()), MAX_MISSILES);
-    for (int i = 0; i < missile_count; ++i)
+    // Assign detected targets to missile slots; activation is staggered in update()
+    int assigned = 0;
+    _launch_timer = 0; // fire first missile immediately on next update tick
+    for (int i = 0; i < MAX_MISSILES && assigned < int(hit_enemies.size()); ++i)
     {
-        _missiles[i].activate(hit_enemies[i], _player_ship->get_position());
+        if (!_missiles[i].is_launched() && !_missiles[i].is_pending())
+        {
+            _missiles[i].lock_target(hit_enemies[assigned]);
+            assigned++;
+        }
     }
 
     BN_LOG("[fire_missiles] hit " + bn::to_string<64>(hit_enemies.size()) + " enemies");

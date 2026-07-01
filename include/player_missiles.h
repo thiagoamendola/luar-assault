@@ -30,6 +30,23 @@ namespace fr::model_3d_items
 
 } // namespace fr::model_3d_items
 
+enum class missile_state
+{
+  idle,
+  pending,
+  launched
+};
+
+enum class player_missiles_state
+{
+  disabled,
+  charging,
+  launching,
+  launched
+};
+
+// - Missile
+
 class missile
 {
   public:
@@ -39,19 +56,24 @@ class missile
     // int statics_render(const fr::model_3d_item **static_model_items,
     //                    int static_count);
 
-    const bool is_active() const { return _is_active; }
+    bool is_launched() const { return _missile_state == missile_state::launched; }
+    bool is_pending() const { return _missile_state == missile_state::pending; }
+
     const fr::point_3d &starting_pos() const { return _starting_pos; }
     const fr::point_3d &end_pos() const { return _end_pos; }
     const bn::fixed lerp() const { return _lerp; }
     const fr::point_3d &position() const { return _position; }
 
-    void activate(base_enemy *target_enemy, const fr::point_3d &starting_pos);
-    void deactivate();
+    void lock_target(base_enemy *target);
+    base_enemy *get_target() const { return _target_enemy; }
+
+    void launch(base_enemy *target_enemy, const fr::point_3d &starting_pos);
+    void deactivate(); // <-- RENAME?
 
   private:
     static constexpr int MISSILE_PURSUE_DURATION = 15;
 
-    bool _is_active = false;
+    missile_state _missile_state = missile_state::idle;
     fr::point_3d _starting_pos;
     fr::point_3d _end_pos;
     fr::point_3d _position;
@@ -62,6 +84,8 @@ class missile
     fr::sprite_3d_item _sprite_item;
     fr::sprite_3d *_sprite = nullptr;
 };
+
+// - Player Missiles
 
 class player_missiles
 {
@@ -75,11 +99,11 @@ class player_missiles
     int statics_render(const fr::model_3d_item **static_model_items,
                        int static_count);
 
-    bool is_enabled() const { return _enabled; }
-    void set_enabled(bool enabled) { _enabled = enabled; }
+    bool is_active() const { return _player_missiles_state != player_missiles_state::disabled; }
+    bool is_charging() const { return _player_missiles_state == player_missiles_state::charging; }
+    bool is_launching() const { return _player_missiles_state == player_missiles_state::launching; }
+    bool is_launched() const { return _player_missiles_state == player_missiles_state::launched; }
 
-    bool is_active() const { return _is_active; }
-    void set_active(bool active) { _is_active = active; }
 
     void fire_missiles();
 
@@ -91,11 +115,15 @@ class player_missiles
     fr::models_3d *_models;
 
     bool _enabled = true;
-    bool _is_active = false;
+    player_missiles_state _player_missiles_state = player_missiles_state::disabled;
 
     sphere_collider_set _missile_collider_detector;
     static constexpr int MAX_MISSILES = 4;
+    static constexpr int LAUNCH_INTERVAL = 3; // Frames between successive missile launches
     missile _missiles[MAX_MISSILES];
+
+    // Staggered launch state
+    int _launch_timer = 0;
 
     bn::fixed _last_player_y;
 
