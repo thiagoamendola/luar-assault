@@ -53,8 +53,8 @@ class missile
     explicit missile(fr::models_3d *models);
 
     void update(bn::fixed delta_y);
-    // int statics_render(const fr::model_3d_item **static_model_items,
-    //                    int static_count);
+    int statics_render(const fr::model_3d_item **static_model_items,
+                       int static_count);
 
     bool is_launched() const { return _missile_state == missile_state::launched; }
     bool is_pending() const { return _missile_state == missile_state::pending; }
@@ -65,6 +65,7 @@ class missile
     const fr::point_3d &position() const { return _position; }
 
     void lock_target(base_enemy *target);
+
     base_enemy *get_target() const { return _target_enemy; }
 
     void launch(base_enemy *target_enemy, const fr::point_3d &starting_pos);
@@ -73,16 +74,30 @@ class missile
   private:
     static constexpr int MISSILE_PURSUE_DURATION = 15;
 
+    fr::point_3d calculate_lerp_position(bn::fixed lerp) const;
+
     missile_state _missile_state = missile_state::idle;
     fr::point_3d _starting_pos;
     fr::point_3d _end_pos;
     fr::point_3d _position;
     bn::fixed _lerp = 0;
 
+    fr::model_3d_item missile_full;
     base_enemy *_target_enemy = nullptr;
     fr::models_3d *_models = nullptr;
-    fr::sprite_3d_item _sprite_item;
-    fr::sprite_3d *_sprite = nullptr;
+
+    // Static render variables
+
+    fr::vertex_3d missile_vertices[5] = {
+        fr::vertex_3d(1, 0, 0), fr::vertex_3d(0, 1, 0), fr::vertex_3d(0, 0, 1),
+        fr::vertex_3d(1, 1, 0), fr::vertex_3d(0, 1, 1),
+    };
+    fr::face_3d missile_faces[4] = {
+        fr::face_3d(missile_vertices, fr::vertex_3d(0, 1, 0), 0, 1, 2, 0, 7),
+        fr::face_3d(missile_vertices, fr::vertex_3d(0, 1, 0), 0, 2, 1, 0, 7),
+        fr::face_3d(missile_vertices, fr::vertex_3d(0, 1, 0), 2, 3, 4, 0, 7),
+        fr::face_3d(missile_vertices, fr::vertex_3d(0, 1, 0), 2, 4, 3, 0, 7),
+    };
 };
 
 // - Player Missiles
@@ -103,7 +118,6 @@ class player_missiles
     bool is_charging() const { return _player_missiles_state == player_missiles_state::charging; }
     bool is_launching() const { return _player_missiles_state == player_missiles_state::launching; }
     bool is_launched() const { return _player_missiles_state == player_missiles_state::launched; }
-
 
     void fire_missiles();
 

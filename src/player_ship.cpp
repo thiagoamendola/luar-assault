@@ -323,12 +323,19 @@ int player_ship::statics_render(const fr::model_3d_item **static_model_items,
            bn::to_string<64>(current_static_count));
 #endif
 
+    // Render missile trails
+    current_static_count = _player_missiles.statics_render(static_model_items, current_static_count);
+
+#if LOG_STATIC_RENDER_STEPS
+    BN_LOG("[statics_render][player_ship] Updated missiles: " +
+           bn::to_string<64>(current_static_count));
+#endif
+
     // Render debug collider models
     if (_controller->is_collider_display_enabled())
     {
         // current_static_count = _sphere_collider_set.debug_collider(
         //     static_model_items, current_static_count); // <-- UNDO THIS
-        current_static_count = _player_missiles.statics_render(static_model_items, current_static_count);
     }
 
 #if LOG_STATIC_RENDER_STEPS

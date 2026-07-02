@@ -371,7 +371,7 @@ int player_laser::render_player_laser(
         // Add nem mesh as static object
         if (static_count >= fr::constants_3d::max_static_models)
         {
-            BN_LOG("Stage Section Renderer: reached static model max "
+            BN_LOG("Player Laser: reached static model max "
                    "limit: " +
                    bn::to_string<64>(fr::constants_3d::max_static_models));
             return static_count;
