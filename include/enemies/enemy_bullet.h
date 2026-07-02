@@ -57,6 +57,8 @@ class enemy_bullet : public base_enemy
     // Laser passes through bullets without stopping
     bool is_laser_passthrough() const override { return true; }
 
+    bool is_missile_targetable() const override { return false; }
+
     sphere_collider_set *get_collider() override
     {
         return &_sphere_collider_set;

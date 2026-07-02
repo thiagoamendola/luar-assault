@@ -295,7 +295,7 @@ void player_missiles::fire_missiles()
         for (int e = 0; e < enemy_manager::MAX_ENEMIES; e++)
         {
             enemy_slot &slot = enemy_slots[e];
-            if (!slot.used || !slot.ptr || slot.ptr->is_killed())
+            if (!slot.used || !slot.ptr || slot.ptr->is_killed() || !slot.ptr->is_missile_targetable())
             {
                 continue;
             }
