@@ -56,17 +56,13 @@ void banner_manager::update()
     }
     else if (_banner_timer > 0)
     {
-        // <-- DO I REALLY WANT TO DO THIS EVERY UPDATE?
         // Update sprite entries (handle delayed appearances)
         _update_sprite_entries();
         
         --_banner_timer;
         if (_banner_timer == 0)
         {
-            _banner_sprites.clear();
-            _content_sprites.clear();
-            _content_bg.reset();
-            _pending_sprite_entries.clear();
+            disable();
         }
     }
 }
@@ -141,4 +137,14 @@ void banner_manager::_update_sprite_entries()
             _pending_sprite_entries.erase(_pending_sprite_entries.begin() + i);
         }
     }
+}
+
+void banner_manager::disable()
+{
+    _banner_delay_timer = 0;
+    _banner_timer = 0;
+    _banner_sprites.clear();
+    _content_sprites.clear();
+    _content_bg.reset();
+    _pending_sprite_entries.clear();
 }

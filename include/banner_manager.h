@@ -50,6 +50,8 @@ public:
 
     void update();
 
+    void disable();
+
     // Check if the banner has finished displaying
     [[nodiscard]] bool is_done() const { return _banner_delay_timer == 0 && _banner_timer == 0; }
 

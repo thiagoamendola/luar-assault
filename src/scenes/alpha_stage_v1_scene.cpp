@@ -42,8 +42,14 @@ static const banner_sprite_entry intro_banner_entries[] = {
     { &bn::sprite_items::intro_banner_alpha,  74, 10, 0, 2 },  // Right sprite (index 2)
 };
 
+#if HIDE_INTRO
+const int start_position = 1000;
+#else
+const int start_position = 1900;
+#endif
+
 alpha_stage_v1_scene::alpha_stage_v1_scene()
-    : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count, 1900), // <-- MAGIC NUMBER
+    : _base_game_scene(scene_colors, get_scene_color_mapping(), sections, sections_count, start_position), // <-- MAGIC NUMBER
     //   _enemy_manager(&_models, &_controller),
       _prepare_to_leave(false),
       _letterbox_manager(),
@@ -75,9 +81,15 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     // _test_sprite->set_theta(32000);
     // bn::sound_items::dialog_test1.play(1);
 
+#if HIDE_INTRO
+    _banner_manager.disable();
+    // _letterbox_manager.hide();
+#else
     _letterbox_manager.show();
     _base_game_scene.get_hud_manager()->hide();
     _base_game_scene.get_pause_manager()->set_can_pause(false);
+#endif
+
 }
 
 bn::optional<scene_type> alpha_stage_v1_scene::update()

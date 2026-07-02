@@ -64,6 +64,12 @@
 #define HIDE_HUD false
 #endif
 
+// Hides intro sequence. Useful for skipping to gameplay.
+#ifndef HIDE_INTRO
+#define HIDE_INTRO true
+#endif
+
+
 
 // <-- Create FF for stage skips
 
