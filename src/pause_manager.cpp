@@ -141,6 +141,7 @@ void pause_manager::hide_menu()
 {
     // Show game HUD
     _hud_manager->show();
+    _hud_manager->update(_base_scene->get_models());
 
     _bgs_fade_out_action.emplace(10, 0); // <-- MAGIC NUMBERS   
 
