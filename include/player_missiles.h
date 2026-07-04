@@ -82,9 +82,9 @@ class missile
     fr::point_3d _position;
     bn::fixed _lerp = 0;
 
-    fr::model_3d_item missile_full;
     base_enemy *_target_enemy = nullptr;
     fr::models_3d *_models = nullptr;
+    fr::model_3d_item missile_full;
 
     // Static render variables
 

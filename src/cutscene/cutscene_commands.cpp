@@ -8,9 +8,9 @@
 // ---------------------------------------------------------------------------
 
 move_model_cmd::move_model_cmd(fr::model_3d& m, fr::point_3d s, fr::point_3d e,
-                               int start, int dur, easing ease) :
+                               int start, int dur, easing easing_type) :
     timeline_command(start, dur),
-    model(m), start_pos(s), end_pos(e), ease(ease) {}
+    model(m), start_pos(s), end_pos(e), ease(easing_type) {}
 
 void move_model_cmd::start()
 {
@@ -36,9 +36,9 @@ rotate_model_combined_cmd::rotate_model_combined_cmd(fr::model_3d& m,
                                                      model_rotation s,
                                                      model_rotation e,
                                                      int start, int dur,
-                                                     easing ease) :
+                                                     easing easing_type) :
     timeline_command(start, dur),
-    model(m), start_rot(s), end_rot(e), ease(ease) {}
+    model(m), start_rot(s), end_rot(e), ease(easing_type) {}
 
 void rotate_model_combined_cmd::_apply(const model_rotation& r)
 {
@@ -72,9 +72,9 @@ void rotate_model_combined_cmd::end()
 // ---------------------------------------------------------------------------
 
 move_camera_cmd::move_camera_cmd(fr::camera_3d& cam, fr::point_3d s, fr::point_3d e,
-                                 int start, int dur, easing ease) :
+                                 int start, int dur, easing easing_type) :
     timeline_command(start, dur),
-    camera(cam), start_pos(s), end_pos(e), ease(ease) {}
+    camera(cam), start_pos(s), end_pos(e), ease(easing_type) {}
 
 void move_camera_cmd::start()
 {
@@ -100,9 +100,9 @@ rotate_camera_cmd::rotate_camera_cmd(fr::camera_3d& cam,
                                      model_rotation s,
                                      model_rotation e,
                                      int start, int dur,
-                                     easing ease) :
+                                     easing easing_type) :
     timeline_command(start, dur),
-    camera(cam), start_rot(s), end_rot(e), ease(ease) {}
+    camera(cam), start_rot(s), end_rot(e), ease(easing_type) {}
 
 void rotate_camera_cmd::_apply(const model_rotation& r)
 {
@@ -151,12 +151,12 @@ void sprite_anim_cmd::update(int /*local_frame*/)
 // ---------------------------------------------------------------------------
 
 play_sound_cmd::play_sound_cmd(bn::sound_item it, bn::fixed vol, bn::fixed spd,
-                               bn::fixed pan, int start_frame) :
-    timeline_command(start_frame, 1),
+                               bn::fixed pan, int start) :
+    timeline_command(start, 1),
     item(it), volume(vol), speed(spd), panning(pan) {}
 
-play_sound_cmd::play_sound_cmd(bn::sound_item it, bn::fixed vol, int start_frame) :
-    timeline_command(start_frame, 1),
+play_sound_cmd::play_sound_cmd(bn::sound_item it, bn::fixed vol, int start) :
+    timeline_command(start, 1),
     item(it), volume(vol), speed(1), panning(0) {}
 
 void play_sound_cmd::start()

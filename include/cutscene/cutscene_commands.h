@@ -14,9 +14,9 @@
 
 struct model_rotation
 {
-    bn::fixed phi   = 0;
+    bn::fixed phi = 0;
     bn::fixed theta = 0;
-    bn::fixed psi   = 0;
+    bn::fixed psi = 0;
 };
 
 /**
@@ -25,13 +25,13 @@ struct model_rotation
 class move_model_cmd : public timeline_command
 {
 public:
-    fr::model_3d& model;
-    fr::point_3d  start_pos;
-    fr::point_3d  end_pos;
-    easing        ease;
+    fr::model_3d &model;
+    fr::point_3d start_pos;
+    fr::point_3d end_pos;
+    easing ease;
 
-    move_model_cmd(fr::model_3d& m, fr::point_3d s, fr::point_3d e,
-                   int start, int dur, easing ease = easing::LINEAR);
+    move_model_cmd(fr::model_3d &m, fr::point_3d s, fr::point_3d e,
+                   int start, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;
@@ -49,21 +49,21 @@ public:
 class rotate_model_combined_cmd : public timeline_command
 {
 public:
-    fr::model_3d&  model;
+    fr::model_3d &model;
     model_rotation start_rot;
     model_rotation end_rot;
-    easing         ease;
+    easing ease;
 
-    rotate_model_combined_cmd(fr::model_3d& m,
+    rotate_model_combined_cmd(fr::model_3d &m,
                               model_rotation s, model_rotation e,
-                              int start, int dur, easing ease = easing::LINEAR);
+                              int start, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;
     void end() override;
 
 private:
-    void _apply(const model_rotation& r);
+    void _apply(const model_rotation &r);
 };
 
 /**
@@ -72,13 +72,13 @@ private:
 class move_camera_cmd : public timeline_command
 {
 public:
-    fr::camera_3d& camera;
-    fr::point_3d   start_pos;
-    fr::point_3d   end_pos;
-    easing         ease;
+    fr::camera_3d &camera;
+    fr::point_3d start_pos;
+    fr::point_3d end_pos;
+    easing ease;
 
-    move_camera_cmd(fr::camera_3d& cam, fr::point_3d s, fr::point_3d e,
-                    int start, int dur, easing ease = easing::LINEAR);
+    move_camera_cmd(fr::camera_3d &cam, fr::point_3d s, fr::point_3d e,
+                    int start, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;
@@ -93,21 +93,21 @@ public:
 class rotate_camera_cmd : public timeline_command
 {
 public:
-    fr::camera_3d& camera;
+    fr::camera_3d &camera;
     model_rotation start_rot;
     model_rotation end_rot;
-    easing         ease;
+    easing ease;
 
-    rotate_camera_cmd(fr::camera_3d& cam,
+    rotate_camera_cmd(fr::camera_3d &cam,
                       model_rotation s, model_rotation e,
-                      int start, int dur, easing ease = easing::LINEAR);
+                      int start, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;
     void end() override;
 
 private:
-    void _apply(const model_rotation& r);
+    void _apply(const model_rotation &r);
 };
 
 /**
@@ -118,19 +118,19 @@ class play_sound_cmd : public timeline_command
 {
 public:
     bn::sound_item item;
-    bn::fixed      volume;
-    bn::fixed      speed;
-    bn::fixed      panning;
+    bn::fixed volume;
+    bn::fixed speed;
+    bn::fixed panning;
 
     /// Play with full control over volume, speed and panning.
     play_sound_cmd(bn::sound_item it, bn::fixed vol, bn::fixed spd, bn::fixed pan,
-                   int start_frame);
+                   int start);
 
     /// Convenience constructor: volume only, speed=1, panning=0.
-    play_sound_cmd(bn::sound_item it, bn::fixed vol, int start_frame);
+    play_sound_cmd(bn::sound_item it, bn::fixed vol, int start);
 
     void start() override;
-    void update(int local_frame) override {}
+    void update(int) override {}
 };
 
 /**
@@ -141,7 +141,7 @@ class sprite_anim_cmd : public timeline_command
 public:
     bn::sprite_animate_action<16> action;
 
-    sprite_anim_cmd(bn::sprite_animate_action<16>&& act, int start, int dur);
+    sprite_anim_cmd(bn::sprite_animate_action<16> &&act, int start, int dur);
 
     void update(int local_frame) override;
 };

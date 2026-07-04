@@ -290,7 +290,7 @@ void player_missiles::fire_missiles()
     size_t detector_count = _missile_collider_detector.get_sphere_collider_count();
 
     // Iterate missile colliders in order and check with all enemies.
-    for (int i = 0; i < detector_count; i++)
+    for (size_t i = 0; i < detector_count; i++)
     {
         for (int e = 0; e < enemy_manager::MAX_ENEMIES; e++)
         {
@@ -325,7 +325,7 @@ void player_missiles::fire_missiles()
     // Assign detected targets to missile slots; activation is staggered in update()
     int assigned = 0;
     _launch_timer = 0; // fire first missile immediately on next update tick
-    for (int i = 0; i < MAX_MISSILES && assigned < int(hit_enemies.size()); ++i)
+    for (int i = 0; i < MAX_MISSILES && assigned < hit_enemies.size(); ++i)
     {
         if (!_missiles[i].is_launched() && !_missiles[i].is_pending())
         {

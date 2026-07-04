@@ -52,7 +52,7 @@ struct color_mapping_handler
                 color_index++;
             }
 
-            _palette_sizes[i] = (int)colors_span.size();
+            _palette_sizes[i] = colors_span.size();
         }
     }
 
@@ -80,7 +80,7 @@ struct color_mapping_handler
         }
         BN_LOG(sc_msg);
 
-        BN_LOG("[COLOR_MAPPING_HANDLER] color_map size: ", (int)_color_map.size());
+        BN_LOG("[COLOR_MAPPING_HANDLER] color_map size: ", _color_map.size());
         BN_LOG("[COLOR_MAPPING_HANDLER] color_map: ");
         int entry = 0;
         for (auto it = _color_map.begin(); it != _color_map.end(); ++it)

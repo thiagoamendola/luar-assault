@@ -28,12 +28,12 @@
 #include "common_variable_8x8_sprite_font.h"
 
 hud_manager::hud_manager(base_game_scene *base_scene)
-    : _base_scene(base_scene), _controller(base_scene->get_controller()), 
+    : _base_scene(base_scene), _controller(base_scene->get_controller()),
       _camera(base_scene->get_camera()), _player_ship(base_scene->get_player_ship()),
-    //   _text_generator(vonwaon_bitmap_sprite_font), 
-      _text_generator(editundo_sprite_font), 
-      _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
+      //   _text_generator(vonwaon_bitmap_sprite_font),
+      _text_generator(editundo_sprite_font),
       _lifebar_frame(bn::sprite_items::lifebar_frame.create_sprite(0, 0)),
+      _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
       _target_growth_action()
 {
     _is_hidden = HIDE_HUD;
@@ -42,7 +42,7 @@ hud_manager::hud_manager(base_game_scene *base_scene)
     _target_spr.set_horizontal_scale(TARGET_INITIAL_SCALE);
     _target_spr.set_vertical_scale(TARGET_INITIAL_SCALE);
     _target_growth_action = bn::sprite_scale_loop_action(_target_spr, TARGET_GROWTH_STEPS, TARGET_GROWTH_MAX_SCALE);
-    
+
     // Setup lifebar
     _lifebar_frame.set_top_left_x(LIFEBAR_START_X);
     _lifebar_frame.set_top_left_y(LIFEBAR_START_Y);
@@ -103,7 +103,7 @@ void hud_manager::update(fr::models_3d *models)
     // they are affected by the shared transparency alpha.
     if (_is_blending_active)
     {
-        for (bn::sprite_ptr& spr : _text_sprites)
+        for (bn::sprite_ptr &spr : _text_sprites)
         {
             spr.set_blending_enabled(true);
         }
@@ -121,11 +121,11 @@ void hud_manager::update(fr::models_3d *models)
             // Fade-in complete: sprites are fully opaque, clean up blending.
             _target_spr.set_blending_enabled(false);
             _lifebar_frame.set_blending_enabled(false);
-            for (bn::sprite_ptr& tile : _lifebar_tiles)
+            for (bn::sprite_ptr &tile : _lifebar_tiles)
             {
                 tile.set_blending_enabled(false);
             }
-            for (lifebar_damage_tile& dt : _lifebar_damage_tiles)
+            for (lifebar_damage_tile &dt : _lifebar_damage_tiles)
             {
                 dt.spr.set_blending_enabled(false);
             }
@@ -150,9 +150,7 @@ void hud_manager::update(fr::models_3d *models)
     }
 }
 
-
-
-void hud_manager::statics_update(int static_count)
+void hud_manager::statics_update(int)
 {
     // Display static count debug text.
     if (_controller->is_debug_text_enabled())

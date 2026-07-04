@@ -48,6 +48,8 @@ void player_laser::update(enemy_manager &enemies,
         // Don't render laser
         render_laser = false;
         break;
+    default:
+        break;
     }
 
     if (laser_duration_count > 0)

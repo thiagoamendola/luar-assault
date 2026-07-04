@@ -52,7 +52,8 @@ void enemy_manager::update()
                 _enemies[i].used = false;
                 _enemies[i].source = nullptr;
                 // Check if ready to finish stage.
-                if (is_end_section_current){
+                if (is_end_section_current)
+                {
                     check_end_section_cleaned();
                 }
             }
@@ -88,7 +89,7 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
             // Instantiate enemies in this section
             _last_section_start_y = section->starting_pos();
 
-            BN_LOG("[section] Entering section at start=" + bn::to_string<64>(int(section->starting_pos())) +
+            BN_LOG("[section] Entering section at start=" + bn::to_string<64>(section->starting_pos()) +
                    " enemies=" + bn::to_string<64>(section->enemies_count()));
 
             for (int e = 0; e < section->enemies_count(); ++e)
@@ -138,9 +139,10 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                             _enemies[slot].ptr = nullptr;
                             _enemies[slot].used = false;
                             _enemies[slot].source = nullptr;
-                            BN_LOG("[destroy] Section enemy destroyed at ending_pos=" + bn::to_string<64>(int(section->ending_pos())));
+                            BN_LOG("[destroy] Section enemy destroyed at ending_pos=" + bn::to_string<64>(section->ending_pos()));
                             // Check if ready to finish stage.
-                            if (is_end_section_current){
+                            if (is_end_section_current)
+                            {
                                 check_end_section_cleaned();
                             }
                             break;
@@ -174,14 +176,13 @@ void enemy_manager::process_section_enemies(stage_section_list_ptr sections, siz
                 _enemies[slot].source = nullptr;
                 BN_LOG("[destroy] Refless object destroyed at y=" + bn::to_string<64>(int(camera_y)));
                 // Check if ready to finish stage.
-                if (is_end_section_current){
+                if (is_end_section_current)
+                {
                     check_end_section_cleaned();
                 }
             }
         }
     }
-
-    
 }
 
 void enemy_manager::create_bullet(fr::point_3d position, fr::point_3d target)
@@ -196,8 +197,8 @@ void enemy_manager::create_bullet(fr::point_3d position, fr::point_3d target)
             _enemies[slot].used = true;
             _enemies[slot].source = nullptr; // Bullets may not need a source descriptor
             BN_LOG("[spawn] BULLET: y DEPTH=" + bn::to_string<64>(int(position.y())) +
-                    " x=" + bn::to_string<64>(int(position.x())) +
-                    " z=" + bn::to_string<64>(int(position.z())));
+                   " x=" + bn::to_string<64>(int(position.x())) +
+                   " z=" + bn::to_string<64>(int(position.z())));
             break;
         }
     }

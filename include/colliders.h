@@ -129,14 +129,15 @@ class sphere_collider_set
                        int static_count)
     {
         size_t collider_count = _sphere_collider_list.size();
+        const size_t max_debuggers = _sphere_collider_debuggers.size();
         
         // Ensure we don't exceed array size
-        if (collider_count > _sphere_collider_debuggers.size())
+        if (collider_count > max_debuggers)
         {
             BN_LOG("[debug_collider] Too many colliders: " + 
                 bn::to_string<32>(collider_count) + " (max: " + 
-                bn::to_string<32>(_sphere_collider_debuggers.size()) + ")");
-            collider_count = _sphere_collider_debuggers.size();
+                bn::to_string<32>(max_debuggers) + ")");
+            collider_count = max_debuggers;
         }
 
         _update_rotation_matrix();

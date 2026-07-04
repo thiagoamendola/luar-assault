@@ -114,6 +114,8 @@ void pause_manager::menu_update()
                     _base_scene->return_to_main_menu();
                     return;
                     break;
+                default:
+                    break;
             }
         }
     
