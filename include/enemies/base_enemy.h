@@ -17,6 +17,7 @@ class base_enemy
 {
 public:
     base_enemy() = default;
+    virtual ~base_enemy() = default;
 
     virtual void destroy() = 0;
     virtual void update(player_ship* player) = 0;

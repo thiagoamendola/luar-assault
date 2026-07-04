@@ -41,7 +41,6 @@ enemy_bullet::enemy_bullet(fr::point_3d position, fr::point_3d target, fr::model
     if (distance_mag > 0)
     {
         // <-- Optimize to avoid divisions? It's only in the constructor though.
-        const bn::fixed test_x = distance_target.x().division(distance_mag); // <-- REMOVE. NOT USED
         _movement = fr::point_3d(
             (distance_target.x().division(distance_mag)) * MOVEMENT_SPEED,
             (distance_target.y().division(distance_mag)) * MOVEMENT_SPEED,
@@ -86,7 +85,7 @@ void enemy_bullet::destroy()
     _state = enemy_state::DESTROYED;
 }
 
-void enemy_bullet::update(player_ship* player)
+void enemy_bullet::update(player_ship*)
 {
     switch (_state)
     {

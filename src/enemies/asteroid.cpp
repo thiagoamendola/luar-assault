@@ -21,11 +21,9 @@
 #include "bn_sprite_items_boom.h"
 #include "models/asteroid1.h"
 
-
-asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models, 
-        controller *controller, base_game_scene *base_scene)
-    : _movement(movement), _models(models), _controller(controller), 
-      _base_scene(base_scene),
+asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *models,
+                   controller *controller, base_game_scene *base_scene)
+    : _movement(movement), _base_scene(base_scene), _models(models), _controller(controller),
       _sphere_collider_set(fr::model_3d_items::asteroid_colliders)
 {
     _position = position;
@@ -39,20 +37,20 @@ asteroid::asteroid(fr::point_3d position, fr::point_3d movement, fr::models_3d *
 
 void asteroid::destroy()
 {
-    if(_state == enemy_state::DESTROYED)
+    if (_state == enemy_state::DESTROYED)
     {
         return; // already destroyed
     }
 
     // Remove asteroid model.
-    if(_model)
+    if (_model)
     {
         _models->destroy_dynamic_model(*_model);
         _model = nullptr;
     }
-    
+
     // Remove explosion effect.
-    if(_explosion)
+    if (_explosion)
     {
         _explosion->destroy();
         _explosion.reset();
@@ -61,7 +59,7 @@ void asteroid::destroy()
     _state = enemy_state::DESTROYED;
 }
 
-void asteroid::update(player_ship* player)
+void asteroid::update(player_ship *player)
 {
     switch (_state)
     {
@@ -69,12 +67,13 @@ void asteroid::update(player_ship* player)
         // Handle laser hit cooldown.
         if (_damage_cooldown > 0)
         {
-           _damage_cooldown--;
-            if (_damage_cooldown <= 0) {
+            _damage_cooldown--;
+            if (_damage_cooldown <= 0)
+            {
                 _model->set_palette(_current_palette);
             }
-        }   
-    
+        }
+
         // Rotate.
         _model->set_phi(_model->phi() + 600); // <-- Magic number
 
@@ -85,7 +84,7 @@ void asteroid::update(player_ship* player)
             _position = _position + _movement;
             _model->set_position(_position);
         }
-    
+
         // Update colliders.
         _sphere_collider_set.set_origin(get_model()->position());
 
@@ -99,7 +98,7 @@ void asteroid::update(player_ship* player)
         {
             destroy();
         }
-        else if(_explosion)
+        else if (_explosion)
         {
             // Update the explosion effect
             _explosion->update();
@@ -110,11 +109,10 @@ void asteroid::update(player_ship* player)
     default:
         break;
     }
-
 }
 
 int asteroid::statics_render(const fr::model_3d_item **static_model_items,
-                       int static_count)
+                             int static_count)
 {
     int current_static_count = static_count;
 
@@ -130,16 +128,16 @@ int asteroid::statics_render(const fr::model_3d_item **static_model_items,
 
 void asteroid::handle_laser_hit()
 {
-    if(_state != enemy_state::ACTIVE)
+    if (_state != enemy_state::ACTIVE)
     {
         return;
     }
 
     // Apply hit feedback palette and cooldown only if still alive after hit
-    if(_health > 0)
+    if (_health > 0)
     {
         _health -= 1;
-        if(_health <= 0)
+        if (_health <= 0)
         {
             // Final destruction
             kill();
@@ -153,13 +151,13 @@ void asteroid::handle_laser_hit()
 
 void asteroid::handle_missile_hit()
 {
-    if(_state != enemy_state::ACTIVE)
+    if (_state != enemy_state::ACTIVE)
     {
         return;
     }
 
     // Missiles instantly kill if the enemy still has health.
-    if(_health > 0)
+    if (_health > 0)
     {
         _health = 0;
         kill(); // <-- CHANGE
@@ -168,7 +166,7 @@ void asteroid::handle_missile_hit()
 
 void asteroid::kill()
 {
-    if(_state != enemy_state::ACTIVE)
+    if (_state != enemy_state::ACTIVE)
     {
         return;
     }

@@ -28,9 +28,8 @@
 scorpion::scorpion(fr::point_3d position, fr::models_3d *models,
                    controller *controller, enemy_manager *enemy_manager,
                    base_game_scene *base_scene, const scorpion_properties *props)
-    : _models(models), _controller(controller), _enemy_manager(enemy_manager),
-      _base_scene(base_scene),
-      _sphere_collider_set(fr::model_3d_items::scorpion_colliders)
+    : _base_scene(base_scene), _models(models), _controller(controller),
+      _enemy_manager(enemy_manager), _sphere_collider_set(fr::model_3d_items::scorpion_colliders)
 {
     if (props)
     {
