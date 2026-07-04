@@ -9,6 +9,7 @@
 #include "controller.h"
 #include "enemy_manager.h"
 #include "base_enemy.h"
+#include "easing.h"
 
 // - Missile
 
@@ -31,6 +32,8 @@ void missile::launch(base_enemy *target_enemy, const fr::point_3d &starting_pos)
 
     _starting_pos = starting_pos;
     _end_pos = _target_enemy->get_position();
+    // const bn::fixed mean_factor = 1/bn::fixed(3);
+    _middle_pos = (_end_pos * bn::fixed(0.2) + _starting_pos * bn::fixed(0.8)) + fr::point_3d(0, 0, -50); // <-- Update properly
     _position = _starting_pos;
     _lerp = 0;
 }
@@ -57,6 +60,7 @@ void missile::update(bn::fixed delta_y)
 
     // Update lerp positions.
     _starting_pos.set_y(_starting_pos.y() + delta_y);
+    _middle_pos.set_y(_middle_pos.y() + delta_y);
     _end_pos = _target_enemy->get_position();
 
     _lerp += bn::fixed(1).division(MISSILE_PURSUE_DURATION);
@@ -81,7 +85,24 @@ void missile::update(bn::fixed delta_y)
 
 fr::point_3d missile::calculate_lerp_position(bn::fixed lerp) const
 {
-    return _starting_pos + (_end_pos - _starting_pos) * lerp;
+    // if (lerp < 0.3)
+    if (lerp < 0.3)
+    {
+        // lerp *= 3.3333; // Scale to [0, 1] for first half of trajectory
+        lerp /= bn::fixed(0.3); // Scale to [0, 1] for first half of trajectory
+        return _starting_pos + (_middle_pos - _starting_pos) * apply_easing(lerp, easing::EASE_OUT);;
+    }
+    else if (lerp < 0.5)
+    {
+        return _middle_pos;
+    }
+    else
+    {
+        // Scale to [0,1] for second half of trajectory
+        lerp -= 0.5;
+        lerp /= bn::fixed(0.5);
+        return _middle_pos + (_end_pos - _middle_pos) * lerp;
+    }
 }
 
 int missile::statics_render(const fr::model_3d_item **static_model_items, int static_count)
@@ -92,7 +113,7 @@ int missile::statics_render(const fr::model_3d_item **static_model_items, int st
     }
 
     constexpr bn::fixed MISSILE_X_OFFSET = 6;
-    constexpr bn::fixed MISSILE_LERP_OFFSET = 0.4;
+    constexpr bn::fixed MISSILE_LERP_OFFSET = 0.3;
     
     const bn::fixed lerp_trail = bn::max(_lerp - MISSILE_LERP_OFFSET, bn::fixed(0));
     fr::point_3d trail_pos = calculate_lerp_position(lerp_trail);

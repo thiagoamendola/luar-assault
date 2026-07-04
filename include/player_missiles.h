@@ -78,6 +78,7 @@ class missile
 
     missile_state _missile_state = missile_state::idle;
     fr::point_3d _starting_pos;
+    fr::point_3d _middle_pos;
     fr::point_3d _end_pos;
     fr::point_3d _position;
     bn::fixed _lerp = 0;
