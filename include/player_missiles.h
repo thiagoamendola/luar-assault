@@ -120,25 +120,34 @@ class player_missiles
     bool is_launching() const { return _player_missiles_state == player_missiles_state::launching; }
     bool is_launched() const { return _player_missiles_state == player_missiles_state::launched; }
 
+    int get_current_charge() const { return _current_charge; }
+    void recharge_with_laser();
+
     void fire_missiles();
 
   private:
+    static constexpr int LAUNCH_INTERVAL = 3; // Frames between successive missile launches
+    static constexpr int RECHARGE_PER_LASER_HIT = 4;
+    static constexpr int MAX_CHARGE_VALUE = 200;
+    static constexpr int LEVEL_1_RECHARGE_COST = 100;
+    static constexpr int LEVEL_2_RECHARGE_COST = 200;
+    static constexpr int LEVEL_1_MISSILE_COUNT = 2;
+    static constexpr int LEVEL_2_MISSILE_COUNT = 4;
+  
     base_game_scene *_base_scene;
     controller *_controller;
     player_ship *_player_ship;
     enemy_manager *_enemy_manager;
     fr::models_3d *_models;
-
+    
     bool _enabled = true;
     player_missiles_state _player_missiles_state = player_missiles_state::disabled;
-
     sphere_collider_set _missile_collider_detector;
-    static constexpr int MAX_MISSILES = 4;
-    static constexpr int LAUNCH_INTERVAL = 3; // Frames between successive missile launches
-    missile _missiles[MAX_MISSILES];
+    missile _missiles[LEVEL_2_MISSILE_COUNT];
 
     // Staggered launch state
     int _launch_timer = 0;
+    int _current_charge = 0;
 
     bn::fixed _last_player_y;
 

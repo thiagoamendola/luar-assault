@@ -191,7 +191,7 @@ void player_missiles::update()
         bn::fixed current_player_y = _player_ship->get_position().y();
         bn::fixed delta_y = current_player_y - _last_player_y;
         _last_player_y = current_player_y;
-        for (int i = 0; i < MAX_MISSILES; i++)
+        for (int i = 0; i < LEVEL_2_MISSILE_COUNT; i++)
         {
             _missiles[i].update(delta_y);
         }
@@ -203,7 +203,7 @@ void player_missiles::update()
             {
                 bool has_launched = false;
                 bool has_pending = false;
-                for (int i = 0; i < MAX_MISSILES; i++)
+                for (int i = 0; i < LEVEL_2_MISSILE_COUNT; i++)
                 {
                     if (_missiles[i].is_pending() && !_missiles[i].is_launched())
                     {
@@ -237,7 +237,7 @@ void player_missiles::update()
         {
             // Check if all missiles have finished launching and hitting targets.
             bool all_finished = true;
-            for (int i = 0; i < MAX_MISSILES; i++)
+            for (int i = 0; i < LEVEL_2_MISSILE_COUNT; i++)
             {
                 if (_missiles[i].is_launched() || _missiles[i].is_pending())
                 {
@@ -274,7 +274,7 @@ int player_missiles::statics_render(const fr::model_3d_item **static_model_items
     // Render missile models into static_model_items
     if (is_launching() || is_launched())
     {
-        for (int i = 0; i < MAX_MISSILES; i++)
+        for (int i = 0; i < LEVEL_2_MISSILE_COUNT; i++)
         {
             if (_missiles[i].is_launched())
             {
@@ -297,9 +297,29 @@ int player_missiles::statics_render(const fr::model_3d_item **static_model_items
     return current_static_count;
 }
 
+void player_missiles::recharge_with_laser()
+{
+    _current_charge += RECHARGE_PER_LASER_HIT;
+    if (_current_charge > MAX_CHARGE_VALUE)
+    {
+        _current_charge = MAX_CHARGE_VALUE;
+    }
+}
+
 void player_missiles::fire_missiles()
 {
-    _player_missiles_state = player_missiles_state::launching;
+    if (_current_charge < LEVEL_1_RECHARGE_COST)
+    {
+        return;
+    }
+
+    int recharge_cost = LEVEL_1_RECHARGE_COST;
+    int missiles_to_launch = LEVEL_1_MISSILE_COUNT;
+    if (_current_charge >= LEVEL_2_RECHARGE_COST)
+    {
+        recharge_cost = LEVEL_2_RECHARGE_COST;
+        missiles_to_launch = LEVEL_2_MISSILE_COUNT;
+    }
 
     // Sync detection colliders position and rotation.
     fr::model_3d *ship_model = _player_ship->get_model();
@@ -345,16 +365,26 @@ void player_missiles::fire_missiles()
 
     // Assign detected targets to missile slots; activation is staggered in update()
     int assigned = 0;
-    _launch_timer = 0; // fire first missile immediately on next update tick
-    for (int i = 0; i < MAX_MISSILES && assigned < hit_enemies.size(); ++i)
+    for (int i = 0; i < LEVEL_2_MISSILE_COUNT && assigned < hit_enemies.size() && assigned < missiles_to_launch; ++i)
     {
         if (!_missiles[i].is_launched() && !_missiles[i].is_pending())
         {
+            // <-- mAKE MISSILES HAVE ASSIGNED DAMAGE AND TARGET SAME ENEMY IF NOT DEAD
             _missiles[i].lock_target(hit_enemies[assigned]);
             assigned++;
         }
     }
 
+    if (assigned == 0)
+    {
+        return;
+    }
+
+    _current_charge -= recharge_cost;
+    _player_missiles_state = player_missiles_state::launching;
+    _launch_timer = 0; // fire first missile immediately on next update tick
+
+    // Log hit enemies for debugging.
     BN_LOG("[fire_missiles] hit " + bn::to_string<64>(hit_enemies.size()) + " enemies");
     for (base_enemy *enemy : hit_enemies)
     {

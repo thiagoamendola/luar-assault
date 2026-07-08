@@ -303,7 +303,13 @@ void player_laser::raycast_laser(enemy_manager &enemies,
             // BN_LOG("Laser hit: enemy=" + bn::to_string<64>(best_enemy_index) + " t=" + bn::to_string<64>(t));
             if (best_enemy_index >= 0)
             {
-                enemy_slots[best_enemy_index].ptr->handle_laser_hit();
+                base_enemy *hit_enemy = enemy_slots[best_enemy_index].ptr;
+                if (!hit_enemy->is_killed())
+                {
+                    // Apply damage and increase missile charge.
+                    hit_enemy->handle_laser_hit();
+                    _player_ship->get_player_missiles().recharge_with_laser();
+                }
             }
         }
     }
