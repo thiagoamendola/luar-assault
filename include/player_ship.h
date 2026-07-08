@@ -79,6 +79,11 @@ public:
         return health;
     }
 
+    player_missiles &get_player_missiles()
+    {
+        return _player_missiles;
+    }
+
     sphere_collider_set &collider_set()
     {
         return _sphere_collider_set;

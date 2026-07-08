@@ -95,6 +95,11 @@ void hud_manager::update(fr::models_3d *models)
     {
         _update_lifebar();
         _update_lifebar_damage_tiles();
+        _text_generator.set_right_alignment();
+        _text_generator.generate(115, -72,
+                     bn::to_string<64>(_player_ship->get_player_missiles().get_recharge_value()) + "%",
+                     _text_sprites);
+        _text_generator.set_left_alignment();
         _text_generator.generate(-115, -58, bn::to_string<64>(_base_scene->get_score()),
                                  _text_sprites); // <-- Get another font?
     }
