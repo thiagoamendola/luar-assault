@@ -4,6 +4,10 @@
 #include "bn_fixed.h"
 #include "bn_sound_item.h"
 #include "bn_sprite_animate_actions.h"
+#include "bn_sprite_ptr.h"
+#include "bn_sprite_text_generator.h"
+#include "bn_string_view.h"
+#include "bn_vector.h"
 
 #include "fr_model_3d.h"
 #include "fr_camera_3d.h"
@@ -144,6 +148,32 @@ public:
     sprite_anim_cmd(bn::sprite_animate_action<16> &&act, int start, int dur);
 
     void update(int local_frame) override;
+};
+
+/**
+ * Updates the current subtitle text for a timed window.
+ */
+class subtitle_cmd : public timeline_command
+{
+public:
+    bn::vector<bn::sprite_ptr, 40> &subtitle_sprites;
+    bn::sprite_text_generator &text_generator;
+    bn::string_view text;
+
+    subtitle_cmd(bn::vector<bn::sprite_ptr, 40> &sprites,
+                 bn::sprite_text_generator &generator,
+                 bn::string_view subtitle_text,
+                 int start, int dur);
+
+    void start() override;
+    void update(int) override {}
+    void end() override;
+
+private:
+    static constexpr int SUBTITLE_X = 0;
+    static constexpr int SUBTITLE_Y = 42;
+
+    static int _last_subtitle_start_time;
 };
 
 #endif // CUTSCENE_COMMANDS_H

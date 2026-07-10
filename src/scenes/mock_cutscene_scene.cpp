@@ -8,6 +8,7 @@
 #include "bn_sound_items.h"
 
 #include "common_variable_8x16_sprite_font.h"
+#include "editundo_sprite_font.h"
 
 #include "fr_model_colors.h"
 #include "fr_point_3d.h"
@@ -15,12 +16,16 @@
 #include "models/player_ship_02.h"
 
 mock_cutscene_scene::mock_cutscene_scene() :
-    _text_generator(common::variable_8x16_sprite_font)
+    _text_generator(common::variable_8x16_sprite_font),
+    _text_generator_2(editundo_sprite_font)
 {
     BN_LOG("mock_cutscene_scene: init");
 
-    _text_generator.set_right_alignment();
     _text_generator.set_bg_priority(1); // Draw on top of letterbox (bg_priority 2)
+    _text_generator.set_center_alignment();
+
+    _text_generator_2.set_bg_priority(1);
+    _text_generator_2.set_right_alignment();
 
     bn::bg_palettes::set_transparent_color(bn::color(2, 2, 6));
 
@@ -87,8 +92,16 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
     _timeline.add(new play_sound_cmd(
         bn::sound_items::mc_test_04, 1, 0));
+    _timeline.add(new subtitle_cmd(
+        _subtitle_text_sprites, _text_generator,
+        "This mission's codename will be", 0, 100));
+
     _timeline.add(new play_sound_cmd(
         bn::sound_items::mc_test_05, 1, 100));
+    _timeline.add(new subtitle_cmd(
+        _subtitle_text_sprites, _text_generator,
+        "Luar Assault!", 100, 75));
+
     _timeline.add(new play_sound_cmd(
         bn::sound_items::player_death, 1, 160));
 
@@ -102,6 +115,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
 mock_cutscene_scene::~mock_cutscene_scene()
 {
     _timeline.clear();
+    _subtitle_text_sprites.clear();
     _skip_text_sprites.clear();
 }
 
@@ -114,7 +128,7 @@ bn::optional<scene_type> mock_cutscene_scene::update()
         {
             // First press — show prompt
             _skip_text_sprites.clear();
-            _text_generator.generate(110, 65, "Press Start to Skip", _skip_text_sprites);
+            _text_generator_2.generate(110, 65, "Press Start to Skip", _skip_text_sprites);
             _skip_prompt_timer = SKIP_PROMPT_DURATION;
         }
         else

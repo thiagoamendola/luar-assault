@@ -147,6 +147,36 @@ void sprite_anim_cmd::update(int /*local_frame*/)
 }
 
 // ---------------------------------------------------------------------------
+// subtitle_cmd
+// ---------------------------------------------------------------------------
+
+int subtitle_cmd::_last_subtitle_start_time = -1;
+
+subtitle_cmd::subtitle_cmd(bn::vector<bn::sprite_ptr, 40>& sprites,
+                           bn::sprite_text_generator& generator,
+                           bn::string_view subtitle_text,
+                           int start, int dur) :
+    timeline_command(start, dur),
+    subtitle_sprites(sprites), text_generator(generator), text(subtitle_text)
+{
+}
+
+void subtitle_cmd::start()
+{
+    subtitle_sprites.clear();
+    text_generator.generate(SUBTITLE_X, SUBTITLE_Y, text, subtitle_sprites);
+    _last_subtitle_start_time = start_frame;
+}
+
+void subtitle_cmd::end()
+{
+    if(start_frame == _last_subtitle_start_time)
+    {
+        subtitle_sprites.clear();
+    }
+}
+
+// ---------------------------------------------------------------------------
 // play_sound_cmd
 // ---------------------------------------------------------------------------
 

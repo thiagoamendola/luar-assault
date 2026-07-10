@@ -41,6 +41,8 @@ private:
     
     // <-- Move this to a more general cutscene manager
     bn::sprite_text_generator _text_generator;
+    bn::sprite_text_generator _text_generator_2;
+    bn::vector<bn::sprite_ptr, 40> _subtitle_text_sprites;
     bn::vector<bn::sprite_ptr, 20> _skip_text_sprites;
     int _skip_prompt_timer = 0;
     bool _skip_triggered = false;
