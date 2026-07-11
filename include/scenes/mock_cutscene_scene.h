@@ -1,8 +1,10 @@
 #ifndef MOCK_CUTSCENE_SCENE_H
 #define MOCK_CUTSCENE_SCENE_H
 
+#include "bn_affine_bg_ptr.h"
 #include "bn_bg_palettes_actions.h"
 #include "bn_optional.h"
+#include "bn_regular_bg_ptr.h"
 #include "bn_sprite_palettes_actions.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
@@ -31,10 +33,14 @@ public:
 
 private:
     static constexpr int SKIP_PROMPT_DURATION = 120;
+    static constexpr int TAKE_2_START_TIME = 300;
 
     fr::camera_3d _camera;
     fr::models_3d _models;
     fr::model_3d *_model = nullptr;
+    bn::optional<bn::regular_bg_ptr> _floor_bg;
+    bn::optional<bn::affine_bg_ptr> _earth_bg;
+    bn::optional<bn::sprite_ptr> _luar_sprite;
 
     letterbox_manager _letterbox;
     cutscene_timeline _timeline;
@@ -50,7 +56,7 @@ private:
     bn::optional<bn::bg_palettes_fade_to_action>     _bgs_fade_out_action;
     bn::optional<bn::sprite_palettes_fade_to_action> _sprites_fade_out_action;
 
-    hyperlight_background _hyperlight_bg{bn::fixed_point(-4, -.5), 6};  // Speed + trail length
+    bn::optional<hyperlight_background> _hyperlight_bg;
 };
 
 #endif // MOCK_CUTSCENE_SCENE_H
