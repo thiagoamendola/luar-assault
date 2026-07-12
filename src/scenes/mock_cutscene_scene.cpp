@@ -62,6 +62,8 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
     // ----- Take 1 -----
     {
+        take_start_time = 0;
+
         // <-- Move this to its own take lambda start
         _floor_bg.emplace(bn::regular_bg_items::floor.create_bg(0, 0)); // <-- REPLACE
         _floor_bg->set_priority(3);
@@ -73,26 +75,44 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
         _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
         _luar_sprite->set_scale(0.7);
+        _timeline.add(new move_sprite_cmd(
+            *_luar_sprite, bn::fixed_point(73, -20), take_start_time, 300, easing::LINEAR));
 
         _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(5, 0));
         _explosion_sprite->set_blending_enabled(true);
         _explosion_sprite->set_visible(false);
         _explosion_sprite->set_scale(0.4);
 
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 0, 15));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 15, 50));
-        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(15, -5), 65, 0, easing::LINEAR));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 65, 15));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 80, 50));
-        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(10, 5), 130, 0, easing::LINEAR));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 130, 15));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 145, 50));
-        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(20, 0), 195, 0, easing::LINEAR));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 195, 15));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 210, 50));
-        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(15, 5), 260, 0, easing::LINEAR));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 260, 15));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 275, 50));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 0, 1, take_start_time + 0, 15));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 1, 0, take_start_time + 15, 50));
+        _timeline.add(new move_sprite_cmd(
+            *_explosion_sprite, bn::fixed_point(15, -5), take_start_time + 65, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 0, 1, take_start_time + 65, 15));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 1, 0, take_start_time + 80, 50));
+        _timeline.add(new move_sprite_cmd(
+            *_explosion_sprite, bn::fixed_point(10, 5), take_start_time + 130, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 0, 1, take_start_time + 130, 15));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 1, 0, take_start_time + 145, 50));
+        _timeline.add(new move_sprite_cmd(
+            *_explosion_sprite, bn::fixed_point(20, 0), take_start_time + 195, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 0, 1, take_start_time + 195, 15));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 1, 0, take_start_time + 210, 50));
+        _timeline.add(new move_sprite_cmd(
+            *_explosion_sprite, bn::fixed_point(15, 5), take_start_time + 260, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 0, 1, take_start_time + 260, 15));
+        _timeline.add(new sprite_fade_cmd(
+            *_explosion_sprite, 1, 0, take_start_time + 275, 50));
+
+        // <-- Make ship fly by.
     }
 
     // <-- Maybe do a fade in between takes
@@ -103,7 +123,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
         _cmd_move = new move_model_cmd(
             *_model,
-            fr::point_3d(-30, -210, -60), // start
+            fr::point_3d(-180, -330, 0), // start
             fr::point_3d(0, -180, 0),     // end
             take_start_time + 50, 70, easing::EASE_OUT);
         _timeline.add(_cmd_move);
