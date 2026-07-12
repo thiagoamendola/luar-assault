@@ -9,6 +9,7 @@
 
 #include "bn_affine_bg_items_earth.h"
 #include "bn_regular_bg_items_floor.h"
+#include "bn_sprite_items_explosion_cutscene.h"
 #include "bn_sprite_items_luar_small.h"
 #include "common_variable_8x16_sprite_font.h"
 #include "editundo_sprite_font.h"
@@ -61,6 +62,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
     // ----- Take 1 -----
     {
+        // <-- Move this to its own take lambda start
         _floor_bg.emplace(bn::regular_bg_items::floor.create_bg(0, 0)); // <-- REPLACE
         _floor_bg->set_priority(3);
 
@@ -71,6 +73,13 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
         _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
         _luar_sprite->set_scale(0.7);
+
+        _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(0, 0));
+        _explosion_sprite->set_blending_enabled(true);
+        _explosion_sprite->set_visible(false);
+
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 0, 150));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 150, 150));
     }
 
     // <-- Maybe do a fade in between takes
@@ -186,6 +195,7 @@ bn::optional<scene_type> mock_cutscene_scene::update()
         _floor_bg.reset();
         _earth_bg.reset();
         _luar_sprite.reset();
+        _explosion_sprite.reset();
     }
     else if (!_hyperlight_bg.has_value() && _timeline.current_frame() > TAKE_2_START_TIME)
     {

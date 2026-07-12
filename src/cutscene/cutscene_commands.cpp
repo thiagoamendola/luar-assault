@@ -1,5 +1,6 @@
 #include "cutscene/cutscene_commands.h"
 
+#include "bn_blending.h"
 #include "bn_log.h"
 #include "bn_utility.h"
 
@@ -144,6 +145,33 @@ void sprite_anim_cmd::update(int /*local_frame*/)
 {
     if(!action.done())
         action.update();
+}
+
+// ---------------------------------------------------------------------------
+// sprite_fade_cmd
+// ---------------------------------------------------------------------------
+
+sprite_fade_cmd::sprite_fade_cmd(bn::sprite_ptr& spr, bn::fixed alpha_start, bn::fixed alpha_end,
+                                 int start, int dur) :
+    timeline_command(start, dur),
+    sprite(spr), start_alpha(alpha_start), end_alpha(alpha_end) {}
+
+void sprite_fade_cmd::start()
+{
+    sprite.set_visible(true);
+    sprite.set_blending_enabled(true);
+    bn::blending::set_transparency_alpha(start_alpha);
+}
+
+void sprite_fade_cmd::update(int local_frame)
+{
+    bn::fixed t = bn::fixed(local_frame) / duration;
+    bn::blending::set_transparency_alpha(start_alpha + (end_alpha - start_alpha) * t);
+}
+
+void sprite_fade_cmd::end()
+{
+    bn::blending::set_transparency_alpha(end_alpha);
 }
 
 // ---------------------------------------------------------------------------

@@ -151,6 +151,24 @@ public:
 };
 
 /**
+ * Fades a sprite using transparency blending.
+ */
+class sprite_fade_cmd : public timeline_command
+{
+public:
+    bn::sprite_ptr &sprite;
+    bn::fixed start_alpha;
+    bn::fixed end_alpha;
+
+    sprite_fade_cmd(bn::sprite_ptr &spr, bn::fixed alpha_start, bn::fixed alpha_end,
+                    int start_frame, int dur);
+
+    void start() override;
+    void update(int local_frame) override;
+    void end() override;
+};
+
+/**
  * Updates the current subtitle text for a timed window.
  */
 class subtitle_cmd : public timeline_command
