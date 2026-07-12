@@ -66,7 +66,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
         _floor_bg.emplace(bn::regular_bg_items::floor.create_bg(0, 0)); // <-- REPLACE
         _floor_bg->set_priority(3);
 
-        _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-80, 20));
+        _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-85, 20));
         _earth_bg->set_scale(0.7);
         _earth_bg->set_priority(2);
         _earth_bg->set_wrapping_enabled(false);
@@ -74,12 +74,25 @@ mock_cutscene_scene::mock_cutscene_scene() :
         _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
         _luar_sprite->set_scale(0.7);
 
-        _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(0, 0));
+        _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(5, 0));
         _explosion_sprite->set_blending_enabled(true);
         _explosion_sprite->set_visible(false);
+        _explosion_sprite->set_scale(0.4);
 
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 0, 150));
-        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 150, 150));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 0, 15));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 15, 50));
+        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(15, -5), 65, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 65, 15));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 80, 50));
+        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(10, 5), 130, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 130, 15));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 145, 50));
+        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(20, 0), 195, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 195, 15));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 210, 50));
+        _timeline.add(new move_sprite_cmd(*_explosion_sprite, bn::fixed_point(15, 5), 260, 0, easing::LINEAR));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 0, 1, 260, 15));
+        _timeline.add(new sprite_fade_cmd(*_explosion_sprite, 1, 0, 275, 50));
     }
 
     // <-- Maybe do a fade in between takes

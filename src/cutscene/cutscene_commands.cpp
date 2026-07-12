@@ -148,6 +148,40 @@ void sprite_anim_cmd::update(int /*local_frame*/)
 }
 
 // ---------------------------------------------------------------------------
+// move_sprite_cmd
+// ---------------------------------------------------------------------------
+
+move_sprite_cmd::move_sprite_cmd(bn::sprite_ptr& spr, bn::fixed_point start, bn::fixed_point end,
+                                 int start_time, int dur, easing easing_type) :
+    timeline_command(start_time, dur),
+    sprite(spr), start_pos(start), end_pos(end), ease(easing_type) {}
+
+move_sprite_cmd::move_sprite_cmd(bn::sprite_ptr& spr, bn::fixed_point end,
+                                 int start_time, int dur, easing easing_type) :
+    move_sprite_cmd(spr, spr.position(), end, start_time, dur, easing_type) {}
+
+void move_sprite_cmd::start()
+{
+    sprite.set_position(start_pos);
+}
+
+void move_sprite_cmd::update(int local_frame)
+{
+    if (duration <= 0)
+    {
+        sprite.set_position(end_pos);
+        return;
+    }
+    bn::fixed t = apply_easing(bn::fixed(local_frame) / duration, ease);
+    sprite.set_position(start_pos + (end_pos - start_pos) * t);
+}
+
+void move_sprite_cmd::end()
+{
+    sprite.set_position(end_pos);
+}
+
+// ---------------------------------------------------------------------------
 // sprite_fade_cmd
 // ---------------------------------------------------------------------------
 

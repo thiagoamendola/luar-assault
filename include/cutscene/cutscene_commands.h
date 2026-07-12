@@ -2,6 +2,7 @@
 #define CUTSCENE_COMMANDS_H
 
 #include "bn_fixed.h"
+#include "bn_fixed_point.h"
 #include "bn_sound_item.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_ptr.h"
@@ -148,6 +149,27 @@ public:
     sprite_anim_cmd(bn::sprite_animate_action<16> &&act, int start, int dur);
 
     void update(int local_frame) override;
+};
+
+/**
+ * Interpolates a bn::sprite_ptr position over time.
+ */
+class move_sprite_cmd : public timeline_command
+{
+public:
+    bn::sprite_ptr &sprite;
+    bn::fixed_point start_pos;
+    bn::fixed_point end_pos;
+    easing ease;
+
+    move_sprite_cmd(bn::sprite_ptr &spr, bn::fixed_point start, bn::fixed_point end,
+                    int start_time, int dur, easing easing_type = easing::LINEAR);
+    move_sprite_cmd(bn::sprite_ptr &spr, bn::fixed_point end,
+                    int start_time, int dur, easing easing_type = easing::LINEAR);
+
+    void start() override;
+    void update(int local_frame) override;
+    void end() override;
 };
 
 /**
