@@ -82,9 +82,11 @@ mock_cutscene_scene::mock_cutscene_scene() :
             _explosion_sprite->set_scale(0.4);
         }));
 
+        // Move Luar slowly.
         _timeline.add(new move_sprite_cmd(
             _luar_sprite, bn::fixed_point(73, -20), take_start_time, 300, easing::LINEAR));
 
+        // Explosions fade in/out.
         _timeline.add(new sprite_fade_cmd(
             _explosion_sprite, 0, 1, take_start_time + 0, 15));
         _timeline.add(new sprite_fade_cmd(
@@ -115,6 +117,11 @@ mock_cutscene_scene::mock_cutscene_scene() :
             _explosion_sprite, 1, 0, take_start_time + 275, 50));
 
         // <-- Make ship fly by.
+        _timeline.add(new move_model_cmd(
+            *_model,
+            fr::point_3d(-180, -330, 0), // start
+            fr::point_3d(40, -180, 0),     // end
+            take_start_time + 150, 70, easing::EASE_OUT));
     }
 
     // <-- Maybe do a fade in between takes
@@ -123,6 +130,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
     {
         take_start_time = TAKE_2_START_TIME;
 
+        // Previous cleanup.
         _timeline.add(new lambda_cmd(take_start_time, [&] {
             _floor_bg.reset();
             _earth_bg.reset();
@@ -130,8 +138,12 @@ mock_cutscene_scene::mock_cutscene_scene() :
             _explosion_sprite.reset();
         }));
 
+        // Take setup.
         _timeline.add(new lambda_cmd(take_start_time + 1, [&] {
             _hyperlight_bg.emplace(bn::fixed_point(-4, -.5), 6);
+            _model->set_psi(-16383); // 90 degrees
+            _model->set_phi(-8000);
+            _model->set_position(fr::point_3d(-180, -330, 0));
         }));
 
         _cmd_move = new move_model_cmd(
