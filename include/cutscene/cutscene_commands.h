@@ -3,11 +3,13 @@
 
 #include "bn_fixed.h"
 #include "bn_fixed_point.h"
+#include "bn_optional.h"
 #include "bn_sound_item.h"
 #include "bn_sprite_animate_actions.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_string_view.h"
+#include "bn_utility.h"
 #include "bn_vector.h"
 
 #include "fr_model_3d.h"
@@ -157,19 +159,23 @@ public:
 class move_sprite_cmd : public timeline_command
 {
 public:
-    bn::sprite_ptr &sprite;
+    bn::optional<bn::sprite_ptr> &sprite;
     bn::fixed_point start_pos;
     bn::fixed_point end_pos;
     easing ease;
+    bool use_current_start;
 
-    move_sprite_cmd(bn::sprite_ptr &spr, bn::fixed_point start, bn::fixed_point end,
+    move_sprite_cmd(bn::optional<bn::sprite_ptr> &spr, bn::fixed_point start, bn::fixed_point end,
                     int start_time, int dur, easing easing_type = easing::LINEAR);
-    move_sprite_cmd(bn::sprite_ptr &spr, bn::fixed_point end,
+    move_sprite_cmd(bn::optional<bn::sprite_ptr> &spr, bn::fixed_point end,
                     int start_time, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;
     void update(int local_frame) override;
     void end() override;
+
+private:
+    bn::sprite_ptr *_target_sprite();
 };
 
 /**
@@ -178,16 +184,19 @@ public:
 class sprite_fade_cmd : public timeline_command
 {
 public:
-    bn::sprite_ptr &sprite;
+    bn::optional<bn::sprite_ptr> &sprite;
     bn::fixed start_alpha;
     bn::fixed end_alpha;
 
-    sprite_fade_cmd(bn::sprite_ptr &spr, bn::fixed alpha_start, bn::fixed alpha_end,
+    sprite_fade_cmd(bn::optional<bn::sprite_ptr> &spr, bn::fixed alpha_start, bn::fixed alpha_end,
                     int start_frame, int dur);
 
     void start() override;
     void update(int local_frame) override;
     void end() override;
+
+private:
+    bn::sprite_ptr *_target_sprite();
 };
 
 /**
@@ -215,5 +224,31 @@ private:
 
     static int _last_subtitle_start_time;
 };
+
+/**
+ * Runs arbitrary code once on its start frame.
+ */
+template<typename Function>
+class lambda_cmd : public timeline_command
+{
+public:
+    Function function;
+
+    lambda_cmd(int start, Function fn) :
+        timeline_command(start, 1),
+        function(bn::move(fn))
+    {
+    }
+
+    void start() override
+    {
+        function();
+    }
+
+    void update(int) override {}
+};
+
+template<typename Function>
+lambda_cmd(int, Function) -> lambda_cmd<Function>;
 
 #endif // CUTSCENE_COMMANDS_H

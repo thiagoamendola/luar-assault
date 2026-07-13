@@ -64,53 +64,55 @@ mock_cutscene_scene::mock_cutscene_scene() :
     {
         take_start_time = 0;
 
-        // <-- Move this to its own take lambda start
-        _floor_bg.emplace(bn::regular_bg_items::floor.create_bg(0, 0)); // <-- REPLACE
-        _floor_bg->set_priority(3);
+        _timeline.add(new lambda_cmd(take_start_time, [&] {
+            _floor_bg.emplace(bn::regular_bg_items::floor.create_bg(0, 0));
+            _floor_bg->set_priority(3);
 
-        _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-85, 20));
-        _earth_bg->set_scale(0.7);
-        _earth_bg->set_priority(2);
-        _earth_bg->set_wrapping_enabled(false);
+            _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-85, 20));
+            _earth_bg->set_scale(0.7);
+            _earth_bg->set_priority(2);
+            _earth_bg->set_wrapping_enabled(false);
 
-        _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
-        _luar_sprite->set_scale(0.7);
-        _timeline.add(new move_sprite_cmd(
-            *_luar_sprite, bn::fixed_point(73, -20), take_start_time, 300, easing::LINEAR));
+            _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
+            _luar_sprite->set_scale(0.7);
 
-        _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(5, 0));
-        _explosion_sprite->set_blending_enabled(true);
-        _explosion_sprite->set_visible(false);
-        _explosion_sprite->set_scale(0.4);
+            _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(5, 0));
+            _explosion_sprite->set_blending_enabled(true);
+            _explosion_sprite->set_visible(false);
+            _explosion_sprite->set_scale(0.4);
+        }));
+
+        _timeline.add(new move_sprite_cmd(
+            _luar_sprite, bn::fixed_point(73, -20), take_start_time, 300, easing::LINEAR));
 
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 0, 1, take_start_time + 0, 15));
+            _explosion_sprite, 0, 1, take_start_time + 0, 15));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 1, 0, take_start_time + 15, 50));
+            _explosion_sprite, 1, 0, take_start_time + 15, 50));
         _timeline.add(new move_sprite_cmd(
-            *_explosion_sprite, bn::fixed_point(15, -5), take_start_time + 65, 0, easing::LINEAR));
+            _explosion_sprite, bn::fixed_point(15, -5), take_start_time + 65, 0, easing::LINEAR));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 0, 1, take_start_time + 65, 15));
+            _explosion_sprite, 0, 1, take_start_time + 65, 15));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 1, 0, take_start_time + 80, 50));
+            _explosion_sprite, 1, 0, take_start_time + 80, 50));
         _timeline.add(new move_sprite_cmd(
-            *_explosion_sprite, bn::fixed_point(10, 5), take_start_time + 130, 0, easing::LINEAR));
+            _explosion_sprite, bn::fixed_point(10, 5), take_start_time + 130, 0, easing::LINEAR));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 0, 1, take_start_time + 130, 15));
+            _explosion_sprite, 0, 1, take_start_time + 130, 15));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 1, 0, take_start_time + 145, 50));
+            _explosion_sprite, 1, 0, take_start_time + 145, 50));
         _timeline.add(new move_sprite_cmd(
-            *_explosion_sprite, bn::fixed_point(20, 0), take_start_time + 195, 0, easing::LINEAR));
+            _explosion_sprite, bn::fixed_point(20, 0), take_start_time + 195, 0, easing::LINEAR));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 0, 1, take_start_time + 195, 15));
+            _explosion_sprite, 0, 1, take_start_time + 195, 15));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 1, 0, take_start_time + 210, 50));
+            _explosion_sprite, 1, 0, take_start_time + 210, 50));
         _timeline.add(new move_sprite_cmd(
-            *_explosion_sprite, bn::fixed_point(15, 5), take_start_time + 260, 0, easing::LINEAR));
+            _explosion_sprite, bn::fixed_point(15, 5), take_start_time + 260, 0, easing::LINEAR));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 0, 1, take_start_time + 260, 15));
+            _explosion_sprite, 0, 1, take_start_time + 260, 15));
         _timeline.add(new sprite_fade_cmd(
-            *_explosion_sprite, 1, 0, take_start_time + 275, 50));
+            _explosion_sprite, 1, 0, take_start_time + 275, 50));
 
         // <-- Make ship fly by.
     }
@@ -120,6 +122,17 @@ mock_cutscene_scene::mock_cutscene_scene() :
     // ----- Take 2 -----
     {
         take_start_time = TAKE_2_START_TIME;
+
+        _timeline.add(new lambda_cmd(take_start_time, [&] {
+            _floor_bg.reset();
+            _earth_bg.reset();
+            _luar_sprite.reset();
+            _explosion_sprite.reset();
+        }));
+
+        _timeline.add(new lambda_cmd(take_start_time + 1, [&] {
+            _hyperlight_bg.emplace(bn::fixed_point(-4, -.5), 6);
+        }));
 
         _cmd_move = new move_model_cmd(
             *_model,
@@ -221,19 +234,6 @@ bn::optional<scene_type> mock_cutscene_scene::update()
 
     // Tick the letterbox animation
     _letterbox.update();
-
-    // <-- Make lambdas out of those
-    if (_earth_bg.has_value() && _timeline.current_frame() >= TAKE_2_START_TIME)
-    {
-        _floor_bg.reset();
-        _earth_bg.reset();
-        _luar_sprite.reset();
-        _explosion_sprite.reset();
-    }
-    else if (!_hyperlight_bg.has_value() && _timeline.current_frame() > TAKE_2_START_TIME)
-    {
-        _hyperlight_bg.emplace(bn::fixed_point(-4, -.5), 6);
-    }
 
     if (_timeline.is_running())
     {

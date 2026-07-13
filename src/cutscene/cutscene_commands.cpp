@@ -151,61 +151,118 @@ void sprite_anim_cmd::update(int /*local_frame*/)
 // move_sprite_cmd
 // ---------------------------------------------------------------------------
 
-move_sprite_cmd::move_sprite_cmd(bn::sprite_ptr& spr, bn::fixed_point start, bn::fixed_point end,
+move_sprite_cmd::move_sprite_cmd(bn::optional<bn::sprite_ptr>& spr, bn::fixed_point start,
+                                 bn::fixed_point end, int start_time, int dur, easing easing_type) :
+    timeline_command(start_time, dur),
+    sprite(spr), start_pos(start), end_pos(end), ease(easing_type),
+    use_current_start(false) {}
+
+move_sprite_cmd::move_sprite_cmd(bn::optional<bn::sprite_ptr>& spr, bn::fixed_point end,
                                  int start_time, int dur, easing easing_type) :
     timeline_command(start_time, dur),
-    sprite(spr), start_pos(start), end_pos(end), ease(easing_type) {}
+    sprite(spr), start_pos(end), end_pos(end), ease(easing_type),
+    use_current_start(true) {}
 
-move_sprite_cmd::move_sprite_cmd(bn::sprite_ptr& spr, bn::fixed_point end,
-                                 int start_time, int dur, easing easing_type) :
-    move_sprite_cmd(spr, spr.position(), end, start_time, dur, easing_type) {}
+bn::sprite_ptr* move_sprite_cmd::_target_sprite()
+{
+    if(sprite.has_value())
+    {
+        return &sprite.value();
+    }
+
+    return nullptr;
+}
 
 void move_sprite_cmd::start()
 {
-    sprite.set_position(start_pos);
+    bn::sprite_ptr* target = _target_sprite();
+    if(!target)
+    {
+        return;
+    }
+
+    if(use_current_start)
+    {
+        start_pos = target->position();
+    }
+
+    target->set_position(start_pos);
 }
 
 void move_sprite_cmd::update(int local_frame)
 {
+    bn::sprite_ptr* target = _target_sprite();
+    if(!target)
+    {
+        return;
+    }
+
     if (duration <= 0)
     {
-        sprite.set_position(end_pos);
+        target->set_position(end_pos);
         return;
     }
     bn::fixed t = apply_easing(bn::fixed(local_frame) / duration, ease);
-    sprite.set_position(start_pos + (end_pos - start_pos) * t);
+    target->set_position(start_pos + (end_pos - start_pos) * t);
 }
 
 void move_sprite_cmd::end()
 {
-    sprite.set_position(end_pos);
+    if(bn::sprite_ptr* target = _target_sprite())
+    {
+        target->set_position(end_pos);
+    }
 }
 
 // ---------------------------------------------------------------------------
 // sprite_fade_cmd
 // ---------------------------------------------------------------------------
 
-sprite_fade_cmd::sprite_fade_cmd(bn::sprite_ptr& spr, bn::fixed alpha_start, bn::fixed alpha_end,
-                                 int start, int dur) :
+sprite_fade_cmd::sprite_fade_cmd(bn::optional<bn::sprite_ptr>& spr, bn::fixed alpha_start,
+                                 bn::fixed alpha_end, int start, int dur) :
     timeline_command(start, dur),
     sprite(spr), start_alpha(alpha_start), end_alpha(alpha_end) {}
 
+bn::sprite_ptr* sprite_fade_cmd::_target_sprite()
+{
+    if(sprite.has_value())
+    {
+        return &sprite.value();
+    }
+
+    return nullptr;
+}
+
 void sprite_fade_cmd::start()
 {
-    sprite.set_visible(true);
-    sprite.set_blending_enabled(true);
+    bn::sprite_ptr* target = _target_sprite();
+    if(!target)
+    {
+        return;
+    }
+
+    target->set_visible(true);
+    target->set_blending_enabled(true);
     bn::blending::set_transparency_alpha(start_alpha);
 }
 
 void sprite_fade_cmd::update(int local_frame)
 {
+    if(!_target_sprite())
+    {
+        return;
+    }
+
     bn::fixed t = bn::fixed(local_frame) / duration;
     bn::blending::set_transparency_alpha(start_alpha + (end_alpha - start_alpha) * t);
 }
 
 void sprite_fade_cmd::end()
 {
-    bn::blending::set_transparency_alpha(end_alpha);
+    if(_target_sprite())
+    {
+        bn::blending::set_transparency_alpha(end_alpha);
+    }
 }
 
 // ---------------------------------------------------------------------------
