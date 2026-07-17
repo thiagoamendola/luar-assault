@@ -36,8 +36,11 @@ public:
     fr::point_3d start_pos;
     fr::point_3d end_pos;
     easing ease;
+    bool use_current_start;
 
     move_model_cmd(fr::model_3d &m, fr::point_3d s, fr::point_3d e,
+                   int start, int dur, easing easing_type = easing::LINEAR);
+    move_model_cmd(fr::model_3d &m, fr::point_3d e,
                    int start, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;
@@ -60,9 +63,13 @@ public:
     model_rotation start_rot;
     model_rotation end_rot;
     easing ease;
+    bool use_current_start;
 
     rotate_model_combined_cmd(fr::model_3d &m,
                               model_rotation s, model_rotation e,
+                              int start, int dur, easing easing_type = easing::LINEAR);
+    rotate_model_combined_cmd(fr::model_3d &m,
+                              model_rotation e,
                               int start, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;
@@ -83,8 +90,11 @@ public:
     fr::point_3d start_pos;
     fr::point_3d end_pos;
     easing ease;
+    bool use_current_start;
 
     move_camera_cmd(fr::camera_3d &cam, fr::point_3d s, fr::point_3d e,
+                    int start, int dur, easing easing_type = easing::LINEAR);
+    move_camera_cmd(fr::camera_3d &cam, fr::point_3d e,
                     int start, int dur, easing easing_type = easing::LINEAR);
 
     void start() override;

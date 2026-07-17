@@ -12,7 +12,8 @@ letterbox_manager::letterbox_manager() :
 {
     _letterboxing_up_sprites.clear();
     _letterboxing_down_sprites.clear();
-    _letterboxing_builder.set_bg_priority(2); // <-- Change to 1 after UI fade
+    _letterboxing_builder.set_bg_priority(0);
+    _letterboxing_builder.set_z_order(0);
 }
 
 void letterbox_manager::update()

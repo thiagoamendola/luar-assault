@@ -11,10 +11,22 @@
 move_model_cmd::move_model_cmd(fr::model_3d& m, fr::point_3d s, fr::point_3d e,
                                int start, int dur, easing easing_type) :
     timeline_command(start, dur),
-    model(m), start_pos(s), end_pos(e), ease(easing_type) {}
+    model(m), start_pos(s), end_pos(e), ease(easing_type),
+    use_current_start(false) {}
+
+move_model_cmd::move_model_cmd(fr::model_3d& m, fr::point_3d e,
+                               int start, int dur, easing easing_type) :
+    timeline_command(start, dur),
+    model(m), start_pos(e), end_pos(e), ease(easing_type),
+    use_current_start(true) {}
 
 void move_model_cmd::start()
 {
+    if(use_current_start)
+    {
+        start_pos = model.position();
+    }
+
     model.set_position(start_pos);
 }
 
@@ -39,7 +51,16 @@ rotate_model_combined_cmd::rotate_model_combined_cmd(fr::model_3d& m,
                                                      int start, int dur,
                                                      easing easing_type) :
     timeline_command(start, dur),
-    model(m), start_rot(s), end_rot(e), ease(easing_type) {}
+    model(m), start_rot(s), end_rot(e), ease(easing_type),
+    use_current_start(false) {}
+
+rotate_model_combined_cmd::rotate_model_combined_cmd(fr::model_3d& m,
+                                                     model_rotation e,
+                                                     int start, int dur,
+                                                     easing easing_type) :
+    timeline_command(start, dur),
+    model(m), start_rot(e), end_rot(e), ease(easing_type),
+    use_current_start(true) {}
 
 void rotate_model_combined_cmd::_apply(const model_rotation& r)
 {
@@ -50,6 +71,15 @@ void rotate_model_combined_cmd::_apply(const model_rotation& r)
 
 void rotate_model_combined_cmd::start()
 {
+    if(use_current_start)
+    {
+        start_rot = model_rotation{
+            .phi = model.phi(),
+            .theta = model.theta(),
+            .psi = model.psi()
+        };
+    }
+
     _apply(start_rot);
 }
 
@@ -75,10 +105,22 @@ void rotate_model_combined_cmd::end()
 move_camera_cmd::move_camera_cmd(fr::camera_3d& cam, fr::point_3d s, fr::point_3d e,
                                  int start, int dur, easing easing_type) :
     timeline_command(start, dur),
-    camera(cam), start_pos(s), end_pos(e), ease(easing_type) {}
+    camera(cam), start_pos(s), end_pos(e), ease(easing_type),
+    use_current_start(false) {}
+
+move_camera_cmd::move_camera_cmd(fr::camera_3d& cam, fr::point_3d e,
+                                 int start, int dur, easing easing_type) :
+    timeline_command(start, dur),
+    camera(cam), start_pos(e), end_pos(e), ease(easing_type),
+    use_current_start(true) {}
 
 void move_camera_cmd::start()
 {
+    if(use_current_start)
+    {
+        start_pos = camera.position();
+    }
+
     camera.set_position(start_pos);
 }
 

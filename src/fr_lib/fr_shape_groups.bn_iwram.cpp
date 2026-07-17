@@ -27,25 +27,29 @@ namespace fr
         if (width < 8)
         {
             attr1 = bn::hw::sprites::second_attributes(0, bn::sprite_size::SMALL, false, false);
-            attr2 = bn::hw::sprites::third_attributes(tiles_ids.small_tiles_id, palette_id, 3);
+            attr2 = bn::hw::sprites::third_attributes(tiles_ids.small_tiles_id & 0x3FF,
+                                                      palette_id & 0xF, _sprite_priority & 3);
             split = false;
         }
         else if (width < 16)
         {
             attr1 = bn::hw::sprites::second_attributes(0, bn::sprite_size::NORMAL, false, false);
-            attr2 = bn::hw::sprites::third_attributes(tiles_ids.normal_tiles_id, palette_id, 3);
+            attr2 = bn::hw::sprites::third_attributes(tiles_ids.normal_tiles_id & 0x3FF,
+                                                      palette_id & 0xF, _sprite_priority & 3);
             split = false;
         }
         else if (width < 32)
         {
             attr1 = bn::hw::sprites::second_attributes(0, bn::sprite_size::BIG, false, false);
-            attr2 = bn::hw::sprites::third_attributes(tiles_ids.big_tiles_id, palette_id, 3);
+            attr2 = bn::hw::sprites::third_attributes(tiles_ids.big_tiles_id & 0x3FF,
+                                                      palette_id & 0xF, _sprite_priority & 3);
             split = false;
         }
         else
         {
             attr1 = bn::hw::sprites::second_attributes(0, bn::sprite_size::HUGE, false, false);
-            attr2 = bn::hw::sprites::third_attributes(tiles_ids.huge_tiles_id, palette_id, 3);
+            attr2 = bn::hw::sprites::third_attributes(tiles_ids.huge_tiles_id & 0x3FF,
+                                                      palette_id & 0xF, _sprite_priority & 3);
             split = width > split_length;
         }
 

@@ -408,8 +408,9 @@ void models_3d::_process_models(const camera_3d &camera)
                             sprite_x, bn::sprite_size::HUGE,
                             sprite_item.affine_mat_id());
                         int attr2 = bn::hw::sprites::third_attributes(
-                            sprite_item.tiles_id(), sprite_item.palette_id(),
-                            3);
+                            sprite_item.tiles_id() & 0x3FF,
+                            sprite_item.palette_id() & 0xF,
+                            _sprite_priority & 3);
 
                         visible_faces[visible_faces_count] = {
                             nullptr,        sprite_y,       int16_t(attr0),

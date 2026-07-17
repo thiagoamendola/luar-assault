@@ -25,23 +25,26 @@ mock_cutscene_scene::mock_cutscene_scene() :
 {
     BN_LOG("mock_cutscene_scene: init");
 
-    _text_generator.set_bg_priority(1); // Draw on top of letterbox (bg_priority 2)
+    _text_generator.set_bg_priority(0);
+    _text_generator.set_z_order(-1);
     _text_generator.set_center_alignment();
 
-    _text_generator_2.set_bg_priority(1);
+    _text_generator_2.set_bg_priority(0);
+    _text_generator_2.set_z_order(-1);
     _text_generator_2.set_right_alignment();
 
     bn::bg_palettes::set_transparent_color(bn::color(2, 2, 6));
 
     // Camera
-    _camera.set_position(fr::point_3d(0, 0, -50));
+    _camera.set_position(fr::point_3d(0, 0, 0));
     // _camera.set_position(fr::point_3d(0, 0, 0));
     // _camera.set_phi(6000);
     // _camera.set_psi(-3000);
-    _camera.set_theta(3000);
+    _camera.set_theta(0);
 
     // Model
     _models.load_colors(fr::model_3d_items::player_ship_02_colors);
+    _models.set_sprite_priority(1);
     _model = &_models.create_dynamic_model(fr::model_3d_items::player_ship_02_full);
     _model->set_psi(-16383); // 90 degrees
     _model->set_phi(-8000);
@@ -74,9 +77,13 @@ mock_cutscene_scene::mock_cutscene_scene() :
             _earth_bg->set_wrapping_enabled(false);
 
             _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
+            _luar_sprite->set_bg_priority(2);
+            _luar_sprite->set_z_order(1);
             _luar_sprite->set_scale(0.7);
 
             _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(5, 0));
+            _explosion_sprite->set_bg_priority(2);
+            _explosion_sprite->set_z_order(1);
             _explosion_sprite->set_blending_enabled(true);
             _explosion_sprite->set_visible(false);
             _explosion_sprite->set_scale(0.4);
@@ -104,24 +111,47 @@ mock_cutscene_scene::mock_cutscene_scene() :
         _timeline.add(new sprite_fade_cmd(
             _explosion_sprite, 1, 0, take_start_time + 145, 50));
         _timeline.add(new move_sprite_cmd(
-            _explosion_sprite, bn::fixed_point(20, 0), take_start_time + 195, 0, easing::LINEAR));
-        _timeline.add(new sprite_fade_cmd(
-            _explosion_sprite, 0, 1, take_start_time + 195, 15));
-        _timeline.add(new sprite_fade_cmd(
-            _explosion_sprite, 1, 0, take_start_time + 210, 50));
-        _timeline.add(new move_sprite_cmd(
-            _explosion_sprite, bn::fixed_point(15, 5), take_start_time + 260, 0, easing::LINEAR));
-        _timeline.add(new sprite_fade_cmd(
-            _explosion_sprite, 0, 1, take_start_time + 260, 15));
-        _timeline.add(new sprite_fade_cmd(
-            _explosion_sprite, 1, 0, take_start_time + 275, 50));
+            _explosion_sprite, bn::fixed_point(700, 700), take_start_time + 195, 0, easing::LINEAR));
+        // _timeline.add(new sprite_fade_cmd(
+        //     _explosion_sprite, 0, 1, take_start_time + 195, 15));
+        // _timeline.add(new sprite_fade_cmd(
+        //     _explosion_sprite, 1, 0, take_start_time + 210, 50));
+        // _timeline.add(new move_sprite_cmd(
+        //     _explosion_sprite, bn::fixed_point(15, 5), take_start_time + 260, 0, easing::LINEAR));
+        // _timeline.add(new sprite_fade_cmd(
+        //     _explosion_sprite, 0, 1, take_start_time + 260, 15));
+        // _timeline.add(new sprite_fade_cmd(
+        //     _explosion_sprite, 1, 0, take_start_time + 275, 50));
 
         // <-- Make ship fly by.
         _timeline.add(new move_model_cmd(
             *_model,
-            fr::point_3d(-180, -330, 0), // start
-            fr::point_3d(40, -180, 0),     // end
-            take_start_time + 150, 70, easing::EASE_OUT));
+            fr::point_3d(-180, -950, 50), // start
+            fr::point_3d(-150, -660, 45),
+            take_start_time + 180, 40, easing::LINEAR));
+        _timeline.add(new move_model_cmd(
+            *_model,
+            fr::point_3d(-120, -360, 40),
+            take_start_time + 220, 30, easing::LINEAR));
+        _timeline.add(new move_model_cmd(
+            *_model,
+            fr::point_3d(-60, -200, 30),
+            take_start_time + 250, 40, easing::LINEAR));
+        _timeline.add(new move_model_cmd(
+            *_model,
+            fr::point_3d(120, -150, -25),     // end
+            take_start_time + 290, 30, easing::EASE_IN));
+
+        _timeline.add(new rotate_model_combined_cmd(
+            *_model,
+            model_rotation{.phi = 5000, .theta = -5000, .psi = -16383}, // start
+            model_rotation{.phi = -3000, .theta = -5000, .psi = -16383},
+            take_start_time + 180, 110, easing::EASE_IN_OUT));
+        _timeline.add(new rotate_model_combined_cmd(
+            *_model,
+            model_rotation{.phi = -3000, .theta = -5000, .psi = -16383},
+            model_rotation{.phi = -8000, .theta = -5000, .psi = -22383}, // end
+            take_start_time + 290, 30, easing::EASE_IN));
     }
 
     // <-- Maybe do a fade in between takes
@@ -140,9 +170,15 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
         // Take setup.
         _timeline.add(new lambda_cmd(take_start_time + 1, [&] {
+            // Create BG
             _hyperlight_bg.emplace(bn::fixed_point(-4, -.5), 6);
+            // Position camera
+            _camera.set_position(fr::point_3d(0, 0, -50));
+            _camera.set_theta(3000);
+            // Place ship
             _model->set_psi(-16383); // 90 degrees
             _model->set_phi(-8000);
+            _model->set_theta(0);
             _model->set_position(fr::point_3d(-180, -330, 0));
         }));
 
@@ -176,7 +212,6 @@ mock_cutscene_scene::mock_cutscene_scene() :
 
         _cmd_move_camera = new move_camera_cmd(
             _camera,
-            _camera.position(),
             fr::point_3d(-50, 0, -35),
             take_start_time + 170, 30, easing::EASE_IN_OUT);
         _timeline.add(_cmd_move_camera);

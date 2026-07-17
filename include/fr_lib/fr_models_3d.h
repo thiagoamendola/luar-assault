@@ -59,6 +59,12 @@ class models_3d
         _shape_groups.set_fade(color, intensity);
     }
 
+    void set_sprite_priority(int priority)
+    {
+        _sprite_priority = priority;
+        _shape_groups.set_sprite_priority(priority);
+    }
+
     void set_static_model_items(const model_3d_item **static_model_items_ptr,
                                 int static_models_count);
 
@@ -155,6 +161,7 @@ class models_3d
 
     scene_colors_generator::color_mapping_handler *_color_mapping;
 
+    int _sprite_priority = 3;
     int _vertices_count = 0;
     int _faces_count = 0;
 

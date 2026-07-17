@@ -42,6 +42,11 @@ namespace fr
 
         void set_fade(bn::color color, bn::fixed intensity);
 
+        void set_sprite_priority(int priority)
+        {
+            _sprite_priority = priority;
+        }
+
         void enable_drawing()
         {
             _draw_enabled = true;
@@ -57,7 +62,7 @@ namespace fr
 
     private:
         static constexpr int _max_palettes = 8;
-        static constexpr int _max_hdma_sprites = 23;
+        static constexpr int _max_hdma_sprites = 32;
         static constexpr int _hdma_source_size = (bn::display::height() + 1) * 4 * _max_hdma_sprites;
 
         class color_tiles
@@ -100,6 +105,7 @@ namespace fr
         alignas(int) uint16_t _hdma_source_b[_hdma_source_size];
         uint16_t *_hdma_source = _hdma_source_a;
 
+        int _sprite_priority = 3;
         bool _draw_enabled = false;
 
         BN_CODE_IWRAM void _hide_left_hlines(const uint8_t *previous_hlines_count);
