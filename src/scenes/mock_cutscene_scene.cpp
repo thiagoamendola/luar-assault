@@ -8,7 +8,7 @@
 #include "bn_sound_items.h"
 
 #include "bn_affine_bg_items_earth.h"
-#include "bn_regular_bg_items_floor.h"
+#include "bn_regular_bg_items_cutscene_bg_1.h"
 #include "bn_sprite_items_explosion_cutscene.h"
 #include "bn_sprite_items_luar_small.h"
 #include "common_variable_8x16_sprite_font.h"
@@ -68,7 +68,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
         take_start_time = 0;
 
         _timeline.add(new lambda_cmd(take_start_time, [&] {
-            _floor_bg.emplace(bn::regular_bg_items::floor.create_bg(0, 0));
+            _floor_bg.emplace(bn::regular_bg_items::cutscene_bg_1.create_bg(0, 0));
             _floor_bg->set_priority(3);
 
             _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-40, 110));
