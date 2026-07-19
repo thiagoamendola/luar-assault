@@ -71,8 +71,8 @@ mock_cutscene_scene::mock_cutscene_scene() :
             _floor_bg.emplace(bn::regular_bg_items::floor.create_bg(0, 0));
             _floor_bg->set_priority(3);
 
-            _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-85, 20));
-            _earth_bg->set_scale(0.7);
+            _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-40, 110));
+            _earth_bg->set_scale(1.2);
             _earth_bg->set_priority(2);
             _earth_bg->set_wrapping_enabled(false);
 
@@ -127,20 +127,24 @@ mock_cutscene_scene::mock_cutscene_scene() :
         _timeline.add(new move_model_cmd(
             *_model,
             fr::point_3d(-180, -950, 50), // start
-            fr::point_3d(-150, -660, 45),
-            take_start_time + 180, 40, easing::LINEAR));
+            fr::point_3d(-145, -660, 47),
+            take_start_time + 180, 30, easing::EASE_IN));
         _timeline.add(new move_model_cmd(
             *_model,
-            fr::point_3d(-120, -360, 40),
-            take_start_time + 220, 30, easing::LINEAR));
+            fr::point_3d(-125, -370, 40),
+            take_start_time + 210, 30, easing::LINEAR));
         _timeline.add(new move_model_cmd(
             *_model,
-            fr::point_3d(-60, -200, 30),
-            take_start_time + 250, 40, easing::LINEAR));
+            fr::point_3d(-85, -270, 34),
+            take_start_time + 240, 30, easing::LINEAR));
+        _timeline.add(new move_model_cmd(
+            *_model,
+            fr::point_3d(-55, -200, 30),
+            take_start_time + 270, 40, easing::EASE_OUT));
         _timeline.add(new move_model_cmd(
             *_model,
             fr::point_3d(120, -150, -25),     // end
-            take_start_time + 290, 30, easing::EASE_IN));
+            take_start_time + 300, 30, easing::EASE_IN));
 
         _timeline.add(new rotate_model_combined_cmd(
             *_model,
@@ -151,7 +155,7 @@ mock_cutscene_scene::mock_cutscene_scene() :
             *_model,
             model_rotation{.phi = -3000, .theta = -5000, .psi = -16383},
             model_rotation{.phi = -8000, .theta = -5000, .psi = -22383}, // end
-            take_start_time + 290, 30, easing::EASE_IN));
+            take_start_time + 300, 30, easing::EASE_IN));
     }
 
     // <-- Maybe do a fade in between takes

@@ -33,7 +33,7 @@ public:
 
 private:
     static constexpr int SKIP_PROMPT_DURATION = 120;
-    static constexpr int TAKE_2_START_TIME = 350;
+    static constexpr int TAKE_2_START_TIME = 360;
 
     fr::camera_3d _camera;
     fr::models_3d _models;
