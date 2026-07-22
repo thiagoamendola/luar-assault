@@ -9,7 +9,7 @@ enum class scene_type
     TEST_BUTANO,
     ALPHA_STAGE_V1,
     MODEL_VIEWER,
-    AUDIO_VIEWER,
+    MUSIC_VIEWER,
     TITLE,
     MOCK_CUTSCENE,
 };

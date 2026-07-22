@@ -167,8 +167,8 @@ bn::optional<scene_type> title_scene::update()
     }
     else if (bn::keypad::select_pressed())
     {
-        // Transition to audio viewer
-        _target_scene = scene_type::AUDIO_VIEWER;
+        // Transition to music viewer
+        _target_scene = scene_type::MUSIC_VIEWER;
         bn::sound_items::menu_confirm.play();
         _bgs_fade_out_action.emplace(50, 1);
         _sprites_fade_out_action.emplace(50, 1);

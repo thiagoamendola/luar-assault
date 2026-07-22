@@ -1,5 +1,5 @@
-#ifndef AUDIO_VIEWER_SCENE_H
-#define AUDIO_VIEWER_SCENE_H
+#ifndef MUSIC_VIEWER_SCENE_H
+#define MUSIC_VIEWER_SCENE_H
 
 #include "bn_music_item.h"
 #include "bn_optional.h"
@@ -10,18 +10,18 @@
 #include "fr_scene.h"
 #include "scene_type.h"
 
-// Audio viewer for testing and listening to music files.
+// Music viewer for testing and listening to music files.
 // Controls:
 //  UP / DOWN    : navigate music list
 //  A            : play/pause selected music
 //  B            : stop music
 //  SELECT       : go to MODEL_VIEWER scene
 //  START        : return to TITLE scene
-class audio_viewer_scene : public fr::scene
+class music_viewer_scene : public fr::scene
 {
 public:
-    audio_viewer_scene();
-    ~audio_viewer_scene();
+    music_viewer_scene();
+    ~music_viewer_scene();
 
     bn::optional<scene_type> update() final;
     
@@ -44,10 +44,10 @@ private:
     void _update_display();
 };
 
-// Runtime music list is auto-generated in audio_viewer_scene_defs.h
-namespace audio_viewer_defs {
+// Runtime music list is auto-generated in music_viewer_scene_defs.h
+namespace music_viewer_defs {
     extern const int music_count;
-    extern const audio_viewer_scene::music_entry entries[];
+    extern const music_viewer_scene::music_entry entries[];
 }
 
-#endif // AUDIO_VIEWER_SCENE_H
+#endif // MUSIC_VIEWER_SCENE_H
