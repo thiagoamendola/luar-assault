@@ -10,6 +10,7 @@
 #include "enemy_manager.h"
 #include "base_enemy.h"
 #include "easing.h"
+#include "fr_constants_3d.h"
 
 // - Missile
 
@@ -168,6 +169,9 @@ player_missiles::player_missiles(base_game_scene *base_scene)
 {
     _player_missiles_state = player_missiles_state::charging;
     _missile_collider_detector.set_initial_rotation(0, 0, 16383);
+#if INFINITE_MISSILES
+    _current_charge = MAX_CHARGE_VALUE;
+#endif
 }
 
 void player_missiles::update()
@@ -299,11 +303,15 @@ int player_missiles::statics_render(const fr::model_3d_item **static_model_items
 
 void player_missiles::recharge_with_laser()
 {
+#if INFINITE_MISSILES
+    _current_charge = MAX_CHARGE_VALUE;
+#else
     _current_charge += RECHARGE_PER_LASER_HIT;
     if (_current_charge > MAX_CHARGE_VALUE)
     {
         _current_charge = MAX_CHARGE_VALUE;
     }
+#endif
 }
 
 void player_missiles::fire_missiles()
@@ -313,13 +321,18 @@ void player_missiles::fire_missiles()
         return;
     }
 
-    int recharge_cost = LEVEL_1_RECHARGE_COST;
+#if !INFINITE_MISSILES
     int missiles_to_launch = LEVEL_1_MISSILE_COUNT;
+    int recharge_cost = LEVEL_1_RECHARGE_COST;
     if (_current_charge >= LEVEL_2_RECHARGE_COST)
     {
-        recharge_cost = LEVEL_2_RECHARGE_COST;
         missiles_to_launch = LEVEL_2_MISSILE_COUNT;
+        recharge_cost = LEVEL_2_RECHARGE_COST;
     }
+#else
+    int missiles_to_launch = LEVEL_2_MISSILE_COUNT;
+    int recharge_cost = LEVEL_2_RECHARGE_COST;
+#endif
 
     // Sync detection colliders position and rotation.
     fr::model_3d *ship_model = _player_ship->get_model();
@@ -380,7 +393,10 @@ void player_missiles::fire_missiles()
         return;
     }
 
+#if !INFINITE_MISSILES
     _current_charge -= recharge_cost;
+#endif
+
     _player_missiles_state = player_missiles_state::launching;
     _launch_timer = 0; // fire first missile immediately on next update tick
 

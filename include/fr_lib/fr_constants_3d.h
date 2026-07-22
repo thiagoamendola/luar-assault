@@ -61,7 +61,7 @@
 
 // Hides HUD (health, score, etc). Useful for screenshots.
 #ifndef HIDE_HUD
-#define HIDE_HUD false
+#define HIDE_HUD true
 #endif
 
 // Hides intro sequence. Useful for skipping to gameplay.
@@ -69,6 +69,10 @@
 #define HIDE_INTRO true
 #endif
 
+// Enables infinite missiles
+#ifndef INFINITE_MISSILES
+#define INFINITE_MISSILES true
+#endif
 
 
 // <-- Create FF for stage skips

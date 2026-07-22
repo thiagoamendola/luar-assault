@@ -127,7 +127,7 @@ class player_missiles
 
   private:
     static constexpr int LAUNCH_INTERVAL = 3; // Frames between successive missile launches
-    static constexpr int RECHARGE_PER_LASER_HIT = 4;
+    static constexpr int RECHARGE_PER_LASER_HIT = 5;
     static constexpr int MAX_CHARGE_VALUE = 200;
     static constexpr int LEVEL_1_RECHARGE_COST = 100;
     static constexpr int LEVEL_2_RECHARGE_COST = 200;
