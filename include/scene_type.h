@@ -10,6 +10,7 @@ enum class scene_type
     ALPHA_STAGE_V1,
     MODEL_VIEWER,
     MUSIC_VIEWER,
+    AUDIO_VIEWER,
     TITLE,
     MOCK_CUTSCENE,
 };

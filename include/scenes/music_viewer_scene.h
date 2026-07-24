@@ -15,7 +15,7 @@
 //  UP / DOWN    : navigate music list
 //  A            : play/pause selected music
 //  B            : stop music
-//  SELECT       : go to MODEL_VIEWER scene
+//  SELECT       : go to AUDIO_VIEWER scene
 //  START        : return to TITLE scene
 class music_viewer_scene : public fr::scene
 {

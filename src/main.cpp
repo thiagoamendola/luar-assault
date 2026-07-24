@@ -12,6 +12,7 @@
 #include "title_scene.h"
 #include "scenes/model_viewer_scene.h"
 #include "scenes/music_viewer_scene.h"
+#include "scenes/audio_viewer_scene.h"
 #include "scenes/mock_cutscene_scene.h"
 
 #include "bn_regular_bg_items_floor.h"
@@ -98,6 +99,10 @@ int main()
 
                 case scene_type::MUSIC_VIEWER:
                     scene.reset(new music_viewer_scene());
+                    break;
+
+                case scene_type::AUDIO_VIEWER:
+                    scene.reset(new audio_viewer_scene());
                     break;
 
                 case scene_type::TITLE:

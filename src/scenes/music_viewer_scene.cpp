@@ -94,7 +94,7 @@ void music_viewer_scene::_update_display()
     
     // Controls
     _text_generator.generate(0, 60, "A: Play/Pause  B: Stop", _text_sprites);
-    _text_generator.generate(0, 75, "SELECT: Model Viewer  START: Title", _text_sprites);
+    _text_generator.generate(0, 75, "SELECT: Audio Viewer  START: Title", _text_sprites);
     
     _text_generator.set_left_alignment();
 }
@@ -105,7 +105,7 @@ bn::optional<scene_type> music_viewer_scene::update()
 
     if(bn::keypad::select_pressed())
     {
-        result = scene_type::MODEL_VIEWER;
+        result = scene_type::AUDIO_VIEWER;
         bn::sound_items::menu_confirm.play();
     }
     else if(bn::keypad::start_pressed())

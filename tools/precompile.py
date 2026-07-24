@@ -12,6 +12,7 @@ import generate_scene_header
 import batch_import_models
 import cleanup_files
 import butano_fonts_tool
+import generate_audio_viewer_defs
 import generate_music_viewer_defs
 
 from termcolor import colored
@@ -66,6 +67,9 @@ def task_generate_fonts() -> int:
 def task_generate_music_defs() -> int:
     return generate_music_viewer_defs.main([])
 
+def task_generate_audio_defs() -> int:
+    return generate_audio_viewer_defs.main([])
+
 def task_cleanup_files() -> int:
     return cleanup_files.main()
 
@@ -75,6 +79,7 @@ TASKS = [
     ("model importer", task_import_models),
     ("scene header generation", task_generate_scenes),
     ("music viewer generation", task_generate_music_defs),
+    ("audio viewer generation", task_generate_audio_defs),
     ("font importing", task_generate_fonts),
     ("cleanup unwanted files", task_cleanup_files),
 ]
