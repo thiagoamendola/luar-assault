@@ -21,6 +21,10 @@ class controller
     bool is_pause_pressed();
     bool is_missiles_pressed();
 
+    // Options settings
+    bool get_invert_y_axis() const;
+    void set_invert_y_axis(bool value);
+
     // Debug toggles
     bool is_collider_display_enabled();
     bool is_debug_text_enabled();
@@ -31,6 +35,9 @@ class controller
     bn::fixed_point _previous_raw_dir_input;
     bn::fixed_point _smooth_dir_input;
     bn::fixed _interp;
+
+    // Options values
+    bool _invert_y_axis = false;
 
     bool enable_collider_display = false; 
     bool enable_debug_text = false; 

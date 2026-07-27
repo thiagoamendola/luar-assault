@@ -23,7 +23,7 @@ pause_manager::pause_manager(base_game_scene *base_scene) :
     _base_scene(base_scene),
     _hud_manager(base_scene->get_hud_manager()),
     _controller(base_scene->get_controller()),
-    _options_manager(),
+    _options_manager(_controller),
     // _text_generator(vonwaon_bitmap_sprite_font),
     _text_generator(k8x8_sprite_font),
     _pause_bg(bn::regular_bg_items::black.create_bg(0, 0))

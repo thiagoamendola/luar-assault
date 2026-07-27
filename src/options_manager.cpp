@@ -3,9 +3,11 @@
 #include "bn_keypad.h"
 #include "bn_string.h"
 
+#include "controller.h"
 #include "k8x8_sprite_font.h"
 
-options_manager::options_manager() :
+options_manager::options_manager(controller *controller) :
+    _controller(controller),
     _text_generator(k8x8_sprite_font)
 {
     _text_generator.set_bg_priority(2);
@@ -53,9 +55,20 @@ void options_manager::menu_update()
             _current_selection = 0;
         }
     }
+    else if (bn::keypad::left_pressed() || bn::keypad::right_pressed())
+    {
+        if (_current_selection == INVERT_Y_AXIS_OPTION)
+        {
+            toggle_invert_y_axis();
+        }
+    }
     else if (bn::keypad::a_pressed())
     {
-        if (_current_selection == MENU_OPTIONS.size() - 1)
+        if (_current_selection == INVERT_Y_AXIS_OPTION)
+        {
+            toggle_invert_y_axis();
+        }
+        else if (_current_selection == BACK_OPTION)
         {
             hide_menu();
             return;
@@ -82,6 +95,12 @@ void options_manager::render_menu()
     for (int i = 0; i < MENU_OPTIONS.size(); ++i)
     {
         bn::string<32> option_name = MENU_OPTIONS[i];
+        // Option updates
+        if (i == INVERT_Y_AXIS_OPTION)
+        {
+            option_name = _controller->get_invert_y_axis() ? "Invert Y axis: ON" : "Invert Y axis: OFF";
+        }
+        // Update selection.
         if (i == _current_selection)
         {
             option_name = "> " + option_name + " <";
@@ -89,4 +108,9 @@ void options_manager::render_menu()
         _text_generator.generate(0, STARTING_Y + i * OFFSET_Y, option_name,
                                 _text_sprites);
     }
+}
+
+void options_manager::toggle_invert_y_axis()
+{
+    _controller->set_invert_y_axis(!_controller->get_invert_y_axis());
 }

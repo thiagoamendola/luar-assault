@@ -66,11 +66,13 @@ bn::fixed_point controller::get_norm_directional()
 
     if (bn::keypad::up_held())
     {
-        raw_dir_input.set_y(-1.0);
+        const float invert_multiplier = _invert_y_axis ? -1.0f : 1.0f;
+        raw_dir_input.set_y(-1.0f * invert_multiplier);
     }
     else if (bn::keypad::down_held())
     {
-        raw_dir_input.set_y(1.0);
+        const float invert_multiplier = _invert_y_axis ? -1.0f : 1.0f;
+        raw_dir_input.set_y(1.0f * invert_multiplier);
     }
 
     if (bn::keypad::right_held())
@@ -159,4 +161,14 @@ bool controller::is_pause_pressed()
 bool controller::is_missiles_pressed()
 {
     return bn::keypad::b_pressed();
+}
+
+bool controller::get_invert_y_axis() const
+{
+    return _invert_y_axis;
+}
+
+void controller::set_invert_y_axis(bool value)
+{
+    _invert_y_axis = value;
 }
