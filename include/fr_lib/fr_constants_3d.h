@@ -61,7 +61,7 @@
 
 // Hides HUD (health, score, etc). Useful for screenshots.
 #ifndef HIDE_HUD
-#define HIDE_HUD true
+#define HIDE_HUD false
 #endif
 
 // Hides intro sequence. Useful for skipping to gameplay.

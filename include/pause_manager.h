@@ -13,6 +13,7 @@
 
 #include "controller.h"
 #include "hud_manager.h"
+#include "options_manager.h"
 
 // - Forward declaration
 class base_game_scene;
@@ -48,13 +49,14 @@ private:
 
   void render_menu();
 
-  static constexpr bn::array<bn::string_view, 3> MENU_OPTIONS = {
-    "Continue", "Restart", "Exit"
+  static constexpr bn::array<bn::string_view, 4> MENU_OPTIONS = {
+    "Continue", "Restart", "Options", "Exit"
   };
 
   base_game_scene *_base_scene;
   hud_manager *_hud_manager;
   controller *_controller;
+  options_manager _options_manager;
 
   bool _is_paused = false;
   bool _can_pause = true;

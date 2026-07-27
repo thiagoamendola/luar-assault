@@ -23,6 +23,7 @@ pause_manager::pause_manager(base_game_scene *base_scene) :
     _base_scene(base_scene),
     _hud_manager(base_scene->get_hud_manager()),
     _controller(base_scene->get_controller()),
+    _options_manager(),
     // _text_generator(vonwaon_bitmap_sprite_font),
     _text_generator(k8x8_sprite_font),
     _pause_bg(bn::regular_bg_items::black.create_bg(0, 0))
@@ -79,6 +80,16 @@ void pause_manager::menu_update()
     }
     else
     {
+        if (_options_manager.is_open())
+        {
+            _options_manager.menu_update();
+            if (!_options_manager.is_open())
+            {
+                render_menu();
+            }
+            return;
+        }
+
         // Handle menu input and render
     
         if (bn::keypad::up_pressed())
@@ -110,7 +121,12 @@ void pause_manager::menu_update()
                     _base_scene->restart_scene();
                     return;
                     break;
-                case 2: // Exit
+                case 2: // Options
+                    _text_sprites.clear();
+                    _options_manager.show_menu();
+                    return;
+                    break;
+                case 3: // Exit
                     _base_scene->return_to_main_menu();
                     return;
                     break;
@@ -141,6 +157,8 @@ void pause_manager::show_menu()
 
 void pause_manager::hide_menu()
 {
+    _options_manager.close_menu();
+
     // Show game HUD
     _hud_manager->show();
     _hud_manager->update(_base_scene->get_models());
