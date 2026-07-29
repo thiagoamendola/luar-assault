@@ -32,7 +32,7 @@ def main(argv=None):
     wav_files = sorted(audio_dir.glob('*.wav'))
 
     if not wav_files:
-        print(f'{colored("[audio_viewer]", "light_blue")} No .wav files found in {audio_dir}')
+        print(f'{colored("[audio_viewer]", "cyan")} No .wav files found in {audio_dir}')
         processed_names = []
     else:
         processed_names = []
@@ -40,7 +40,7 @@ def main(argv=None):
             stem = wav_file.stem
             sanitized = sanitize_name(stem)
             processed_names.append((sanitized, display_name(stem)))
-            print(f'{colored("[audio_viewer]", "light_blue")} Found: {wav_file.name} -> {sanitized}')
+            print(f'{colored("[audio_viewer]", "cyan")} Found: {wav_file.name} -> {sanitized}')
 
     count_value = len(processed_names)
     includes_block = '#include "bn_sound_items.h"'
@@ -77,9 +77,9 @@ inline const audio_viewer_scene::sound_entry entries[sound_count{" + 1" if count
 
     if existing != header_content:
         defs_path.write_text(header_content, encoding='utf-8')
-        print(f'{colored("[audio_viewer]", "light_blue")} Updated {defs_path.relative_to(repo_root)}')
+        print(f'{colored("[audio_viewer]", "cyan")} Updated {defs_path.relative_to(repo_root)}')
     else:
-        print(f'{colored("[audio_viewer]", "light_blue")} audio_viewer_scene_defs.h already up to date.')
+        print(f'{colored("[audio_viewer]", "cyan")} audio_viewer_scene_defs.h already up to date.')
 
     return 0
 

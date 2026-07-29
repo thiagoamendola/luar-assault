@@ -36,7 +36,7 @@ def main(argv=None):
     it_files = sorted(audio_dir.glob('*.it'))
     
     if not it_files:
-        print(f'{colored("[music_viewer]", "light_blue")} No .it files found in {audio_dir}')
+        print(f'{colored("[music_viewer]", "cyan")} No .it files found in {audio_dir}')
         # Create empty header anyway
         processed_names = []
     else:
@@ -45,7 +45,7 @@ def main(argv=None):
             stem = it_file.stem
             sanitized = sanitize_name(stem)
             processed_names.append((sanitized, display_name(stem)))
-            print(f'{colored("[music_viewer]", "light_blue")} Found: {it_file.name} -> {sanitized}')
+            print(f'{colored("[music_viewer]", "cyan")} Found: {it_file.name} -> {sanitized}')
     
     # Generate header file
     count_value = len(processed_names)
@@ -86,9 +86,9 @@ inline const music_viewer_scene::music_entry entries[music_count{" + 1" if count
     
     if existing != header_content:
         defs_path.write_text(header_content, encoding='utf-8')
-        print(f'{colored("[music_viewer]", "light_blue")} Updated {defs_path.relative_to(repo_root)}')
+        print(f'{colored("[music_viewer]", "cyan")} Updated {defs_path.relative_to(repo_root)}')
     else:
-        print(f'{colored("[music_viewer]", "light_blue")} music_viewer_scene_defs.h already up to date.')
+        print(f'{colored("[music_viewer]", "cyan")} music_viewer_scene_defs.h already up to date.')
     
     return 0
 
