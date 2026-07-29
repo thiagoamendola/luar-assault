@@ -151,6 +151,7 @@ class player_missiles
 
     bn::fixed _last_player_y;
 
+    void update_colliders();
 };
 
 #endif

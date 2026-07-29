@@ -256,8 +256,13 @@ void player_missiles::update()
                 _player_missiles_state = player_missiles_state::charging;
             }
         }
+    
+        update_colliders();
     }
+}
 
+void player_missiles::update_colliders()
+{
     // Update missile collider detector.
     BN_LOG("[update][player_missiles] Update origin");
     _missile_collider_detector.set_origin(_player_ship->get_position()); // <-- MOVE
