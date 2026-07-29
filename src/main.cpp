@@ -13,7 +13,7 @@
 #include "scenes/model_viewer_scene.h"
 #include "scenes/music_viewer_scene.h"
 #include "scenes/audio_viewer_scene.h"
-#include "scenes/mock_cutscene_scene.h"
+#include "scenes/intro_cutscene.h"
 
 #include "bn_regular_bg_items_floor.h"
 #include "bn_sprite_items_arrow.h"
@@ -109,8 +109,8 @@ int main()
                     scene.reset(new title_scene());
                     break;
 
-                case scene_type::MOCK_CUTSCENE:
-                    scene.reset(new mock_cutscene_scene());
+                case scene_type::INTRO_CUTSCENE:
+                    scene.reset(new intro_cutscene_scene());
                     break;
 
                 default:

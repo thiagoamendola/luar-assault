@@ -1,4 +1,4 @@
-#include "scenes/mock_cutscene_scene.h"
+#include "scenes/intro_cutscene.h"
 
 #include "bn_bg_palettes.h"
 #include "bn_bg_palettes_actions.h"
@@ -19,11 +19,11 @@
 
 #include "models/player_ship_02.h"
 
-mock_cutscene_scene::mock_cutscene_scene() :
+intro_cutscene_scene::intro_cutscene_scene() :
     _text_generator(common::variable_8x16_sprite_font),
     _text_generator_2(editundo_sprite_font)
 {
-    BN_LOG("mock_cutscene_scene: init");
+    BN_LOG("intro_cutscene_scene: init");
 
     _text_generator.set_bg_priority(0);
     _text_generator.set_z_order(-1);
@@ -243,14 +243,14 @@ mock_cutscene_scene::mock_cutscene_scene() :
     _timeline.start();
 }
 
-mock_cutscene_scene::~mock_cutscene_scene()
+intro_cutscene_scene::~intro_cutscene_scene()
 {
     _timeline.clear();
     _subtitle_text_sprites.clear();
     _skip_text_sprites.clear();
 }
 
-bn::optional<scene_type> mock_cutscene_scene::update()
+bn::optional<scene_type> intro_cutscene_scene::update()
 {
     // Handle Start press for skip prompt
     if (bn::keypad::start_pressed() && !_bgs_fade_out_action)

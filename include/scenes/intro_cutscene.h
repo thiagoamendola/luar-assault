@@ -1,5 +1,5 @@
-#ifndef MOCK_CUTSCENE_SCENE_H
-#define MOCK_CUTSCENE_SCENE_H
+#ifndef INTRO_CUTSCENE_H
+#define INTRO_CUTSCENE_H
 
 #include "bn_affine_bg_ptr.h"
 #include "bn_bg_palettes_actions.h"
@@ -22,12 +22,12 @@
 #include "cutscene/cutscene_timeline.h"
 #include "cutscene/cutscene_commands.h"
 
-class mock_cutscene_scene : public fr::scene
+class intro_cutscene_scene : public fr::scene
 {
 
 public:
-    mock_cutscene_scene();
-    ~mock_cutscene_scene();
+    intro_cutscene_scene();
+    ~intro_cutscene_scene();
 
     bn::optional<scene_type> update();
 
@@ -60,4 +60,4 @@ private:
     bn::optional<hyperlight_background> _hyperlight_bg;
 };
 
-#endif // MOCK_CUTSCENE_SCENE_H
+#endif // INTRO_CUTSCENE_H

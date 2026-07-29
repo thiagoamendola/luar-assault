@@ -12,7 +12,7 @@ enum class scene_type
     MUSIC_VIEWER,
     AUDIO_VIEWER,
     TITLE,
-    MOCK_CUTSCENE,
+    INTRO_CUTSCENE,
 };
 
 #endif
