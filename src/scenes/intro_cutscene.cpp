@@ -156,6 +156,18 @@ intro_cutscene_scene::intro_cutscene_scene() :
             model_rotation{.phi = -3000, .theta = -5000, .psi = -16383},
             model_rotation{.phi = -8000, .theta = -5000, .psi = -22383}, // end
             take_start_time + 300, 30, easing::EASE_IN));
+
+        // _timeline.add(new play_sound_cmd(
+        //     bn::sound_items::mc_test_04, 1, take_start_time + 0));
+        _timeline.add(new subtitle_cmd(
+            _subtitle_text_sprites, _text_generator,
+            "Our planet is being attacked!", take_start_time + 50, 130));
+
+        // _timeline.add(new play_sound_cmd(
+        //     bn::sound_items::mc_test_05, 1, take_start_time + 100));
+        _timeline.add(new subtitle_cmd(
+            _subtitle_text_sprites, _text_generator,
+            "You're our last hope.", take_start_time + 200, 100));
     }
 
     // <-- Maybe do a fade in between takes
