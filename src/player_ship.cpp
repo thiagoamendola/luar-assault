@@ -277,7 +277,8 @@ void player_ship::collision_update(const fr::model_3d_item **static_model_items,
             take_damage();
         }
         // - Collision with statics (vertex fallback) // <-- STILL NEEDED????
-        else if (_sphere_collider_set.colliding_with_statics(static_model_items, static_items_count))
+        else if (static_collider_count == 0 &&
+                 _sphere_collider_set.colliding_with_statics(static_model_items, static_items_count))
         {
             take_damage();
         }

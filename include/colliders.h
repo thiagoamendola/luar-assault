@@ -82,6 +82,7 @@ class sphere_collider_set
     void set_origin(fr::point_3d origin_pos)
     {
         _origin_pos = origin_pos;
+        _world_colliders_dirty = true;
     }
 
     const fr::point_3d get_origin() const
@@ -102,6 +103,7 @@ class sphere_collider_set
             _theta = rel_theta;
             _psi = rel_psi;
             _rotation_dirty = true;
+            _world_colliders_dirty = true;
         }
     }
 
@@ -112,6 +114,7 @@ class sphere_collider_set
         _initial_theta = theta;
         _initial_psi = psi;
         _rotation_dirty = true;
+        _world_colliders_dirty = true;
     }
 
 
@@ -184,7 +187,7 @@ class sphere_collider_set
 
     bool colliding_with_statics(const fr::model_3d_item **static_model_items, size_t count)
     {
-        _update_rotation_matrix();
+        _update_world_colliders();
         for (size_t i = 0; i < count ; i++)
         {
             if (colliding_with_static_model(*static_model_items[i]))
@@ -198,19 +201,17 @@ class sphere_collider_set
 
     bool colliding_with_static_colliders(const sphere_collider *static_colliders, size_t static_collider_count)
     {
-        size_t collider_count = _sphere_collider_list.size();
-        _update_rotation_matrix();
+        _update_world_colliders();
 
-        for (size_t i = 0; i < collider_count; i++)
+        for (size_t i = 0; i < _world_collider_count; i++)
         {
-            auto this_collider = _sphere_collider_list[i];
-            fr::point_3d this_center = _origin_pos + _rotate(this_collider.position);
+            auto this_collider = _world_sphere_colliders[i];
 
             for (size_t j = 0; j < static_collider_count; j++)
             {
                 auto static_col = static_colliders[j];
 
-                fr::point_3d dist_vec = this_center - static_col.position;
+                fr::point_3d dist_vec = this_collider.position - static_col.position;
                 int xv = dist_vec.x().integer();
                 int yv = dist_vec.y().integer();
                 int zv = dist_vec.z().integer();
@@ -232,26 +233,19 @@ class sphere_collider_set
     {
         // BN_LOG("[collision] STARTING ----------------- ");
 
-        size_t collider_count = _sphere_collider_list.size();
-        _update_rotation_matrix();
-        target->_update_rotation_matrix();
+        _update_world_colliders();
+        target->_update_world_colliders();
 
-        for (size_t i = 0; i < collider_count; i++)
+        for (size_t i = 0; i < _world_collider_count; i++)
         {
-            auto this_collider = _sphere_collider_list[i];
-            fr::point_3d this_center = _origin_pos + _rotate(this_collider.position);
-
-            auto target_origin = target->get_origin();
-            auto target_collider_list = target->get_sphere_collider_list();
-            auto target_collider_count = target->get_sphere_collider_count();
+            auto this_collider = _world_sphere_colliders[i];
             
-            for (size_t j = 0; j < target_collider_count; j++)
+            for (size_t j = 0; j < target->_world_collider_count; j++)
             {
-                auto target_collider = target_collider_list[j];
-                fr::point_3d target_center = target_origin + target->_rotate(target_collider.position);
+                auto target_collider = target->_world_sphere_colliders[j];
                 
                 fr::point_3d collider_center_distance_vec = 
-                    this_center - target_center;
+                    this_collider.position - target_collider.position;
                 int xv = collider_center_distance_vec.x().integer();
                 int yv = collider_center_distance_vec.y().integer();
                 int zv = collider_center_distance_vec.z().integer();
@@ -283,21 +277,16 @@ class sphere_collider_set
     // Variant of colliding_with_dynamic for single collider on target's index.
     bool colliding_with_single_dynamic(sphere_collider_set* target, int index)
     {
-        // Update dirty rotations.
-        _update_rotation_matrix();
-        target->_update_rotation_matrix();
+        _update_world_colliders();
+        target->_update_world_colliders();
 
-        auto target_collider_list = target->get_sphere_collider_list();
-        auto target_collider = target_collider_list[index];
-        fr::point_3d target_center = target->get_origin() + target->_rotate(target_collider.position);
+        auto target_collider = target->_world_sphere_colliders[index];
 
-        size_t collider_count = _sphere_collider_list.size();
-        for (size_t i = 0; i < collider_count; i++)
+        for (size_t i = 0; i < _world_collider_count; i++)
         {
-            auto this_collider = _sphere_collider_list[i];
-            fr::point_3d this_center = _origin_pos + _rotate(this_collider.position);
+            auto this_collider = _world_sphere_colliders[i];
 
-            fr::point_3d dist_vec = this_center - target_center;
+            fr::point_3d dist_vec = this_collider.position - target_collider.position;
             int xv = dist_vec.x().integer();
             int yv = dist_vec.y().integer();
             int zv = dist_vec.z().integer();
@@ -316,7 +305,9 @@ class sphere_collider_set
   private:
     const bn::span<const sphere_collider> _sphere_collider_list;
     bn::array<sphere_collider_debugger, 8> _sphere_collider_debuggers;  // Max 8 colliders per entity
+    bn::array<sphere_collider, 8> _world_sphere_colliders;
     fr::point_3d _origin_pos;
+    size_t _world_collider_count = 0;
 
     // Parent rotation state (Euler angles in fr-lib encoding) and the cached
     // 3x3 rotation matrix. Rebuilt only when angles change.
@@ -330,6 +321,7 @@ class sphere_collider_set
     bn::fixed _yx = 0, _yy = 1, _yz = 0;
     bn::fixed _zx = 0, _zy = 0, _zz = 1;
     bool _rotation_dirty = false;
+    bool _world_colliders_dirty = true;
 
     // Rebuilds the cached 3x3 rotation matrix from the current Euler angles
     // (_phi, _theta, _psi). The matrix follows the same Z-Y-X composition from fr::model_3d:
@@ -389,15 +381,44 @@ class sphere_collider_set
             _zx.safe_multiplication(v.x()) + _zy.safe_multiplication(v.y()) + _zz.safe_multiplication(v.z()));
     }
 
-    bool colliding_with_point(fr::point_3d point)
+    void _update_world_colliders()
     {
+        if (!_world_colliders_dirty)
+        {
+            return;
+        }
+        _world_colliders_dirty = false;
+        _update_rotation_matrix();
+
         size_t collider_count = _sphere_collider_list.size();
-        
+        const size_t max_world_colliders = _world_sphere_colliders.size();
+        if (collider_count > max_world_colliders)
+        {
+            collider_count = max_world_colliders;
+        }
+        _world_collider_count = collider_count;
+
         for (size_t i = 0; i < collider_count; i++)
         {
             auto collider = _sphere_collider_list[i];
+            if (collider.position.x() == 0 && collider.position.y() == 0 && collider.position.z() == 0)
+            {
+                _world_sphere_colliders[i] = sphere_collider(_origin_pos, collider.radius);
+            }
+            else
+            {
+                _world_sphere_colliders[i] = sphere_collider(_origin_pos + _rotate(collider.position), collider.radius);
+            }
+        }
+    }
+
+    bool colliding_with_point(fr::point_3d point)
+    {
+        for (size_t i = 0; i < _world_collider_count; i++)
+        {
+            auto collider = _world_sphere_colliders[i];
             
-            fr::point_3d collider_center_distance_vec = point - (_origin_pos + _rotate(collider.position));
+            fr::point_3d collider_center_distance_vec = point - collider.position;
             int xv = collider_center_distance_vec.x().integer();
             int yv = collider_center_distance_vec.y().integer();
             int zv = collider_center_distance_vec.z().integer();

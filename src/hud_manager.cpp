@@ -56,7 +56,7 @@ hud_manager::hud_manager(base_game_scene *base_scene)
         _damage_hold_frames = 0;
         _damage_shrink_frames = 0;
         _damage_shrink_per_tile = 0;
-        _displayed_health = -1;
+        _invalidate_cached_hud_values();
     }
 }
 
@@ -74,14 +74,13 @@ void hud_manager::update(fr::models_3d *models)
         return;
     }
 
-    // Clear texts.
-    _text_sprites.clear();
-
     // text generators should be created only once // <-- what to do with this?
 
     // Display location Y debug text.
     if (_controller->is_debug_text_enabled())
     {
+        _text_sprites.clear();
+
         _text_generator.generate(-7 * 16, -72, "Location (Y): " + bn::to_string<64>(int(_camera->position().y())),
                                  _text_sprites);
         _text_generator.generate(-7 * 16, -60,
@@ -93,15 +92,27 @@ void hud_manager::update(fr::models_3d *models)
     }
     else
     {
-        _update_lifebar();
+        
+        // Only update HUD if meaningful changes to avoid unnecessary redraws.
+        if (_should_update_hud())
+        {
+            const int health = _player_ship->get_health();
+            const int missile_charge = _player_ship->get_player_missiles().get_current_charge();
+            const int score = _base_scene->get_score();
+            _update_lifebar(health);
+            _text_sprites.clear();
+            _text_generator.set_right_alignment();
+            _text_generator.generate(115, -72,
+                         bn::to_string<64>(missile_charge) + "%",
+                         _text_sprites);
+            _text_generator.set_left_alignment();
+            _text_generator.generate(-115, -58, bn::to_string<64>(score),
+                                     _text_sprites); // <-- Get another font?
+            _displayed_missile_charge = missile_charge;
+            _displayed_score = score;
+        }
+
         _update_lifebar_damage_tiles();
-        _text_generator.set_right_alignment();
-        _text_generator.generate(115, -72,
-                     bn::to_string<64>(_player_ship->get_player_missiles().get_current_charge()) + "%",
-                     _text_sprites);
-        _text_generator.set_left_alignment();
-        _text_generator.generate(-115, -58, bn::to_string<64>(_base_scene->get_score()),
-                                 _text_sprites); // <-- Get another font?
     }
 
     // While fading, opt every freshly-created text sprite into blending so
@@ -215,7 +226,7 @@ void hud_manager::hide()
     _damage_hold_frames = 0;
     _damage_shrink_frames = 0;
     _damage_shrink_per_tile = 0;
-    _displayed_health = -1;
+    _invalidate_cached_hud_values();
     // <-- Hide other HUD elements like score, target sprite, etc.
     _target_spr.set_visible(false);
     _lifebar_frame.set_visible(false);
@@ -229,6 +240,7 @@ void hud_manager::fade_in()
     }
     _is_hidden = false;
     _fade_out_action.reset();
+    _invalidate_cached_hud_values();
 
     // Opt the persistent target sprite into blending.
     // Text sprites are opted in each frame inside update() while fading.
@@ -251,6 +263,7 @@ void hud_manager::fade_out()
     }
     _is_hidden = false;
     _fade_in_action.reset();
+    _invalidate_cached_hud_values();
 
     // Opt the persistent target sprite into blending.
     // Text sprites are opted in each frame inside update() while fading.
@@ -265,10 +278,8 @@ void hud_manager::fade_out()
     _fade_out_action.emplace(FADE_FRAMES, bn::fixed(0));
 }
 
-void hud_manager::_update_lifebar()
+void hud_manager::_update_lifebar(int health)
 {
-    int health = _player_ship->get_health();
-
     int tiles_to_show = health; // 1 health = 1 tile, 20 tiles max
     if (tiles_to_show > LIFEBAR_MAX_TILES)
     {
@@ -380,4 +391,21 @@ void hud_manager::_update_lifebar_damage_tiles()
     // Keep the visible left edge anchored: as scale shrinks, the center
     // shifts left by half-width * (1 - scale).
     active->spr.set_x(active->center_x - bn::fixed(LIFEBAR_TILE_WIDTH) / 2 * (bn::fixed(1) - scale));
+}
+
+bool hud_manager::_should_update_hud()
+{
+    const int health = _player_ship->get_health();
+    const int missile_charge = _player_ship->get_player_missiles().get_current_charge();
+    const int score = _base_scene->get_score();
+    return health != _displayed_health ||
+           missile_charge != _displayed_missile_charge ||
+           score != _displayed_score;
+}
+
+void hud_manager::_invalidate_cached_hud_values()
+{
+    _displayed_health = -1;
+    _displayed_score = -1;
+    _displayed_missile_charge = -1;
 }

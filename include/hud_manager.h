@@ -67,6 +67,9 @@ private:
     bn::sprite_ptr _lifebar_frame;
     bn::vector<bn::sprite_ptr, 20> _lifebar_tiles;
     int _displayed_health = -1;
+    int _displayed_score = -1;
+    int _displayed_missile_charge = -1;
+    bool _debug_text_was_enabled = false;
 
     static constexpr int LIFEBAR_MAX_TILES = 20;
     static constexpr int LIFEBAR_START_X = 5;
@@ -96,8 +99,11 @@ private:
     bn::optional<bn::blending_transparency_alpha_to_action> _fade_out_action;
     bool _is_blending_active = false;
 
-    void _update_lifebar();
+    bool _should_update_hud();
+    void _update_lifebar(int health);
     void _update_lifebar_damage_tiles();
+    void _invalidate_cached_hud_values();
+
 
     // Target calculation
     void _move_target();

@@ -264,7 +264,7 @@ void player_missiles::update()
 void player_missiles::update_colliders()
 {
     // Update missile collider detector.
-    BN_LOG("[update][player_missiles] Update origin");
+    // BN_LOG("[update][player_missiles] Update origin");
     _missile_collider_detector.set_origin(_player_ship->get_position()); // <-- MOVE
     fr::model_3d *ship_model = _player_ship->get_model();
     _missile_collider_detector.set_rotation(ship_model->phi(), ship_model->theta(), ship_model->psi()); // <-- MOVE
