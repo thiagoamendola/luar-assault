@@ -5,26 +5,54 @@
 
 #include "common_variable_8x16_sprite_font.h"
 
-namespace
-{
-    constexpr char SUBTITLE_TEXT[] = "This is my subtitle";
-    constexpr int UPPER_LEFT_BORDER_GRAPHICS_INDEX = 0;
-    constexpr int LOWER_RIGHT_BORDER_GRAPHICS_INDEX = 1;
-    constexpr int UPPER_RIGHT_BORDER_GRAPHICS_INDEX = 2;
-    constexpr int LOWER_LEFT_BORDER_GRAPHICS_INDEX = 3;
-    constexpr int CORNER_Z_ORDER = 0;
-    constexpr int INNER_BLOCKS_Z_ORDER = 4;
-    constexpr int RIGHT_BOTTOM_BORDER_Z_ORDER = 3;
-    constexpr int UPPER_BORDER_Z_ORDER = 2;
-    constexpr int LEFT_BORDER_Z_ORDER = 1;
-}
-
 dialog_manager::dialog_manager() :
     _subtitle_text_generator(common::variable_8x16_sprite_font)
 {
     _subtitle_text_generator.set_bg_priority(0);
     _subtitle_text_generator.set_z_order(-1);
     _subtitle_text_generator.set_center_alignment();
+
+}
+
+void dialog_manager::update()
+{
+    for (int index = 0; index < _subtitle_commands.size(); ++index)
+    {
+        const subtitle_command& command = _subtitle_commands[index];
+        if (command.start_time == _elapsed_frames)
+        {
+            _start_subtitle(index);
+        }
+    }
+
+    _update_subtitle_text();
+
+    if (_active_subtitle_command_index >= 0)
+    {
+        const subtitle_command& command = _subtitle_commands[_active_subtitle_command_index];
+        if (_elapsed_frames >= command.start_time + command.duration)
+        {
+            _active_subtitle_command_index = -1;
+            _hide_dialog_frame = _elapsed_frames + HIDE_DELAY_FRAMES;
+        }
+    }
+
+    if (_hide_dialog_frame >= 0 && _elapsed_frames >= _hide_dialog_frame)
+    {
+        _hide_dialog();
+    }
+
+    ++_elapsed_frames;
+}
+
+void dialog_manager::_show_dialog()
+{
+    if (_dialog_shown)
+    {
+        return;
+    }
+
+    _dialog_shown = true;
 
     // Create lambda for tile creation
     auto add_dialog_sprite = [this](int col, int row, int graphics_index, int z_order)
@@ -71,9 +99,38 @@ dialog_manager::dialog_manager() :
     add_dialog_sprite(DIALOG_COLS - 1, DIALOG_ROWS - 1, LOWER_RIGHT_BORDER_GRAPHICS_INDEX, CORNER_Z_ORDER);
 }
 
-void dialog_manager::update()
+void dialog_manager::_hide_dialog()
 {
-    if (SUBTITLE_TEXT[_subtitle_character_index] == '\0')
+    _dialog_sprites.clear();
+    _subtitle_text_sprites.clear();
+    _subtitle_text.clear();
+    _active_subtitle_command_index = -1;
+    _hide_dialog_frame = -1;
+    _subtitle_character_index = 0;
+    _subtitle_frame_counter = 0;
+    _dialog_shown = false;
+}
+
+void dialog_manager::_start_subtitle(int command_index)
+{
+    _show_dialog();
+    _subtitle_text_sprites.clear();
+    _subtitle_text.clear();
+    _active_subtitle_command_index = command_index;
+    _hide_dialog_frame = -1;
+    _subtitle_character_index = 0;
+    _subtitle_frame_counter = 0;
+}
+
+void dialog_manager::_update_subtitle_text()
+{
+    if (_active_subtitle_command_index < 0)
+    {
+        return;
+    }
+
+    const char* subtitle_text = _subtitle_commands[_active_subtitle_command_index].subtitle;
+    if (subtitle_text[_subtitle_character_index] == '\0')
     {
         return;
     }
@@ -85,9 +142,17 @@ void dialog_manager::update()
     }
 
     _subtitle_frame_counter = 0;
-    _subtitle_text.push_back(SUBTITLE_TEXT[_subtitle_character_index]);
+    _subtitle_text.push_back(subtitle_text[_subtitle_character_index]);
     ++_subtitle_character_index;
 
     _subtitle_text_sprites.clear();
     _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y, _subtitle_text, _subtitle_text_sprites);
+}
+
+void dialog_manager::add_subtitle_command(const char* subtitle, int start_time, int duration)
+{
+    if (_subtitle_commands.size() < MAX_SUBTITLE_COMMANDS)
+    {
+        _subtitle_commands.push_back({ subtitle, start_time, duration });
+    }
 }

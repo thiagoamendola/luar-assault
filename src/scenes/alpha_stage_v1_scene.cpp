@@ -81,6 +81,12 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     // _test_sprite->set_theta(32000);
     // bn::sound_items::dialog_test1.play(1);
 
+    _dialog_manager.add_subtitle_command("This is my subtitle", 100, 120);
+    _dialog_manager.add_subtitle_command("This is another subtitle to test", 230, 120);
+    
+    _dialog_manager.add_subtitle_command("Another subtitle to test in our game here", 500, 120);
+
+
 #if HIDE_INTRO
     _banner_manager.disable();
     // _letterbox_manager.hide();
