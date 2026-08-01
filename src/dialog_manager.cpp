@@ -1,6 +1,5 @@
 #include "dialog_manager.h"
 
-#include "bn_sprite_builder.h"
 #include "bn_sprite_items_dialog_bg.h"
 #include "bn_utility.h"
 
@@ -9,6 +8,15 @@
 namespace
 {
     constexpr char SUBTITLE_TEXT[] = "This is my subtitle";
+    constexpr int UPPER_LEFT_BORDER_GRAPHICS_INDEX = 0;
+    constexpr int LOWER_RIGHT_BORDER_GRAPHICS_INDEX = 1;
+    constexpr int UPPER_RIGHT_BORDER_GRAPHICS_INDEX = 2;
+    constexpr int LOWER_LEFT_BORDER_GRAPHICS_INDEX = 3;
+    constexpr int CORNER_Z_ORDER = 0;
+    constexpr int INNER_BLOCKS_Z_ORDER = 4;
+    constexpr int RIGHT_BOTTOM_BORDER_Z_ORDER = 3;
+    constexpr int UPPER_BORDER_Z_ORDER = 2;
+    constexpr int LEFT_BORDER_Z_ORDER = 1;
 }
 
 dialog_manager::dialog_manager() :
@@ -18,22 +26,49 @@ dialog_manager::dialog_manager() :
     _subtitle_text_generator.set_z_order(-1);
     _subtitle_text_generator.set_center_alignment();
 
-    bn::sprite_tiles_ptr dialog_tiles = bn::sprite_items::dialog_bg.tiles_item().create_tiles();
-    bn::sprite_palette_ptr dialog_palette = bn::sprite_items::dialog_bg.palette_item().create_palette();
-    bn::sprite_builder builder(bn::sprite_items::dialog_bg.shape_size(), dialog_tiles, dialog_palette);
-    builder.set_bg_priority(0);
-    builder.set_z_order(0);
-
-    for (int row = 0; row < DIALOG_ROWS; ++row)
+    // Create lambda for tile creation
+    auto add_dialog_sprite = [this](int col, int row, int graphics_index, int z_order)
     {
-        builder.set_y(DIALOG_START_Y + row * DIALOG_TILE_SPACING);
+        const int x = DIALOG_START_X + col * DIALOG_TILE_SPACING;
+        const int y = DIALOG_START_Y + row * DIALOG_TILE_SPACING;
 
-        for (int col = 0; col < DIALOG_COLS; ++col)
+        bn::sprite_ptr sprite = bn::sprite_items::dialog_bg.create_sprite(x, y, graphics_index);
+        sprite.set_bg_priority(0);
+        sprite.set_z_order(z_order);
+        _dialog_sprites.push_back(bn::move(sprite));
+    };
+
+    // Add inner tiles.
+    for (int row = DIALOG_ROWS - 2; row >= 1; --row)
+    {
+        for (int col = DIALOG_COLS - 2; col >= 1; --col)
         {
-            builder.set_x(DIALOG_START_X + col * DIALOG_TILE_SPACING);
-            _dialog_sprites.push_back(builder.build());
+            add_dialog_sprite(col, row, UPPER_LEFT_BORDER_GRAPHICS_INDEX, INNER_BLOCKS_Z_ORDER);
         }
     }
+
+    // Add border tiles.
+    for (int row = 1; row < DIALOG_ROWS - 1; ++row)
+    {
+        add_dialog_sprite(DIALOG_COLS - 1, row, LOWER_RIGHT_BORDER_GRAPHICS_INDEX, RIGHT_BOTTOM_BORDER_Z_ORDER);
+    }
+    for (int col = 1; col < DIALOG_COLS - 1; ++col)
+    {
+        add_dialog_sprite(col, DIALOG_ROWS - 1, LOWER_RIGHT_BORDER_GRAPHICS_INDEX, RIGHT_BOTTOM_BORDER_Z_ORDER);
+    }
+    for (int col = DIALOG_COLS - 2; col >= 0; --col)
+    {
+        add_dialog_sprite(col, 0, UPPER_LEFT_BORDER_GRAPHICS_INDEX, UPPER_BORDER_Z_ORDER);
+    }
+    for (int row = DIALOG_ROWS - 2; row >= 0; --row)
+    {
+        add_dialog_sprite(0, row, UPPER_LEFT_BORDER_GRAPHICS_INDEX, LEFT_BORDER_Z_ORDER);
+    }
+
+    // Add remaining corner tiles.
+    add_dialog_sprite(DIALOG_COLS - 1, 0, UPPER_RIGHT_BORDER_GRAPHICS_INDEX, CORNER_Z_ORDER);
+    add_dialog_sprite(0, DIALOG_ROWS - 1, LOWER_LEFT_BORDER_GRAPHICS_INDEX, CORNER_Z_ORDER);
+    add_dialog_sprite(DIALOG_COLS - 1, DIALOG_ROWS - 1, LOWER_RIGHT_BORDER_GRAPHICS_INDEX, CORNER_Z_ORDER);
 }
 
 void dialog_manager::update()
