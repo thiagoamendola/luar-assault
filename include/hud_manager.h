@@ -64,7 +64,7 @@ private:
     // HUD
     bn::sprite_text_generator _text_generator; // <-- move to common stuff?
     bn::vector<bn::sprite_ptr, 32> _text_sprites;
-    bn::sprite_ptr _lifebar_frame;
+    bn::vector<bn::sprite_ptr, 8> _lifebar_frame_sprites;
     bn::vector<bn::sprite_ptr, 20> _lifebar_tiles;
     int _displayed_health = -1;
     int _displayed_score = -1;
@@ -74,6 +74,8 @@ private:
     static constexpr int LIFEBAR_MAX_TILES = 20;
     static constexpr int LIFEBAR_START_X = 5;
     static constexpr int LIFEBAR_START_Y = 5;
+    static constexpr int LIFEBAR_FRAME_TILE_COUNT = 8;
+    static constexpr int LIFEBAR_FRAME_TILE_WIDTH = 8;
     static constexpr int LIFEBAR_TILE_SPACING = 3;
     static constexpr int LIFEBAR_TILE_WIDTH = 8;
     static constexpr int LIFEBAR_RED_GRAPHICS_INDEX = 1;

@@ -32,7 +32,6 @@ hud_manager::hud_manager(base_game_scene *base_scene)
       _camera(base_scene->get_camera()), _player_ship(base_scene->get_player_ship()),
       //   _text_generator(vonwaon_bitmap_sprite_font),
       _text_generator(editundo_sprite_font),
-      _lifebar_frame(bn::sprite_items::lifebar_frame.create_sprite(0, 0)),
       _target_spr(bn::sprite_items::target_ui.create_sprite(0, 0)),
       _target_growth_action()
 {
@@ -43,14 +42,24 @@ hud_manager::hud_manager(base_game_scene *base_scene)
     _target_spr.set_vertical_scale(TARGET_INITIAL_SCALE);
     _target_growth_action = bn::sprite_scale_loop_action(_target_spr, TARGET_GROWTH_STEPS, TARGET_GROWTH_MAX_SCALE);
 
-    // Setup lifebar
-    _lifebar_frame.set_top_left_x(LIFEBAR_START_X);
-    _lifebar_frame.set_top_left_y(LIFEBAR_START_Y);
+    // Build lifebar out of sprite tiles.
+    constexpr int lifebar_frame_graphics_indices[LIFEBAR_FRAME_TILE_COUNT] = { 0, 1, 1, 1, 1, 1, 1, 2 };
+    for (int index = 0; index < LIFEBAR_FRAME_TILE_COUNT; ++index)
+    {
+        bn::sprite_ptr sprite = bn::sprite_items::lifebar_frame.create_sprite(
+            0, 0, lifebar_frame_graphics_indices[index]);
+        sprite.set_top_left_x(LIFEBAR_START_X + index * LIFEBAR_FRAME_TILE_WIDTH);
+        sprite.set_top_left_y(LIFEBAR_START_Y);
+        _lifebar_frame_sprites.push_back(bn::move(sprite));
+    }
 
     if (_is_hidden)
     {
         _target_spr.set_visible(false);
-        _lifebar_frame.set_visible(false);
+        for (bn::sprite_ptr& sprite : _lifebar_frame_sprites)
+        {
+            sprite.set_visible(false);
+        }
         _lifebar_tiles.clear();
         _lifebar_damage_tiles.clear();
         _damage_hold_frames = 0;
@@ -136,7 +145,10 @@ void hud_manager::update(fr::models_3d *models)
         {
             // Fade-in complete: sprites are fully opaque, clean up blending.
             _target_spr.set_blending_enabled(false);
-            _lifebar_frame.set_blending_enabled(false);
+            for (bn::sprite_ptr &sprite : _lifebar_frame_sprites)
+            {
+                sprite.set_blending_enabled(false);
+            }
             for (bn::sprite_ptr &tile : _lifebar_tiles)
             {
                 tile.set_blending_enabled(false);
@@ -214,7 +226,10 @@ void hud_manager::show()
     _is_hidden = false;
     // <-- text should auto-gen on update
     _target_spr.set_visible(true);
-    _lifebar_frame.set_visible(true);
+    for (bn::sprite_ptr& sprite : _lifebar_frame_sprites)
+    {
+        sprite.set_visible(true);
+    }
 }
 
 void hud_manager::hide()
@@ -229,7 +244,10 @@ void hud_manager::hide()
     _invalidate_cached_hud_values();
     // <-- Hide other HUD elements like score, target sprite, etc.
     _target_spr.set_visible(false);
-    _lifebar_frame.set_visible(false);
+    for (bn::sprite_ptr& sprite : _lifebar_frame_sprites)
+    {
+        sprite.set_visible(false);
+    }
 }
 
 void hud_manager::fade_in()
@@ -245,9 +263,12 @@ void hud_manager::fade_in()
     // Opt the persistent target sprite into blending.
     // Text sprites are opted in each frame inside update() while fading.
     _target_spr.set_visible(true);
-    _lifebar_frame.set_visible(true);
     _target_spr.set_blending_enabled(true);
-    _lifebar_frame.set_blending_enabled(true);
+    for (bn::sprite_ptr& sprite : _lifebar_frame_sprites)
+    {
+        sprite.set_visible(true);
+        sprite.set_blending_enabled(true);
+    }
     _is_blending_active = true;
 
     // Start fully transparent and animate to opaque (alpha 0 → 1).
@@ -268,9 +289,12 @@ void hud_manager::fade_out()
     // Opt the persistent target sprite into blending.
     // Text sprites are opted in each frame inside update() while fading.
     _target_spr.set_visible(true);
-    _lifebar_frame.set_visible(true);
     _target_spr.set_blending_enabled(true);
-    _lifebar_frame.set_blending_enabled(true);
+    for (bn::sprite_ptr& sprite : _lifebar_frame_sprites)
+    {
+        sprite.set_visible(true);
+        sprite.set_blending_enabled(true);
+    }
     _is_blending_active = true;
 
     // Animate from fully opaque to fully transparent (alpha 1 → 0).
