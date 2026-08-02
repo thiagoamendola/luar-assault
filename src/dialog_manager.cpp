@@ -29,8 +29,7 @@ void dialog_manager::update()
 
     if (_active_subtitle_command_index >= 0)
     {
-        const subtitle_command& command = _subtitle_commands[_active_subtitle_command_index];
-        if (_elapsed_frames >= command.start_time + command.duration)
+        if (_elapsed_frames >= _active_subtitle_end_frame)
         {
             _active_subtitle_command_index = -1;
             _hide_dialog_frame = _elapsed_frames + HIDE_DELAY_FRAMES;
@@ -104,7 +103,9 @@ void dialog_manager::_hide_dialog()
     _dialog_sprites.clear();
     _subtitle_text_sprites.clear();
     _subtitle_text.clear();
+    _wrapped_subtitle_text.clear();
     _active_subtitle_command_index = -1;
+    _active_subtitle_end_frame = -1;
     _hide_dialog_frame = -1;
     _subtitle_character_index = 0;
     _subtitle_frame_counter = 0;
@@ -116,7 +117,9 @@ void dialog_manager::_start_subtitle(int command_index)
     _show_dialog();
     _subtitle_text_sprites.clear();
     _subtitle_text.clear();
+    _wrap_subtitle_text(_subtitle_commands[command_index].subtitle);
     _active_subtitle_command_index = command_index;
+    _active_subtitle_end_frame = _elapsed_frames + _subtitle_commands[command_index].duration;
     _hide_dialog_frame = -1;
     _subtitle_character_index = 0;
     _subtitle_frame_counter = 0;
@@ -129,8 +132,7 @@ void dialog_manager::_update_subtitle_text()
         return;
     }
 
-    const char* subtitle_text = _subtitle_commands[_active_subtitle_command_index].subtitle;
-    if (subtitle_text[_subtitle_character_index] == '\0')
+    if (_subtitle_character_index >= _wrapped_subtitle_text.size())
     {
         return;
     }
@@ -142,11 +144,100 @@ void dialog_manager::_update_subtitle_text()
     }
 
     _subtitle_frame_counter = 0;
-    _subtitle_text.push_back(subtitle_text[_subtitle_character_index]);
+    _subtitle_text.push_back(_wrapped_subtitle_text[_subtitle_character_index]);
     ++_subtitle_character_index;
 
+    _render_subtitle_text();
+}
+
+void dialog_manager::_wrap_subtitle_text(const char* subtitle)
+{
+    _wrapped_subtitle_text.clear();
+
+    int subtitle_length = 0;
+    for (; subtitle[subtitle_length] != '\0'; ++subtitle_length)
+    {
+        _wrapped_subtitle_text.push_back(subtitle[subtitle_length]);
+    }
+
+    if (subtitle_length <= MAX_SUBTITLE_CHARS_PER_LINE)
+    {
+        return;
+    }
+
+    _wrapped_subtitle_text.clear();
+
+    int line_length = 0;
+    int word_start_index = -1;
+    int word_length = 0;
+
+    for (int input_index = 0; subtitle[input_index] != '\0'; input_index++)
+    {
+        char character = subtitle[input_index];
+
+        if (character == ' ')
+        {
+            word_start_index = -1;
+            word_length = 0;
+            _wrapped_subtitle_text.push_back(character);
+            line_length++;
+            continue;
+        }
+
+        if (word_start_index < 0)
+        {
+            word_start_index = _wrapped_subtitle_text.size();
+            word_length = 0;
+        }
+
+        _wrapped_subtitle_text.push_back(character);
+        line_length++;
+        word_length++;
+
+        if (line_length > MAX_SUBTITLE_CHARS_PER_LINE && word_start_index > 0)
+        {
+            _wrapped_subtitle_text[word_start_index - 1] = '\n';
+            line_length = word_length;
+        }
+    }
+}
+
+void dialog_manager::_render_subtitle_text()
+{
+    bn::string<64> first_line;
+    bn::string<64> second_line;
+    bool second_line_active = false;
+
+    for (char character : _subtitle_text)
+    {
+        if (character == '\n')
+        {
+            second_line_active = true;
+            continue;
+        }
+
+        if (second_line_active)
+        {
+            second_line.push_back(character);
+        }
+        else
+        {
+            first_line.push_back(character);
+        }
+    }
+
     _subtitle_text_sprites.clear();
-    _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y, _subtitle_text, _subtitle_text_sprites);
+    if (!second_line.empty())
+    {
+        _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y - SUBTITLE_LINE_HEIGHT / 2, first_line,
+                                          _subtitle_text_sprites);
+        _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y + SUBTITLE_LINE_HEIGHT / 2, second_line,
+                                          _subtitle_text_sprites);
+    }
+    else
+    {
+        _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y, first_line, _subtitle_text_sprites);
+    }
 }
 
 void dialog_manager::add_subtitle_command(const char* subtitle, int start_time, int duration)
