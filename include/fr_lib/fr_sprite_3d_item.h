@@ -27,10 +27,11 @@ public:
     // Single-frame constructor
     sprite_3d_item(const bn::sprite_item& item, int graphics_index) :
         _tiles_item(item.tiles_item()),
+        _shape_size(item.shape_size()),
         _palette(item.palette_item().create_palette()),
         _affine_mat(bn::sprite_affine_mat_ptr::create())
     {
-        BN_ASSERT(item.shape_size().width() == 64 && item.shape_size().height() == 64, "Invalid shape size");
+        BN_ASSERT(item.shape_size().shape() == bn::sprite_shape::SQUARE, "Invalid shape");
         BN_ASSERT(graphics_index >= 0, "Invalid graphics index");
 
         _frame_count = 1;
@@ -51,10 +52,11 @@ public:
     // Multi-frame constructor: preload all provided graphics indices into VRAM
     sprite_3d_item(const bn::sprite_item& item, std::initializer_list<int> graphics_indices) :
         _tiles_item(item.tiles_item()),
+        _shape_size(item.shape_size()),
         _palette(item.palette_item().create_palette()),
         _affine_mat(bn::sprite_affine_mat_ptr::create())
     {
-        BN_ASSERT(item.shape_size().width() == 64 && item.shape_size().height() == 64, "Invalid shape size");
+        BN_ASSERT(item.shape_size().shape() == bn::sprite_shape::SQUARE, "Invalid shape");
         BN_ASSERT(!graphics_indices.size() || int(graphics_indices.size()) <= MAX_FRAMES, "Too many frames requested");
         BN_ASSERT(graphics_indices.size() > 0, "No graphics indices provided");
 
@@ -93,6 +95,11 @@ public:
     [[nodiscard]] int tiles_id() const
     {
         return _tiles_id;
+    }
+
+    [[nodiscard]] const bn::sprite_shape_size& shape_size() const
+    {
+        return _shape_size;
     }
 
     [[nodiscard]] const bn::sprite_palette_ptr& palette() const
@@ -160,6 +167,7 @@ private:
     int _palette_id;
     int _affine_mat_id;
     const bn::sprite_tiles_item& _tiles_item;
+    bn::sprite_shape_size _shape_size;
     // <-- In case these changes make the object too big, consider refactoring back.
     bn::sprite_tiles_ptr* _frame_tiles[MAX_FRAMES]; // pointers to allocated sprite tiles objects
     int _frame_tile_ids[MAX_FRAMES]; // parallel tile ids

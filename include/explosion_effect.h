@@ -43,13 +43,13 @@ class explosion_effect
     static constexpr int ANIMATION_SPEED = 4; // frames per animation frame
     static constexpr int TOTAL_FRAMES = 10;
 
-    static constexpr bn::fixed INITIAL_SCALE_1 = 1.5;
-    static constexpr bn::fixed FINAL_SCALE_1 = 2;
+    static constexpr bn::fixed INITIAL_SCALE_1 = 3;
+    static constexpr bn::fixed FINAL_SCALE_1 = 4;
     static constexpr bn::fixed INITIAL_THETA_1 = 40000;
     static constexpr bn::fixed THETA_SPEED_1 = 900;
 
-    static constexpr bn::fixed INITIAL_SCALE_2 = .5;
-    static constexpr bn::fixed FINAL_SCALE_2 = 1.5;
+    static constexpr bn::fixed INITIAL_SCALE_2 = 1;
+    static constexpr bn::fixed FINAL_SCALE_2 = 3;
     static constexpr bn::fixed INITIAL_THETA_2 = 20000;
     static constexpr bn::fixed THETA_SPEED_2 = 500;
 };

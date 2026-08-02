@@ -364,18 +364,22 @@ void models_3d::_process_models(const camera_3d &camera)
             auto sprite_scale =
                 int((div_lut_ptr[vcz >> 10] << (focal_length_shift - 8)) >> 3);
             auto scale = sprite_scale >> 3;
-            int sprite_x = ((vcx * scale) >> 16) + (display_width / 2) - 32;
+            sprite_3d_item &sprite_item = sprite.item();
+            const bn::sprite_shape_size& sprite_shape_size = sprite_item.shape_size();
+            int sprite_half_width = sprite_shape_size.width() / 2;
+            int sprite_half_height = sprite_shape_size.height() / 2;
+            int sprite_x = ((vcx * scale) >> 16) + (display_width / 2) - sprite_half_width;
 
-            if (sprite_x < display_width && sprite_x + 64 > 0) [[likely]]
+            if (sprite_x < display_width && sprite_x + sprite_shape_size.width() > 0) [[likely]]
             {
                 int vcy = -(vrx.unsafe_multiplication(camera_v_x) +
                             vry.unsafe_multiplication(camera_v_y) +
                             vrz.unsafe_multiplication(camera_v_z))
                                .data();
                 int sprite_y =
-                    ((vcy * scale) >> 16) + (display_height / 2) - 32;
+                    ((vcy * scale) >> 16) + (display_height / 2) - sprite_half_height;
 
-                if (sprite_y < display_height && sprite_y + 64 > 0) [[likely]]
+                if (sprite_y < display_height && sprite_y + sprite_shape_size.height() > 0) [[likely]]
                 {
                     bn::fixed affine_scale =
                         bn::fixed::from_data(sprite_scale)
@@ -394,18 +398,17 @@ void models_3d::_process_models(const camera_3d &camera)
                             rotation_angle -= 360;
                         }
 
-                        sprite_3d_item &sprite_item = sprite.item();
                         bn::sprite_affine_mat_ptr &affine_mat =
                             sprite_item.affine_mat();
                         affine_mat.set_scale(affine_scale);
                         affine_mat.set_rotation_angle(rotation_angle);
 
                         int attr0 = bn::hw::sprites::first_attributes(
-                            sprite_y, bn::sprite_shape::SQUARE,
+                            sprite_y, sprite_shape_size.shape(),
                             bn::bpp_mode::BPP_4, 1 << 8, true, false, false,
                             false);
                         int attr1 = bn::hw::sprites::second_attributes(
-                            sprite_x, bn::sprite_size::HUGE,
+                            sprite_x, sprite_shape_size.size(),
                             sprite_item.affine_mat_id());
                         int attr2 = bn::hw::sprites::third_attributes(
                             sprite_item.tiles_id() & 0x3FF,
