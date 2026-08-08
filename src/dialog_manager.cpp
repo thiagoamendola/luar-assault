@@ -1,5 +1,6 @@
 #include "dialog_manager.h"
 
+#include "bn_blending.h"
 #include "bn_sprite_items_dialog_bg.h"
 #include "bn_utility.h"
 
@@ -16,6 +17,13 @@ dialog_manager::dialog_manager() :
 
 void dialog_manager::update()
 {
+    _resume_from_pause();
+
+    if (_suspended_for_pause)
+    {
+        return;
+    }
+
     for (int index = 0; index < _subtitle_commands.size(); ++index)
     {
         const subtitle_command& command = _subtitle_commands[index];
@@ -25,6 +33,7 @@ void dialog_manager::update()
         }
     }
 
+    _update_dialog_transition();
     _update_subtitle_text();
 
     if (_active_subtitle_command_index >= 0)
@@ -38,7 +47,7 @@ void dialog_manager::update()
 
     if (_hide_dialog_frame >= 0 && _elapsed_frames >= _hide_dialog_frame)
     {
-        _hide_dialog();
+        _start_closing_dialog();
     }
 
     ++_elapsed_frames;
@@ -62,6 +71,7 @@ void dialog_manager::_show_dialog()
         bn::sprite_ptr sprite = bn::sprite_items::dialog_bg.create_sprite(x, y, graphics_index);
         sprite.set_bg_priority(0);
         sprite.set_z_order(z_order);
+        sprite.set_blending_enabled(true);
         _dialog_sprites.push_back(bn::move(sprite));
     };
 
@@ -100,29 +110,193 @@ void dialog_manager::_show_dialog()
 
 void dialog_manager::_hide_dialog()
 {
+    _clear_blending();
     _dialog_sprites.clear();
     _subtitle_text_sprites.clear();
     _subtitle_text.clear();
     _wrapped_subtitle_text.clear();
     _active_subtitle_command_index = -1;
+    _pending_subtitle_command_index = -1;
     _active_subtitle_end_frame = -1;
     _hide_dialog_frame = -1;
+    _transition_frame = 0;
     _subtitle_character_index = 0;
     _subtitle_frame_counter = 0;
     _dialog_shown = false;
+    _dialog_state = dialog_state::HIDDEN;
+}
+
+void dialog_manager::suspend_for_pause()
+{
+    if (_suspended_for_pause)
+    {
+        return;
+    }
+
+    _suspended_for_pause = true;
+    _set_visible(false);
+}
+
+void dialog_manager::_resume_from_pause()
+{
+    if (!_suspended_for_pause)
+    {
+        return;
+    }
+
+    _suspended_for_pause = false;
+
+    if (!_dialog_shown)
+    {
+        return;
+    }
+
+    _set_visible(true);
+
+    if (_dialog_state != dialog_state::OPENING && _dialog_state != dialog_state::CLOSING)
+    {
+        _clear_blending();
+    }
+}
+
+void dialog_manager::_set_visible(bool visible)
+{
+    for (bn::sprite_ptr& sprite : _dialog_sprites)
+    {
+        sprite.set_visible(visible);
+    }
+
+    for (bn::sprite_ptr& sprite : _subtitle_text_sprites)
+    {
+        sprite.set_visible(visible);
+    }
 }
 
 void dialog_manager::_start_subtitle(int command_index)
+{
+    if (_dialog_state == dialog_state::HIDDEN)
+    {
+        _show_dialog();
+        _pending_subtitle_command_index = command_index;
+        _transition_frame = 0;
+        _hide_dialog_frame = -1;
+        _dialog_state = dialog_state::OPENING;
+        return;
+    }
+
+    if (_dialog_state == dialog_state::CLOSING)
+    {
+        _pending_subtitle_command_index = command_index;
+        _transition_frame = TRANSITION_FRAMES - _transition_frame;
+        _hide_dialog_frame = -1;
+        _dialog_state = dialog_state::OPENING;
+        return;
+    }
+
+    if (_dialog_state == dialog_state::OPENING)
+    {
+        _pending_subtitle_command_index = command_index;
+        _hide_dialog_frame = -1;
+        return;
+    }
+
+    _activate_subtitle(command_index);
+}
+
+void dialog_manager::_activate_subtitle(int command_index)
 {
     _show_dialog();
     _subtitle_text_sprites.clear();
     _subtitle_text.clear();
     _wrap_subtitle_text(_subtitle_commands[command_index].subtitle);
     _active_subtitle_command_index = command_index;
+    _pending_subtitle_command_index = -1;
     _active_subtitle_end_frame = _elapsed_frames + _subtitle_commands[command_index].duration;
     _hide_dialog_frame = -1;
     _subtitle_character_index = 0;
     _subtitle_frame_counter = 0;
+}
+
+void dialog_manager::_update_dialog_transition()
+{
+    if (_dialog_state == dialog_state::OPENING)
+    {
+        ++_transition_frame;
+        bn::fixed alpha = (1.0 * _transition_frame) / TRANSITION_FRAMES;
+        if (alpha > 1.0)
+        {
+            alpha = 1.0;
+        }
+        _set_transparency_alpha(alpha);
+
+        if (_transition_frame >= TRANSITION_FRAMES)
+        {
+            _clear_blending();
+            _transition_frame = 0;
+            _dialog_state = dialog_state::OPEN;
+
+            if (_pending_subtitle_command_index >= 0)
+            {
+                _activate_subtitle(_pending_subtitle_command_index);
+            }
+        }
+    }
+    else if (_dialog_state == dialog_state::CLOSING)
+    {
+        ++_transition_frame;
+        bn::fixed alpha = 1.0 - (1.0 * _transition_frame) / TRANSITION_FRAMES;
+        if (alpha < 0.0)
+        {
+            alpha = 0.0;
+        }
+        _set_transparency_alpha(alpha);
+
+        if (_transition_frame >= TRANSITION_FRAMES)
+        {
+            _hide_dialog();
+        }
+    }
+}
+
+void dialog_manager::_set_blending_enabled(bool blending_enabled)
+{
+    for (bn::sprite_ptr& sprite : _dialog_sprites)
+    {
+        sprite.set_blending_enabled(blending_enabled);
+    }
+
+    for (bn::sprite_ptr& sprite : _subtitle_text_sprites)
+    {
+        sprite.set_blending_enabled(blending_enabled);
+    }
+}
+
+void dialog_manager::_set_transparency_alpha(bn::fixed alpha)
+{
+    bn::blending::set_transparency_alpha(alpha);
+}
+
+void dialog_manager::_clear_blending()
+{
+    _set_blending_enabled(false);
+    _set_transparency_alpha(1.0);
+}
+
+void dialog_manager::_start_closing_dialog()
+{
+    if (_dialog_state != dialog_state::OPEN)
+    {
+        return;
+    }
+
+    _subtitle_text_sprites.clear();
+    _subtitle_text.clear();
+    _wrapped_subtitle_text.clear();
+    _hide_dialog_frame = -1;
+    _transition_frame = 0;
+    _set_blending_enabled(true);
+    _set_transparency_alpha(1.0);
+    _dialog_state = dialog_state::CLOSING;
 }
 
 void dialog_manager::_update_subtitle_text()
@@ -237,6 +411,14 @@ void dialog_manager::_render_subtitle_text()
     else
     {
         _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y, first_line, _subtitle_text_sprites);
+    }
+
+    if (_dialog_state == dialog_state::OPENING || _dialog_state == dialog_state::CLOSING)
+    {
+        for (bn::sprite_ptr& sprite : _subtitle_text_sprites)
+        {
+            sprite.set_blending_enabled(true);
+        }
     }
 }
 

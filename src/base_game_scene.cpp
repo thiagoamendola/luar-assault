@@ -52,10 +52,13 @@ bool base_game_scene::update()
     // Handle pause state
     if (_pause_manager.check_pause_toggle())
     {
+        _dialog_manager.suspend_for_pause();
         // Is paused, only update pause menu.
         _pause_manager.menu_update();
         return false;
     }
+
+    _dialog_manager.update();
 
     if (_hit_stop_cooldown > 0)
     {

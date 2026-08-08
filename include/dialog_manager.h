@@ -1,10 +1,26 @@
 #ifndef DIALOG_MANAGER_H
 #define DIALOG_MANAGER_H
 
+#include "bn_fixed.h"
 #include "bn_string.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
+
+enum class dialog_state
+{
+    HIDDEN,
+    OPENING,
+    OPEN,
+    CLOSING
+};
+
+struct subtitle_command
+{
+    const char* subtitle;
+    int start_time;
+    int duration;
+};
 
 class dialog_manager
 {
@@ -14,10 +30,12 @@ public:
     void update();
 
     void add_subtitle_command(const char* subtitle, int start_time, int duration);
+    void suspend_for_pause();
 
 private:
     // General constants
     static constexpr int HIDE_DELAY_FRAMES = 45;
+    static constexpr int TRANSITION_FRAMES = 5;
     static constexpr int MAX_SUBTITLE_COMMANDS = 32;
 
     // Subtitle text constants
@@ -47,33 +65,44 @@ private:
     static constexpr int UPPER_BORDER_Z_ORDER = 2;
     static constexpr int LEFT_BORDER_Z_ORDER = 1;
 
-    struct subtitle_command
-    {
-        const char* subtitle;
-        int start_time;
-        int duration;
-    };
-
     bn::sprite_text_generator _subtitle_text_generator;
     bn::vector<subtitle_command, MAX_SUBTITLE_COMMANDS> _subtitle_commands;
     bn::vector<bn::sprite_ptr, DIALOG_MAX_SPRITES> _dialog_sprites;
     bn::vector<bn::sprite_ptr, 40> _subtitle_text_sprites;
     bn::string<64> _subtitle_text;
     bn::string<64> _wrapped_subtitle_text;
-    int _elapsed_frames = 0;
+
+    dialog_state _dialog_state = dialog_state::HIDDEN;
+
     int _active_subtitle_command_index = -1;
+    int _pending_subtitle_command_index = -1;
+    int _elapsed_frames = 0;
     int _active_subtitle_end_frame = -1;
     int _hide_dialog_frame = -1;
+    int _transition_frame = 0;
     int _subtitle_character_index = 0;
     int _subtitle_frame_counter = 0;
     bool _dialog_shown = false;
+    bool _suspended_for_pause = false;
 
     void _show_dialog();
     void _hide_dialog();
+    void _set_visible(bool visible);
+
+    void _resume_from_pause();
+
     void _start_subtitle(int command_index);
+    void _activate_subtitle(int command_index);
     void _update_subtitle_text();
     void _wrap_subtitle_text(const char* subtitle);
     void _render_subtitle_text();
+
+    void _set_blending_enabled(bool blending_enabled);
+    void _set_transparency_alpha(bn::fixed alpha);
+    void _clear_blending();
+    
+    void _update_dialog_transition();
+    void _start_closing_dialog();
 };
 
 #endif

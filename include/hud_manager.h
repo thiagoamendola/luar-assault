@@ -105,6 +105,7 @@ private:
     void _update_lifebar(int health);
     void _update_lifebar_damage_tiles();
     void _invalidate_cached_hud_values();
+    void _set_hud_blending_enabled(bool blending_enabled);
 
 
     // Target calculation

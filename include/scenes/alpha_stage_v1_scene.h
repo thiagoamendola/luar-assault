@@ -19,7 +19,6 @@
 #include "scene_type.h"
 #include "letterbox_manager.h"
 #include "banner_manager.h"
-#include "dialog_manager.h"
 
 class alpha_stage_v1_scene : public fr::scene
 {
@@ -43,7 +42,6 @@ class alpha_stage_v1_scene : public fr::scene
 
     letterbox_manager _letterbox_manager;
     banner_manager _banner_manager;
-    dialog_manager _dialog_manager;
     
     // Background
     // bn::regular_bg_ptr _scene_bg;

@@ -144,20 +144,7 @@ void hud_manager::update(fr::models_3d *models)
         else
         {
             // Fade-in complete: sprites are fully opaque, clean up blending.
-            _target_spr.set_blending_enabled(false);
-            for (bn::sprite_ptr &sprite : _lifebar_frame_sprites)
-            {
-                sprite.set_blending_enabled(false);
-            }
-            for (bn::sprite_ptr &tile : _lifebar_tiles)
-            {
-                tile.set_blending_enabled(false);
-            }
-            for (lifebar_damage_tile &dt : _lifebar_damage_tiles)
-            {
-                dt.spr.set_blending_enabled(false);
-            }
-            _is_blending_active = false;
+            _set_hud_blending_enabled(false);
             _fade_in_action.reset();
         }
     }
@@ -173,6 +160,7 @@ void hud_manager::update(fr::models_3d *models)
             // Fade-out complete: keep blending active so sprites stay invisible
             // (disabling blending would snap them back to fully opaque).
             // <-- Fix this
+            _set_hud_blending_enabled(false);
             _fade_out_action.reset();
         }
     }
@@ -235,6 +223,7 @@ void hud_manager::show()
 void hud_manager::hide()
 {
     _is_hidden = true;
+    _set_hud_blending_enabled(false);
     _text_sprites.clear();
     _lifebar_tiles.clear();
     _lifebar_damage_tiles.clear();
@@ -300,6 +289,29 @@ void hud_manager::fade_out()
     // Animate from fully opaque to fully transparent (alpha 1 → 0).
     bn::blending::set_transparency_alpha(1);
     _fade_out_action.emplace(FADE_FRAMES, bn::fixed(0));
+}
+
+void hud_manager::_set_hud_blending_enabled(bool blending_enabled)
+{
+    _is_blending_active = blending_enabled;
+
+    _target_spr.set_blending_enabled(blending_enabled);
+    for (bn::sprite_ptr& sprite : _lifebar_frame_sprites)
+    {
+        sprite.set_blending_enabled(blending_enabled);
+    }
+    for (bn::sprite_ptr& tile : _lifebar_tiles)
+    {
+        tile.set_blending_enabled(blending_enabled);
+    }
+    for (lifebar_damage_tile& dt : _lifebar_damage_tiles)
+    {
+        dt.spr.set_blending_enabled(blending_enabled);
+    }
+    for (bn::sprite_ptr& sprite : _text_sprites)
+    {
+        sprite.set_blending_enabled(blending_enabled);
+    }
 }
 
 void hud_manager::_update_lifebar(int health)

@@ -71,7 +71,7 @@
 
 // Enables infinite missiles
 #ifndef INFINITE_MISSILES
-#define INFINITE_MISSILES true
+#define INFINITE_MISSILES false
 #endif
 
 
