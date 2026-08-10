@@ -37,8 +37,12 @@ void enemy_manager::destroy()
     }
 }
 
-void enemy_manager::update()
+void enemy_manager::update(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y)
 {
+    // Check sections for any spawns/despawns.
+    process_section_enemies(sections, sections_count, camera_y);
+
+    // Update all active enemies.
     for (int i = 0; i < MAX_ENEMIES; ++i)
     {
         if (_enemies[i].used && _enemies[i].ptr)

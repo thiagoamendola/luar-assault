@@ -133,6 +133,19 @@
           },
           "rotation": 500
         }
+      ],
+      "subtitles": [
+        {
+          "text": "This is my subtitle.",
+          "character": "TEST",
+          "duration": 120
+        },
+        {
+          "text": "This is another subtitle to test.",
+          "character": "TEST",
+          "startTime": 130,
+          "duration": 120
+        }
       ]
     },
     {
@@ -154,6 +167,22 @@
           },
           "rotation": 100,
           "playerDistance": 300
+        }
+      ]
+    },
+    {
+      "id": "5_1",
+      "range": {
+        "start":-750,
+        "end": -750
+      },
+      "staticModels": [],
+      "enemies": [],
+      "subtitles": [
+        {
+          "text": "Another subtitle to test in our game here.",
+          "character": "TEST",
+          "duration": 120
         }
       ]
     },

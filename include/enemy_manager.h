@@ -28,13 +28,10 @@ public:
 
   void destroy();
 
-  void update(); 
+  void update(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y); 
 
   int statics_render(const fr::model_3d_item **static_model_items,
     int static_count);
-
-  // Basic section enemy processing: given current camera Y and all sections, print enemies in active sections.
-  void process_section_enemies(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
 
   //
   void create_bullet(fr::point_3d position, fr::point_3d target);
@@ -48,6 +45,9 @@ public:
   static constexpr int MAX_ENEMIES = fr::constants_3d::max_dynamic_models - 1;
 
 private:
+  // Basic section enemy processing: given current camera Y and all sections, print enemies in active sections.
+  void process_section_enemies(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
+
   void spawn_asteroid(const enemy_def &enemy);
   void spawn_oyster(const enemy_def &enemy);
   void spawn_scorpion(const enemy_def &enemy);

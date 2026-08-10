@@ -72,6 +72,10 @@ def _symbol_from_model(model_name: str) -> str:
     return MODEL_SYMBOL_OVERRIDES.get(model_name, model_name)
 
 
+def _cpp_string_literal(value: str) -> str:
+    return json.dumps(value)
+
+
 def generate_header(scene: Dict[str, Any]) -> str:
     name = scene['name']
     palette: List[str] = scene.get('palette', [])
@@ -141,6 +145,7 @@ def generate_header(scene: Dict[str, Any]) -> str:
         end = s['range']['end']
         static_models = s.get('staticModels', [])
         enemies = s.get('enemies', [])
+        subtitles = s.get('subtitles', [])
 
         model_const_lines: List[str] = []
         model_items_lines: List[str] = []
@@ -249,6 +254,16 @@ def generate_header(scene: Dict[str, Any]) -> str:
         if enemy_lines:
             enemy_lines[-1] = enemy_lines[-1].rstrip(',')
 
+        subtitle_lines: List[str] = []
+        for subtitle in subtitles:
+            text = _cpp_string_literal(subtitle['text'])
+            start_time = subtitle.get('startTime', 0)
+            duration = subtitle['duration']
+            subtitle_lines.append(f"    subtitle_command{{{text}, {start_time}, {duration}}},")
+
+        if subtitle_lines:
+            subtitle_lines[-1] = subtitle_lines[-1].rstrip(',')
+
         section_src = []
         section_src.extend(model_const_lines)
         section_src.append("")
@@ -270,6 +285,13 @@ def generate_header(scene: Dict[str, Any]) -> str:
         else:
             section_src.append(f"constexpr std::initializer_list<enemy_def> _section_{sid}_enemies = {{}};")
         section_src.append("")
+        if subtitle_lines:
+            section_src.append(f"constexpr std::initializer_list<subtitle_command> _section_{sid}_subtitles = {{")
+            section_src.extend(subtitle_lines)
+            section_src.append("};")
+        else:
+            section_src.append(f"constexpr std::initializer_list<subtitle_command> _section_{sid}_subtitles = {{}};")
+        section_src.append("")
         # Emit collider array if any colliders were found
         if has_colliders:
             section_src.append(f"constexpr sphere_collider _section_{sid}_static_colliders[] = {{")
@@ -289,12 +311,14 @@ def generate_header(scene: Dict[str, Any]) -> str:
             section_src.append(
                 f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
                 f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
+                f"                                  _section_{sid}_subtitles,\n"
                 f"                                  _section_{sid}_static_colliders, _section_{sid}_static_colliders_count,\n"
                 f"                                  _section_{sid}_end_section);")
         else:
             section_src.append(
                 f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
                 f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
+                f"                                  _section_{sid}_subtitles,\n"
                 f"                                  _section_{sid}_end_section);")
         section_blocks.append('\n'.join(section_src))
 

@@ -7,6 +7,9 @@
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
 
+#include "stage_section.h"
+#include "subtitle_command.h"
+
 enum class dialog_state
 {
     HIDDEN,
@@ -15,21 +18,15 @@ enum class dialog_state
     CLOSING
 };
 
-struct subtitle_command
-{
-    const char* subtitle;
-    int start_time;
-    int duration;
-};
-
 class dialog_manager
 {
 public:
     dialog_manager();
 
-    void update();
+    void update(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
 
     void add_subtitle_command(const char* subtitle, int start_time, int duration);
+    void show_subtitle(const char* subtitle, int duration);
     void suspend_for_pause();
 
 private:
@@ -80,6 +77,7 @@ private:
     int _active_subtitle_end_frame = -1;
     int _hide_dialog_frame = -1;
     int _transition_frame = 0;
+    bn::fixed _last_section_start_y = bn::fixed(32767);
     int _subtitle_character_index = 0;
     int _subtitle_frame_counter = 0;
     bool _dialog_shown = false;
@@ -88,11 +86,12 @@ private:
     void _show_dialog();
     void _hide_dialog();
     void _set_visible(bool visible);
+    void _process_section(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
 
     void _resume_from_pause();
 
     void _start_subtitle(int command_index);
-    void _activate_subtitle(int command_index);
+    void _start_subtitle_text(const char* subtitle, int duration);
     void _update_subtitle_text();
     void _wrap_subtitle_text(const char* subtitle);
     void _render_subtitle_text();

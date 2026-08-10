@@ -29,12 +29,15 @@ constexpr std::initializer_list<enemy_def> _section_1_enemies = {
     enemy_def{fr::point_3d(0, 400, 20), 200, enemy_type::ASTEROID, nullptr}
 };
 
+constexpr std::initializer_list<subtitle_command> _section_1_subtitles = {};
+
 constexpr int _section_1_start = 1050;
 constexpr int _section_1_end = 200;
 constexpr bool _section_1_end_section = false;
 
 constexpr stage_section section_1(_section_1_start, _section_1_end,
                                   _section_1_static_model_items, _section_1_enemies,
+                                  _section_1_subtitles,
                                   _section_1_end_section);
 
 
@@ -46,12 +49,15 @@ constexpr std::initializer_list<enemy_def> _section_2_enemies = {
     enemy_def{fr::point_3d(30, 100, 20), 200, enemy_type::ASTEROID, nullptr}
 };
 
+constexpr std::initializer_list<subtitle_command> _section_2_subtitles = {};
+
 constexpr int _section_2_start = 750;
 constexpr int _section_2_end = -150;
 constexpr bool _section_2_end_section = false;
 
 constexpr stage_section section_2(_section_2_start, _section_2_end,
                                   _section_2_static_model_items, _section_2_enemies,
+                                  _section_2_subtitles,
                                   _section_2_end_section);
 
 
@@ -63,12 +69,15 @@ constexpr std::initializer_list<enemy_def> _section_3_enemies = {
     enemy_def{fr::point_3d(30, -500, 20), 200, enemy_type::ASTEROID, nullptr}
 };
 
+constexpr std::initializer_list<subtitle_command> _section_3_subtitles = {};
+
 constexpr int _section_3_start = 350;
 constexpr int _section_3_end = -700;
 constexpr bool _section_3_end_section = false;
 
 constexpr stage_section section_3(_section_3_start, _section_3_end,
                                   _section_3_static_model_items, _section_3_enemies,
+                                  _section_3_subtitles,
                                   _section_3_end_section);
 
 // # Sections List

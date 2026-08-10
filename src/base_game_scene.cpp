@@ -58,7 +58,7 @@ bool base_game_scene::update()
         return false;
     }
 
-    _dialog_manager.update();
+    _dialog_manager.update(_sections, _sections_count, _camera.position().y());
 
     if (_hit_stop_cooldown > 0)
     {
@@ -75,8 +75,7 @@ bool base_game_scene::update()
         _player_ship.update();
 
         // - Enemies
-        _enemy_manager.process_section_enemies(_sections, _sections_count, _camera.position().y());
-        _enemy_manager.update();
+        _enemy_manager.update(_sections, _sections_count, _camera.position().y());
 
         // - Collisions
         static_count =

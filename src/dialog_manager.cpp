@@ -5,6 +5,7 @@
 #include "bn_utility.h"
 
 #include "common_variable_8x16_sprite_font.h"
+#include "stage_section.h"
 
 dialog_manager::dialog_manager() :
     _subtitle_text_generator(common::variable_8x16_sprite_font)
@@ -15,7 +16,7 @@ dialog_manager::dialog_manager() :
 
 }
 
-void dialog_manager::update()
+void dialog_manager::update(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y)
 {
     _resume_from_pause();
 
@@ -23,6 +24,8 @@ void dialog_manager::update()
     {
         return;
     }
+
+    _process_section(sections, sections_count, camera_y);
 
     for (int index = 0; index < _subtitle_commands.size(); ++index)
     {
@@ -36,11 +39,12 @@ void dialog_manager::update()
     _update_dialog_transition();
     _update_subtitle_text();
 
-    if (_active_subtitle_command_index >= 0)
+    if (_active_subtitle_end_frame >= 0)
     {
         if (_elapsed_frames >= _active_subtitle_end_frame)
         {
             _active_subtitle_command_index = -1;
+            _active_subtitle_end_frame = -1;
             _hide_dialog_frame = _elapsed_frames + HIDE_DELAY_FRAMES;
         }
     }
@@ -51,6 +55,24 @@ void dialog_manager::update()
     }
 
     ++_elapsed_frames;
+}
+
+void dialog_manager::_process_section(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y)
+{
+    for (size_t index = 0; index < sections_count; ++index)
+    {
+        const stage_section* section = sections[index];
+        if (camera_y <= section->starting_pos() && section->starting_pos() < _last_section_start_y)
+        {
+            _last_section_start_y = section->starting_pos();
+
+            for (int subtitle_index = 0; subtitle_index < section->subtitles_count(); ++subtitle_index)
+            {
+                const subtitle_command& subtitle = section->subtitles()[subtitle_index];
+                add_subtitle_command(subtitle.subtitle, _elapsed_frames + subtitle.start_time, subtitle.duration);
+            }
+        }
+    }
 }
 
 void dialog_manager::_show_dialog()
@@ -200,18 +222,17 @@ void dialog_manager::_start_subtitle(int command_index)
         return;
     }
 
-    _activate_subtitle(command_index);
+    _start_subtitle_text(_subtitle_commands[command_index].subtitle, _subtitle_commands[command_index].duration);
+    _pending_subtitle_command_index = -1;
 }
 
-void dialog_manager::_activate_subtitle(int command_index)
+void dialog_manager::_start_subtitle_text(const char* subtitle, int duration)
 {
     _show_dialog();
     _subtitle_text_sprites.clear();
     _subtitle_text.clear();
-    _wrap_subtitle_text(_subtitle_commands[command_index].subtitle);
-    _active_subtitle_command_index = command_index;
-    _pending_subtitle_command_index = -1;
-    _active_subtitle_end_frame = _elapsed_frames + _subtitle_commands[command_index].duration;
+    _wrap_subtitle_text(subtitle);
+    _active_subtitle_end_frame = _elapsed_frames + duration;
     _hide_dialog_frame = -1;
     _subtitle_character_index = 0;
     _subtitle_frame_counter = 0;
@@ -237,7 +258,10 @@ void dialog_manager::_update_dialog_transition()
 
             if (_pending_subtitle_command_index >= 0)
             {
-                _activate_subtitle(_pending_subtitle_command_index);
+                int command_index = _pending_subtitle_command_index;
+                _start_subtitle_text(_subtitle_commands[command_index].subtitle,
+                                     _subtitle_commands[command_index].duration);
+                _pending_subtitle_command_index = -1;
             }
         }
     }
@@ -301,7 +325,7 @@ void dialog_manager::_start_closing_dialog()
 
 void dialog_manager::_update_subtitle_text()
 {
-    if (_active_subtitle_command_index < 0)
+    if (_active_subtitle_end_frame < 0)
     {
         return;
     }
@@ -427,5 +451,25 @@ void dialog_manager::add_subtitle_command(const char* subtitle, int start_time, 
     if (_subtitle_commands.size() < MAX_SUBTITLE_COMMANDS)
     {
         _subtitle_commands.push_back({ subtitle, start_time, duration });
+    }
+}
+
+void dialog_manager::show_subtitle(const char* subtitle, int duration)
+{
+    _active_subtitle_command_index = -1;
+    _pending_subtitle_command_index = -1;
+    _start_subtitle_text(subtitle, duration);
+
+    if (_dialog_state == dialog_state::HIDDEN)
+    {
+        _transition_frame = 0;
+        _hide_dialog_frame = -1;
+        _dialog_state = dialog_state::OPENING;
+    }
+    else if (_dialog_state == dialog_state::CLOSING)
+    {
+        _transition_frame = TRANSITION_FRAMES - _transition_frame;
+        _hide_dialog_frame = -1;
+        _dialog_state = dialog_state::OPENING;
     }
 }
