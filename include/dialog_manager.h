@@ -100,6 +100,7 @@ private:
     void _hide_dialog();
     void _build_subtitle_dialog_box();
     void _build_tutorial_dialog_box();
+    void _add_dialog_command(const char* text, int start_time, int duration, dialog_command_type type);
     void _start_dialog_command(int command_index);
     void _set_visible(bool visible);
 

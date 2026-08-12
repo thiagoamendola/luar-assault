@@ -66,10 +66,11 @@ void dialog_manager::_process_section(stage_section_list_ptr sections, size_t se
         {
             _last_section_start_y = section->starting_pos();
 
-            for (int subtitle_index = 0; subtitle_index < section->subtitles_count(); ++subtitle_index)
+            for (int command_index = 0; command_index < section->dialog_commands_count(); ++command_index)
             {
-                const dialog_command& command = section->subtitles()[subtitle_index];
-                add_subtitle_command(command.text, _elapsed_frames + command.start_time, command.duration);
+                const dialog_command& command = section->dialog_commands()[command_index];
+                _add_dialog_command(command.text, _elapsed_frames + command.start_time,
+                                    command.duration, command.type);
             }
         }
     }
@@ -244,6 +245,14 @@ void dialog_manager::_set_visible(bool visible)
     for (bn::sprite_ptr& sprite : _dialog_text_sprites)
     {
         sprite.set_visible(visible);
+    }
+}
+
+void dialog_manager::_add_dialog_command(const char* text, int start_time, int duration, dialog_command_type type)
+{
+    if (_dialog_commands.size() < MAX_DIALOG_COMMANDS)
+    {
+        _dialog_commands.push_back({ text, start_time, duration, type });
     }
 }
 
@@ -541,16 +550,10 @@ void dialog_manager::_render_dialog_text()
 
 void dialog_manager::add_subtitle_command(const char* subtitle, int start_time, int duration)
 {
-    if (_dialog_commands.size() < MAX_DIALOG_COMMANDS)
-    {
-        _dialog_commands.push_back({ subtitle, start_time, duration, dialog_command_type::SUBTITLE });
-    }
+    _add_dialog_command(subtitle, start_time, duration, dialog_command_type::SUBTITLE);
 }
 
 void dialog_manager::add_tutorial_command(const char* text, int start_time, int duration)
 {
-    if (_dialog_commands.size() < MAX_DIALOG_COMMANDS)
-    {
-        _dialog_commands.push_back({ text, start_time, duration, dialog_command_type::TUTORIAL });
-    }
+    _add_dialog_command(text, start_time, duration, dialog_command_type::TUTORIAL);
 }

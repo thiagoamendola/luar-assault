@@ -146,6 +146,7 @@ def generate_header(scene: Dict[str, Any]) -> str:
         static_models = s.get('staticModels', [])
         enemies = s.get('enemies', [])
         subtitles = s.get('subtitles', [])
+        tutorials = s.get('tutorial', [])
 
         model_const_lines: List[str] = []
         model_items_lines: List[str] = []
@@ -254,15 +255,22 @@ def generate_header(scene: Dict[str, Any]) -> str:
         if enemy_lines:
             enemy_lines[-1] = enemy_lines[-1].rstrip(',')
 
-        subtitle_lines: List[str] = []
+        dialog_command_lines: List[str] = []
         for subtitle in subtitles:
             text = _cpp_string_literal(subtitle['text'])
             start_time = subtitle.get('startTime', 0)
             duration = subtitle['duration']
-            subtitle_lines.append(f"    dialog_command{{{text}, {start_time}, {duration}}},")
+            dialog_command_lines.append(f"    dialog_command{{{text}, {start_time}, {duration}}},")
 
-        if subtitle_lines:
-            subtitle_lines[-1] = subtitle_lines[-1].rstrip(',')
+        for tutorial in tutorials:
+            text = _cpp_string_literal(tutorial['text'])
+            start_time = tutorial.get('startTime', 0)
+            duration = tutorial['duration']
+            dialog_command_lines.append(
+                f"    dialog_command{{{text}, {start_time}, {duration}, dialog_command_type::TUTORIAL}},")
+
+        if dialog_command_lines:
+            dialog_command_lines[-1] = dialog_command_lines[-1].rstrip(',')
 
         section_src = []
         section_src.extend(model_const_lines)
@@ -285,12 +293,12 @@ def generate_header(scene: Dict[str, Any]) -> str:
         else:
             section_src.append(f"constexpr std::initializer_list<enemy_def> _section_{sid}_enemies = {{}};")
         section_src.append("")
-        if subtitle_lines:
-            section_src.append(f"constexpr std::initializer_list<dialog_command> _section_{sid}_subtitles = {{")
-            section_src.extend(subtitle_lines)
+        if dialog_command_lines:
+            section_src.append(f"constexpr std::initializer_list<dialog_command> _section_{sid}_dialog_commands = {{")
+            section_src.extend(dialog_command_lines)
             section_src.append("};")
         else:
-            section_src.append(f"constexpr std::initializer_list<dialog_command> _section_{sid}_subtitles = {{}};")
+            section_src.append(f"constexpr std::initializer_list<dialog_command> _section_{sid}_dialog_commands = {{}};")
         section_src.append("")
         # Emit collider array if any colliders were found
         if has_colliders:
@@ -311,14 +319,14 @@ def generate_header(scene: Dict[str, Any]) -> str:
             section_src.append(
                 f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
                 f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
-                f"                                  _section_{sid}_subtitles,\n"
+                f"                                  _section_{sid}_dialog_commands,\n"
                 f"                                  _section_{sid}_static_colliders, _section_{sid}_static_colliders_count,\n"
                 f"                                  _section_{sid}_end_section);")
         else:
             section_src.append(
                 f"constexpr stage_section section_{sid}(_section_{sid}_start, _section_{sid}_end,\n"
                 f"                                  _section_{sid}_static_model_items, _section_{sid}_enemies,\n"
-                f"                                  _section_{sid}_subtitles,\n"
+                f"                                  _section_{sid}_dialog_commands,\n"
                 f"                                  _section_{sid}_end_section);")
         section_blocks.append('\n'.join(section_src))
 

@@ -30,7 +30,9 @@ constexpr std::initializer_list<enemy_def> _section_1_enemies = {
     enemy_def{fr::point_3d(20, 200, -20), 800, enemy_type::ASTEROID, nullptr}
 };
 
-constexpr std::initializer_list<dialog_command> _section_1_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_1_dialog_commands = {
+    dialog_command{"Use D-Pad to move.", 0, 120, dialog_command_type::TUTORIAL}
+};
 
 constexpr int _section_1_start = 1050;
 constexpr int _section_1_end = 250;
@@ -38,7 +40,7 @@ constexpr bool _section_1_end_section = false;
 
 constexpr stage_section section_1(_section_1_start, _section_1_end,
                                   _section_1_static_model_items, _section_1_enemies,
-                                  _section_1_subtitles,
+                                  _section_1_dialog_commands,
                                   _section_1_end_section);
 
 
@@ -48,7 +50,7 @@ constexpr std::initializer_list<enemy_def> _section_2_enemies = {
     enemy_def{fr::point_3d(-50, 0, 30), 200, enemy_type::ASTEROID, nullptr}
 };
 
-constexpr std::initializer_list<dialog_command> _section_2_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_2_dialog_commands = {};
 
 constexpr int _section_2_start = 750;
 constexpr int _section_2_end = -150;
@@ -56,7 +58,7 @@ constexpr bool _section_2_end_section = false;
 
 constexpr stage_section section_2(_section_2_start, _section_2_end,
                                   _section_2_static_model_items, _section_2_enemies,
-                                  _section_2_subtitles,
+                                  _section_2_dialog_commands,
                                   _section_2_end_section);
 
 
@@ -68,7 +70,7 @@ constexpr std::initializer_list<enemy_def> _section_3_enemies = {
     enemy_def{fr::point_3d(60, -400, 10), 500, enemy_type::ASTEROID, nullptr}
 };
 
-constexpr std::initializer_list<dialog_command> _section_3_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_3_dialog_commands = {};
 
 constexpr int _section_3_start = 450;
 constexpr int _section_3_end = -350;
@@ -76,7 +78,7 @@ constexpr bool _section_3_end_section = false;
 
 constexpr stage_section section_3(_section_3_start, _section_3_end,
                                   _section_3_static_model_items, _section_3_enemies,
-                                  _section_3_subtitles,
+                                  _section_3_dialog_commands,
                                   _section_3_end_section);
 
 
@@ -88,7 +90,7 @@ constexpr std::initializer_list<enemy_def> _section_4_enemies = {
     enemy_def{fr::point_3d(-80, -800, -10), 500, enemy_type::ASTEROID, nullptr}
 };
 
-constexpr std::initializer_list<dialog_command> _section_4_subtitles = {
+constexpr std::initializer_list<dialog_command> _section_4_dialog_commands = {
     dialog_command{"This is my subtitle.", 0, 120},
     dialog_command{"This is another subtitle to test.", 130, 120}
 };
@@ -99,7 +101,7 @@ constexpr bool _section_4_end_section = false;
 
 constexpr stage_section section_4(_section_4_start, _section_4_end,
                                   _section_4_static_model_items, _section_4_enemies,
-                                  _section_4_subtitles,
+                                  _section_4_dialog_commands,
                                   _section_4_end_section);
 
 
@@ -111,7 +113,7 @@ constexpr std::initializer_list<enemy_def> _section_5_enemies = {
     enemy_def{fr::point_3d(-50, -1250, -30), 100, enemy_type::OYSTER, &_s5_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_5_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_5_dialog_commands = {};
 
 constexpr int _section_5_start = -450;
 constexpr int _section_5_end = -2350;
@@ -119,7 +121,7 @@ constexpr bool _section_5_end_section = false;
 
 constexpr stage_section section_5(_section_5_start, _section_5_end,
                                   _section_5_static_model_items, _section_5_enemies,
-                                  _section_5_subtitles,
+                                  _section_5_dialog_commands,
                                   _section_5_end_section);
 
 
@@ -127,7 +129,7 @@ constexpr std::initializer_list<fr::model_3d_item> _section_5_1_static_model_ite
 
 constexpr std::initializer_list<enemy_def> _section_5_1_enemies = {};
 
-constexpr std::initializer_list<dialog_command> _section_5_1_subtitles = {
+constexpr std::initializer_list<dialog_command> _section_5_1_dialog_commands = {
     dialog_command{"Another subtitle to test in our game here.", 0, 120}
 };
 
@@ -137,7 +139,7 @@ constexpr bool _section_5_1_end_section = false;
 
 constexpr stage_section section_5_1(_section_5_1_start, _section_5_1_end,
                                   _section_5_1_static_model_items, _section_5_1_enemies,
-                                  _section_5_1_subtitles,
+                                  _section_5_1_dialog_commands,
                                   _section_5_1_end_section);
 
 
@@ -149,7 +151,7 @@ constexpr std::initializer_list<enemy_def> _section_6_enemies = {
     enemy_def{fr::point_3d(50, -1750, 30), 300, enemy_type::OYSTER, &_s6_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_6_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_6_dialog_commands = {};
 
 constexpr int _section_6_start = -950;
 constexpr int _section_6_end = -2850;
@@ -157,7 +159,7 @@ constexpr bool _section_6_end_section = false;
 
 constexpr stage_section section_6(_section_6_start, _section_6_end,
                                   _section_6_static_model_items, _section_6_enemies,
-                                  _section_6_subtitles,
+                                  _section_6_dialog_commands,
                                   _section_6_end_section);
 
 
@@ -170,7 +172,7 @@ constexpr std::initializer_list<enemy_def> _section_7_enemies = {
     enemy_def{fr::point_3d(-80, -2450, 30), 500, enemy_type::ASTEROID, &_s7_enemy_2_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_7_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_7_dialog_commands = {};
 
 constexpr int _section_7_start = -1450;
 constexpr int _section_7_end = -2350;
@@ -178,7 +180,7 @@ constexpr bool _section_7_end_section = false;
 
 constexpr stage_section section_7(_section_7_start, _section_7_end,
                                   _section_7_static_model_items, _section_7_enemies,
-                                  _section_7_subtitles,
+                                  _section_7_dialog_commands,
                                   _section_7_end_section);
 
 
@@ -190,7 +192,7 @@ constexpr std::initializer_list<enemy_def> _section_8_enemies = {
     enemy_def{fr::point_3d(-40, -2550, -35), 300, enemy_type::ASTEROID, &_s8_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_8_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_8_dialog_commands = {};
 
 constexpr int _section_8_start = -1650;
 constexpr int _section_8_end = -2550;
@@ -198,7 +200,7 @@ constexpr bool _section_8_end_section = false;
 
 constexpr stage_section section_8(_section_8_start, _section_8_end,
                                   _section_8_static_model_items, _section_8_enemies,
-                                  _section_8_subtitles,
+                                  _section_8_dialog_commands,
                                   _section_8_end_section);
 
 
@@ -211,7 +213,7 @@ constexpr std::initializer_list<enemy_def> _section_9_enemies = {
     enemy_def{fr::point_3d(-50, -2650, 30), 500, enemy_type::SCORPION, nullptr}
 };
 
-constexpr std::initializer_list<dialog_command> _section_9_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_9_dialog_commands = {};
 
 constexpr int _section_9_start = -1850;
 constexpr int _section_9_end = -2850;
@@ -219,7 +221,7 @@ constexpr bool _section_9_end_section = false;
 
 constexpr stage_section section_9(_section_9_start, _section_9_end,
                                   _section_9_static_model_items, _section_9_enemies,
-                                  _section_9_subtitles,
+                                  _section_9_dialog_commands,
                                   _section_9_end_section);
 
 constexpr auto _s10_model_1 =
@@ -232,7 +234,7 @@ constexpr std::initializer_list<fr::model_3d_item> _section_10_static_model_item
 
 constexpr std::initializer_list<enemy_def> _section_10_enemies = {};
 
-constexpr std::initializer_list<dialog_command> _section_10_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_10_dialog_commands = {};
 
 constexpr sphere_collider _section_10_static_colliders[] = {
     sphere_collider(fr::point_3d(-50, -3100, -30), 40)
@@ -246,7 +248,7 @@ constexpr bool _section_10_end_section = false;
 
 constexpr stage_section section_10(_section_10_start, _section_10_end,
                                   _section_10_static_model_items, _section_10_enemies,
-                                  _section_10_subtitles,
+                                  _section_10_dialog_commands,
                                   _section_10_static_colliders, _section_10_static_colliders_count,
                                   _section_10_end_section);
 
@@ -264,7 +266,7 @@ constexpr std::initializer_list<enemy_def> _section_11_enemies = {
     enemy_def{fr::point_3d(50, -3600, -35), 100, enemy_type::ASTEROID, &_s11_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_11_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_11_dialog_commands = {};
 
 constexpr sphere_collider _section_11_static_colliders[] = {
     sphere_collider(fr::point_3d(50, -3550, 40), 40)
@@ -278,7 +280,7 @@ constexpr bool _section_11_end_section = false;
 
 constexpr stage_section section_11(_section_11_start, _section_11_end,
                                   _section_11_static_model_items, _section_11_enemies,
-                                  _section_11_subtitles,
+                                  _section_11_dialog_commands,
                                   _section_11_static_colliders, _section_11_static_colliders_count,
                                   _section_11_end_section);
 
@@ -291,7 +293,7 @@ constexpr std::initializer_list<enemy_def> _section_12_enemies = {
     enemy_def{fr::point_3d(-50, -3930, -30), 100, enemy_type::ASTEROID, &_s12_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_12_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_12_dialog_commands = {};
 
 constexpr int _section_12_start = -2950;
 constexpr int _section_12_end = -3850;
@@ -299,7 +301,7 @@ constexpr bool _section_12_end_section = false;
 
 constexpr stage_section section_12(_section_12_start, _section_12_end,
                                   _section_12_static_model_items, _section_12_enemies,
-                                  _section_12_subtitles,
+                                  _section_12_dialog_commands,
                                   _section_12_end_section);
 
 
@@ -311,7 +313,7 @@ constexpr std::initializer_list<enemy_def> _section_13_enemies = {
     enemy_def{fr::point_3d(60, -4050, -35), 100, enemy_type::ASTEROID, &_s13_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_13_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_13_dialog_commands = {};
 
 constexpr int _section_13_start = -3150;
 constexpr int _section_13_end = -4050;
@@ -319,7 +321,7 @@ constexpr bool _section_13_end_section = false;
 
 constexpr stage_section section_13(_section_13_start, _section_13_end,
                                   _section_13_static_model_items, _section_13_enemies,
-                                  _section_13_subtitles,
+                                  _section_13_dialog_commands,
                                   _section_13_end_section);
 
 
@@ -331,7 +333,7 @@ constexpr std::initializer_list<enemy_def> _section_14_enemies = {
     enemy_def{fr::point_3d(-20, -4350, 40), 100, enemy_type::OYSTER, &_s14_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_14_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_14_dialog_commands = {};
 
 constexpr int _section_14_start = -3550;
 constexpr int _section_14_end = -4600;
@@ -339,7 +341,7 @@ constexpr bool _section_14_end_section = false;
 
 constexpr stage_section section_14(_section_14_start, _section_14_end,
                                   _section_14_static_model_items, _section_14_enemies,
-                                  _section_14_subtitles,
+                                  _section_14_dialog_commands,
                                   _section_14_end_section);
 
 
@@ -353,7 +355,7 @@ constexpr std::initializer_list<enemy_def> _section_15_enemies = {
     enemy_def{fr::point_3d(-60, -4650, -40), 300, enemy_type::OYSTER, &_s15_enemy_2_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_15_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_15_dialog_commands = {};
 
 constexpr int _section_15_start = -3750;
 constexpr int _section_15_end = -4850;
@@ -361,7 +363,7 @@ constexpr bool _section_15_end_section = false;
 
 constexpr stage_section section_15(_section_15_start, _section_15_end,
                                   _section_15_static_model_items, _section_15_enemies,
-                                  _section_15_subtitles,
+                                  _section_15_dialog_commands,
                                   _section_15_end_section);
 
 constexpr auto _s16_model_1 =
@@ -374,7 +376,7 @@ constexpr std::initializer_list<fr::model_3d_item> _section_16_static_model_item
 
 constexpr std::initializer_list<enemy_def> _section_16_enemies = {};
 
-constexpr std::initializer_list<dialog_command> _section_16_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_16_dialog_commands = {};
 
 constexpr sphere_collider _section_16_static_colliders[] = {
     sphere_collider(fr::point_3d(55, -5500, -45), 40)
@@ -388,7 +390,7 @@ constexpr bool _section_16_end_section = false;
 
 constexpr stage_section section_16(_section_16_start, _section_16_end,
                                   _section_16_static_model_items, _section_16_enemies,
-                                  _section_16_subtitles,
+                                  _section_16_dialog_commands,
                                   _section_16_static_colliders, _section_16_static_colliders_count,
                                   _section_16_end_section);
 
@@ -399,7 +401,7 @@ constexpr std::initializer_list<enemy_def> _section_17_enemies = {
     enemy_def{fr::point_3d(-70, -5650, 50), 100, enemy_type::SCORPION, nullptr}
 };
 
-constexpr std::initializer_list<dialog_command> _section_17_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_17_dialog_commands = {};
 
 constexpr int _section_17_start = -4750;
 constexpr int _section_17_end = -5900;
@@ -407,7 +409,7 @@ constexpr bool _section_17_end_section = false;
 
 constexpr stage_section section_17(_section_17_start, _section_17_end,
                                   _section_17_static_model_items, _section_17_enemies,
-                                  _section_17_subtitles,
+                                  _section_17_dialog_commands,
                                   _section_17_end_section);
 
 
@@ -419,7 +421,7 @@ constexpr std::initializer_list<enemy_def> _section_18_enemies = {
     enemy_def{fr::point_3d(60, -5830, 40), 100, enemy_type::ASTEROID, &_s18_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_18_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_18_dialog_commands = {};
 
 constexpr int _section_18_start = -4850;
 constexpr int _section_18_end = -6000;
@@ -427,7 +429,7 @@ constexpr bool _section_18_end_section = false;
 
 constexpr stage_section section_18(_section_18_start, _section_18_end,
                                   _section_18_static_model_items, _section_18_enemies,
-                                  _section_18_subtitles,
+                                  _section_18_dialog_commands,
                                   _section_18_end_section);
 
 
@@ -440,7 +442,7 @@ constexpr std::initializer_list<enemy_def> _section_19_enemies = {
     enemy_def{fr::point_3d(-60, -6250, 0), 100, enemy_type::SCORPION, nullptr}
 };
 
-constexpr std::initializer_list<dialog_command> _section_19_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_19_dialog_commands = {};
 
 constexpr int _section_19_start = -5350;
 constexpr int _section_19_end = -6500;
@@ -448,7 +450,7 @@ constexpr bool _section_19_end_section = false;
 
 constexpr stage_section section_19(_section_19_start, _section_19_end,
                                   _section_19_static_model_items, _section_19_enemies,
-                                  _section_19_subtitles,
+                                  _section_19_dialog_commands,
                                   _section_19_end_section);
 
 
@@ -460,7 +462,7 @@ constexpr std::initializer_list<enemy_def> _section_20_enemies = {
     enemy_def{fr::point_3d(-40, -6650, -60), 100, enemy_type::OYSTER, &_s20_enemy_1_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_20_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_20_dialog_commands = {};
 
 constexpr int _section_20_start = -5750;
 constexpr int _section_20_end = -6900;
@@ -468,7 +470,7 @@ constexpr bool _section_20_end_section = false;
 
 constexpr stage_section section_20(_section_20_start, _section_20_end,
                                   _section_20_static_model_items, _section_20_enemies,
-                                  _section_20_subtitles,
+                                  _section_20_dialog_commands,
                                   _section_20_end_section);
 
 
@@ -483,7 +485,7 @@ constexpr std::initializer_list<enemy_def> _section_21_enemies = {
     enemy_def{fr::point_3d(-20, -7250, 20), 100, enemy_type::ASTEROID, &_s21_enemy_3_props}
 };
 
-constexpr std::initializer_list<dialog_command> _section_21_subtitles = {};
+constexpr std::initializer_list<dialog_command> _section_21_dialog_commands = {};
 
 constexpr int _section_21_start = -6350;
 constexpr int _section_21_end = -7300;
@@ -491,7 +493,7 @@ constexpr bool _section_21_end_section = true;
 
 constexpr stage_section section_21(_section_21_start, _section_21_end,
                                   _section_21_static_model_items, _section_21_enemies,
-                                  _section_21_subtitles,
+                                  _section_21_dialog_commands,
                                   _section_21_end_section);
 
 // # Sections List
