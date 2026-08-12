@@ -2,13 +2,14 @@
 #define DIALOG_MANAGER_H
 
 #include "bn_fixed.h"
+#include "bn_optional.h"
 #include "bn_string.h"
 #include "bn_sprite_ptr.h"
 #include "bn_sprite_text_generator.h"
 #include "bn_vector.h"
 
+#include "dialog_command.h"
 #include "stage_section.h"
-#include "subtitle_command.h"
 
 enum class dialog_state
 {
@@ -26,14 +27,26 @@ public:
     void update(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
 
     void add_subtitle_command(const char* subtitle, int start_time, int duration);
-    void show_subtitle(const char* subtitle, int duration);
+    void add_tutorial_command(const char* text, int start_time, int duration);
     void suspend_for_pause();
 
 private:
     // General constants
     static constexpr int HIDE_DELAY_FRAMES = 45;
     static constexpr int TRANSITION_FRAMES = 5;
-    static constexpr int MAX_SUBTITLE_COMMANDS = 32;
+    static constexpr int MAX_DIALOG_COMMANDS = 32;
+
+    // Tutorial dialog build constants
+    static constexpr int TUTORIAL_START_X = -95;
+    static constexpr int TUTORIAL_START_Y = 48;
+    static constexpr int TUTORIAL_COLS = 14;
+    static constexpr int TUTORIAL_ROWS = 2;
+    static constexpr int TUTORIAL_TILE_SPACING = 15;
+    static constexpr int TUTORIAL_MAX_SPRITES = TUTORIAL_COLS * TUTORIAL_ROWS;
+    static constexpr int TUTORIAL_X = 0;
+    static constexpr int TUTORIAL_Y = 53;
+    static constexpr int MAX_TUTORIAL_CHARS_PER_LINE = 28;
+    static constexpr int TUTORIAL_LINE_HEIGHT = 10;
 
     // Subtitle text constants
     static constexpr int SUBTITLE_X = 20;
@@ -42,13 +55,13 @@ private:
     static constexpr int MAX_SUBTITLE_CHARS_PER_LINE = 26;
     static constexpr int SUBTITLE_LINE_HEIGHT = 10;
 
-    // Dialog build constants
+    // Subtitle dialog build constants
     static constexpr int DIALOG_START_X = -65;
     static constexpr int DIALOG_START_Y = 38;
     static constexpr int DIALOG_COLS = 12;
     static constexpr int DIALOG_ROWS = 3;
     static constexpr int DIALOG_INNER_SPRITES = (DIALOG_COLS - 2) * (DIALOG_ROWS - 2);
-    static constexpr int DIALOG_MAX_SPRITES = DIALOG_INNER_SPRITES + (DIALOG_ROWS - 1) +
+    static constexpr int SUBTITLE_DIALOG_MAX_SPRITES = DIALOG_INNER_SPRITES + (DIALOG_ROWS - 1) +
                                              (DIALOG_COLS - 2) + (DIALOG_COLS - 1) +
                                              (DIALOG_ROWS - 1) + 2;
     static constexpr int DIALOG_TILE_SPACING = 15;
@@ -62,42 +75,43 @@ private:
     static constexpr int UPPER_BORDER_Z_ORDER = 2;
     static constexpr int LEFT_BORDER_Z_ORDER = 1;
 
-    bn::sprite_text_generator _subtitle_text_generator;
-    bn::vector<subtitle_command, MAX_SUBTITLE_COMMANDS> _subtitle_commands;
-    bn::vector<bn::sprite_ptr, DIALOG_MAX_SPRITES> _dialog_sprites;
-    bn::vector<bn::sprite_ptr, 40> _subtitle_text_sprites;
-    bn::string<64> _subtitle_text;
-    bn::string<64> _wrapped_subtitle_text;
+    bn::sprite_text_generator _dialog_text_generator;
+    bn::vector<dialog_command, MAX_DIALOG_COMMANDS> _dialog_commands;
+    bn::optional<bn::vector<bn::sprite_ptr, SUBTITLE_DIALOG_MAX_SPRITES>> _subtitle_dialog_sprites;
+    bn::optional<bn::vector<bn::sprite_ptr, TUTORIAL_MAX_SPRITES>> _tutorial_dialog_sprites;
+    bn::vector<bn::sprite_ptr, 40> _dialog_text_sprites;
+    bn::string<64> _dialog_text;
+    bn::string<64> _wrapped_dialog_text;
 
     dialog_state _dialog_state = dialog_state::HIDDEN;
+    dialog_command_type _active_dialog_type = dialog_command_type::SUBTITLE;
 
-    int _active_subtitle_command_index = -1;
-    int _pending_subtitle_command_index = -1;
+    int _pending_dialog_command_index = -1;
     int _elapsed_frames = 0;
-    int _active_subtitle_end_frame = -1;
+    int _active_dialog_end_frame = -1;
     int _hide_dialog_frame = -1;
     int _transition_frame = 0;
     bn::fixed _last_section_start_y = bn::fixed(32767);
-    int _subtitle_character_index = 0;
-    int _subtitle_frame_counter = 0;
-    bool _dialog_shown = false;
+    int _dialog_character_index = 0;
+    int _dialog_frame_counter = 0;
     bool _suspended_for_pause = false;
 
-    void _show_dialog();
+    void _show_dialog(dialog_command_type type);
     void _hide_dialog();
+    void _build_subtitle_dialog_box();
+    void _build_tutorial_dialog_box();
+    void _start_dialog_command(int command_index);
     void _set_visible(bool visible);
-    void _process_section(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
 
+    void _process_section(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
     void _resume_from_pause();
 
-    void _start_subtitle(int command_index);
-    void _start_subtitle_text(const char* subtitle, int duration);
-    void _update_subtitle_text();
-    void _wrap_subtitle_text(const char* subtitle);
-    void _render_subtitle_text();
+    void _start_dialog_text(const dialog_command& command);
+    void _update_dialog_text();
+    void _wrap_dialog_text(const char* text);
+    void _render_dialog_text();
 
     void _set_blending_enabled(bool blending_enabled);
-    void _set_transparency_alpha(bn::fixed alpha);
     void _clear_blending();
     
     void _update_dialog_transition();

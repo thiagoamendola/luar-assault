@@ -2,17 +2,18 @@
 
 #include "bn_blending.h"
 #include "bn_sprite_items_dialog_bg.h"
+#include "bn_sprite_items_tutorial_bg.h"
 #include "bn_utility.h"
 
 #include "common_variable_8x16_sprite_font.h"
 #include "stage_section.h"
 
 dialog_manager::dialog_manager() :
-    _subtitle_text_generator(common::variable_8x16_sprite_font)
+    _dialog_text_generator(common::variable_8x16_sprite_font)
 {
-    _subtitle_text_generator.set_bg_priority(0);
-    _subtitle_text_generator.set_z_order(-1);
-    _subtitle_text_generator.set_center_alignment();
+    _dialog_text_generator.set_bg_priority(0);
+    _dialog_text_generator.set_z_order(-1);
+    _dialog_text_generator.set_center_alignment();
 
 }
 
@@ -27,24 +28,23 @@ void dialog_manager::update(stage_section_list_ptr sections, size_t sections_cou
 
     _process_section(sections, sections_count, camera_y);
 
-    for (int index = 0; index < _subtitle_commands.size(); ++index)
+    for (int index = 0; index < _dialog_commands.size(); ++index)
     {
-        const subtitle_command& command = _subtitle_commands[index];
+        const dialog_command& command = _dialog_commands[index];
         if (command.start_time == _elapsed_frames)
         {
-            _start_subtitle(index);
+            _start_dialog_command(index);
         }
     }
 
     _update_dialog_transition();
-    _update_subtitle_text();
+    _update_dialog_text();
 
-    if (_active_subtitle_end_frame >= 0)
+    if (_active_dialog_end_frame >= 0)
     {
-        if (_elapsed_frames >= _active_subtitle_end_frame)
+        if (_elapsed_frames >= _active_dialog_end_frame)
         {
-            _active_subtitle_command_index = -1;
-            _active_subtitle_end_frame = -1;
+            _active_dialog_end_frame = -1;
             _hide_dialog_frame = _elapsed_frames + HIDE_DELAY_FRAMES;
         }
     }
@@ -68,24 +68,43 @@ void dialog_manager::_process_section(stage_section_list_ptr sections, size_t se
 
             for (int subtitle_index = 0; subtitle_index < section->subtitles_count(); ++subtitle_index)
             {
-                const subtitle_command& subtitle = section->subtitles()[subtitle_index];
-                add_subtitle_command(subtitle.subtitle, _elapsed_frames + subtitle.start_time, subtitle.duration);
+                const dialog_command& command = section->subtitles()[subtitle_index];
+                add_subtitle_command(command.text, _elapsed_frames + command.start_time, command.duration);
             }
         }
     }
 }
 
-void dialog_manager::_show_dialog()
+void dialog_manager::_show_dialog(dialog_command_type type)
 {
-    if (_dialog_shown)
+    if (_dialog_state != dialog_state::HIDDEN && _active_dialog_type == type)
     {
         return;
     }
 
-    _dialog_shown = true;
+    // Resets unused sprites.
+    _subtitle_dialog_sprites.reset();
+    _tutorial_dialog_sprites.reset();
+    _active_dialog_type = type;
+
+    // Create dialog of the given type.
+    if (type == dialog_command_type::TUTORIAL)
+    {
+        _build_tutorial_dialog_box();
+    }
+    else
+    {
+        _build_subtitle_dialog_box();
+    }
+}
+
+void dialog_manager::_build_subtitle_dialog_box()
+{
+    const bool blending_enabled = _dialog_state != dialog_state::OPEN;
+    _subtitle_dialog_sprites.emplace();
 
     // Create lambda for tile creation
-    auto add_dialog_sprite = [this](int col, int row, int graphics_index, int z_order)
+    auto add_dialog_sprite = [this, blending_enabled](int col, int row, int graphics_index, int z_order)
     {
         const int x = DIALOG_START_X + col * DIALOG_TILE_SPACING;
         const int y = DIALOG_START_Y + row * DIALOG_TILE_SPACING;
@@ -93,8 +112,8 @@ void dialog_manager::_show_dialog()
         bn::sprite_ptr sprite = bn::sprite_items::dialog_bg.create_sprite(x, y, graphics_index);
         sprite.set_bg_priority(0);
         sprite.set_z_order(z_order);
-        sprite.set_blending_enabled(true);
-        _dialog_sprites.push_back(bn::move(sprite));
+        sprite.set_blending_enabled(blending_enabled);
+        _subtitle_dialog_sprites.value().push_back(bn::move(sprite));
     };
 
     // Add inner tiles.
@@ -130,21 +149,44 @@ void dialog_manager::_show_dialog()
     add_dialog_sprite(DIALOG_COLS - 1, DIALOG_ROWS - 1, LOWER_RIGHT_BORDER_GRAPHICS_INDEX, CORNER_Z_ORDER);
 }
 
+void dialog_manager::_build_tutorial_dialog_box()
+{
+    const bool blending_enabled = _dialog_state != dialog_state::OPEN;
+    _tutorial_dialog_sprites.emplace();
+
+    for (int row = 0; row < TUTORIAL_ROWS; ++row)
+    {
+        for (int col = 0; col < TUTORIAL_COLS; ++col)
+        {
+            const int x = TUTORIAL_START_X + col * TUTORIAL_TILE_SPACING;
+            const int y = TUTORIAL_START_Y + row * TUTORIAL_TILE_SPACING;
+
+            bn::sprite_ptr sprite = bn::sprite_items::tutorial_bg.create_sprite(x, y);
+            sprite.set_bg_priority(0);
+            sprite.set_z_order(INNER_BLOCKS_Z_ORDER);
+            sprite.set_blending_enabled(blending_enabled);
+            _tutorial_dialog_sprites.value().push_back(bn::move(sprite));
+        }
+    }
+}
+
 void dialog_manager::_hide_dialog()
 {
     _clear_blending();
-    _dialog_sprites.clear();
-    _subtitle_text_sprites.clear();
-    _subtitle_text.clear();
-    _wrapped_subtitle_text.clear();
-    _active_subtitle_command_index = -1;
-    _pending_subtitle_command_index = -1;
-    _active_subtitle_end_frame = -1;
+    // Clear existing dialog box sprites.
+    _subtitle_dialog_sprites.reset();
+    _tutorial_dialog_sprites.reset();
+    // Clear text-related variables.
+    _dialog_text_sprites.clear();
+    _dialog_text.clear();
+    _wrapped_dialog_text.clear();
+
+    _pending_dialog_command_index = -1;
+    _active_dialog_end_frame = -1;
     _hide_dialog_frame = -1;
     _transition_frame = 0;
-    _subtitle_character_index = 0;
-    _subtitle_frame_counter = 0;
-    _dialog_shown = false;
+    _dialog_character_index = 0;
+    _dialog_frame_counter = 0;
     _dialog_state = dialog_state::HIDDEN;
 }
 
@@ -168,7 +210,7 @@ void dialog_manager::_resume_from_pause()
 
     _suspended_for_pause = false;
 
-    if (!_dialog_shown)
+    if (_dialog_state == dialog_state::HIDDEN)
     {
         return;
     }
@@ -183,23 +225,36 @@ void dialog_manager::_resume_from_pause()
 
 void dialog_manager::_set_visible(bool visible)
 {
-    for (bn::sprite_ptr& sprite : _dialog_sprites)
+    if (_subtitle_dialog_sprites.has_value())
     {
-        sprite.set_visible(visible);
+        for (bn::sprite_ptr& sprite : _subtitle_dialog_sprites.value())
+        {
+            sprite.set_visible(visible);
+        }
     }
 
-    for (bn::sprite_ptr& sprite : _subtitle_text_sprites)
+    if (_tutorial_dialog_sprites.has_value())
+    {
+        for (bn::sprite_ptr& sprite : _tutorial_dialog_sprites.value())
+        {
+            sprite.set_visible(visible);
+        }
+    }
+
+    for (bn::sprite_ptr& sprite : _dialog_text_sprites)
     {
         sprite.set_visible(visible);
     }
 }
 
-void dialog_manager::_start_subtitle(int command_index)
+void dialog_manager::_start_dialog_command(int command_index)
 {
+    const dialog_command& command = _dialog_commands[command_index];
+
     if (_dialog_state == dialog_state::HIDDEN)
     {
-        _show_dialog();
-        _pending_subtitle_command_index = command_index;
+        _show_dialog(command.type);
+        _pending_dialog_command_index = command_index;
         _transition_frame = 0;
         _hide_dialog_frame = -1;
         _dialog_state = dialog_state::OPENING;
@@ -208,7 +263,8 @@ void dialog_manager::_start_subtitle(int command_index)
 
     if (_dialog_state == dialog_state::CLOSING)
     {
-        _pending_subtitle_command_index = command_index;
+        _show_dialog(command.type);
+        _pending_dialog_command_index = command_index;
         _transition_frame = TRANSITION_FRAMES - _transition_frame;
         _hide_dialog_frame = -1;
         _dialog_state = dialog_state::OPENING;
@@ -217,25 +273,36 @@ void dialog_manager::_start_subtitle(int command_index)
 
     if (_dialog_state == dialog_state::OPENING)
     {
-        _pending_subtitle_command_index = command_index;
+        _show_dialog(command.type);
+        _pending_dialog_command_index = command_index;
         _hide_dialog_frame = -1;
         return;
     }
 
-    _start_subtitle_text(_subtitle_commands[command_index].subtitle, _subtitle_commands[command_index].duration);
-    _pending_subtitle_command_index = -1;
+    _start_dialog_text(command);
+    _pending_dialog_command_index = -1;
 }
 
-void dialog_manager::_start_subtitle_text(const char* subtitle, int duration)
+void dialog_manager::_start_dialog_text(const dialog_command& command)
 {
-    _show_dialog();
-    _subtitle_text_sprites.clear();
-    _subtitle_text.clear();
-    _wrap_subtitle_text(subtitle);
-    _active_subtitle_end_frame = _elapsed_frames + duration;
+    // Show the dialog box if it's not already shown.
+    _show_dialog(command.type);
+    // Clear existing text.
+    _dialog_text_sprites.clear();
+    _dialog_text.clear();
+    // Wrap provided text to fit within the dialog box.
+    _wrap_dialog_text(command.text);
+    _active_dialog_end_frame = _elapsed_frames + command.duration;
     _hide_dialog_frame = -1;
-    _subtitle_character_index = 0;
-    _subtitle_frame_counter = 0;
+    _dialog_character_index = 0;
+    _dialog_frame_counter = 0;
+
+    if (command.type == dialog_command_type::TUTORIAL)
+    {
+        _dialog_text = _wrapped_dialog_text;
+        _dialog_character_index = _wrapped_dialog_text.size();
+        _render_dialog_text();
+    }
 }
 
 void dialog_manager::_update_dialog_transition()
@@ -248,7 +315,7 @@ void dialog_manager::_update_dialog_transition()
         {
             alpha = 1.0;
         }
-        _set_transparency_alpha(alpha);
+        bn::blending::set_transparency_alpha(alpha);
 
         if (_transition_frame >= TRANSITION_FRAMES)
         {
@@ -256,12 +323,11 @@ void dialog_manager::_update_dialog_transition()
             _transition_frame = 0;
             _dialog_state = dialog_state::OPEN;
 
-            if (_pending_subtitle_command_index >= 0)
+            if (_pending_dialog_command_index >= 0)
             {
-                int command_index = _pending_subtitle_command_index;
-                _start_subtitle_text(_subtitle_commands[command_index].subtitle,
-                                     _subtitle_commands[command_index].duration);
-                _pending_subtitle_command_index = -1;
+                int command_index = _pending_dialog_command_index;
+                _start_dialog_text(_dialog_commands[command_index]);
+                _pending_dialog_command_index = -1;
             }
         }
     }
@@ -273,7 +339,7 @@ void dialog_manager::_update_dialog_transition()
         {
             alpha = 0.0;
         }
-        _set_transparency_alpha(alpha);
+        bn::blending::set_transparency_alpha(alpha);
 
         if (_transition_frame >= TRANSITION_FRAMES)
         {
@@ -284,26 +350,32 @@ void dialog_manager::_update_dialog_transition()
 
 void dialog_manager::_set_blending_enabled(bool blending_enabled)
 {
-    for (bn::sprite_ptr& sprite : _dialog_sprites)
+    if (_subtitle_dialog_sprites.has_value())
+    {
+        for (bn::sprite_ptr& sprite : _subtitle_dialog_sprites.value())
+        {
+            sprite.set_blending_enabled(blending_enabled);
+        }
+    }
+
+    if (_tutorial_dialog_sprites.has_value())
+    {
+        for (bn::sprite_ptr& sprite : _tutorial_dialog_sprites.value())
+        {
+            sprite.set_blending_enabled(blending_enabled);
+        }
+    }
+
+    for (bn::sprite_ptr& sprite : _dialog_text_sprites)
     {
         sprite.set_blending_enabled(blending_enabled);
     }
-
-    for (bn::sprite_ptr& sprite : _subtitle_text_sprites)
-    {
-        sprite.set_blending_enabled(blending_enabled);
-    }
-}
-
-void dialog_manager::_set_transparency_alpha(bn::fixed alpha)
-{
-    bn::blending::set_transparency_alpha(alpha);
 }
 
 void dialog_manager::_clear_blending()
 {
     _set_blending_enabled(false);
-    _set_transparency_alpha(1.0);
+    bn::blending::set_transparency_alpha(1.0);
 }
 
 void dialog_manager::_start_closing_dialog()
@@ -313,100 +385,103 @@ void dialog_manager::_start_closing_dialog()
         return;
     }
 
-    _subtitle_text_sprites.clear();
-    _subtitle_text.clear();
-    _wrapped_subtitle_text.clear();
+    _dialog_text_sprites.clear();
+    _dialog_text.clear();
+    _wrapped_dialog_text.clear();
     _hide_dialog_frame = -1;
     _transition_frame = 0;
     _set_blending_enabled(true);
-    _set_transparency_alpha(1.0);
+    bn::blending::set_transparency_alpha(1.0);
     _dialog_state = dialog_state::CLOSING;
 }
 
-void dialog_manager::_update_subtitle_text()
+void dialog_manager::_update_dialog_text()
 {
-    if (_active_subtitle_end_frame < 0)
+    if (_active_dialog_end_frame < 0)
     {
         return;
     }
 
-    if (_subtitle_character_index >= _wrapped_subtitle_text.size())
+    if (_dialog_character_index >= _wrapped_dialog_text.size())
     {
         return;
     }
 
-    ++_subtitle_frame_counter;
-    if (_subtitle_frame_counter < CHAR_SPEED)
+    _dialog_frame_counter++;
+    if (_dialog_frame_counter < CHAR_SPEED)
     {
         return;
     }
 
-    _subtitle_frame_counter = 0;
-    _subtitle_text.push_back(_wrapped_subtitle_text[_subtitle_character_index]);
-    ++_subtitle_character_index;
+    _dialog_frame_counter = 0;
+    _dialog_text.push_back(_wrapped_dialog_text[_dialog_character_index]);
+    _dialog_character_index++;
 
-    _render_subtitle_text();
+    _render_dialog_text();
 }
 
-void dialog_manager::_wrap_subtitle_text(const char* subtitle)
+void dialog_manager::_wrap_dialog_text(const char* text)
 {
-    _wrapped_subtitle_text.clear();
+    _wrapped_dialog_text.clear();
 
-    int subtitle_length = 0;
-    for (; subtitle[subtitle_length] != '\0'; ++subtitle_length)
+    int text_length = 0;
+    for (; text[text_length] != '\0'; ++text_length)
     {
-        _wrapped_subtitle_text.push_back(subtitle[subtitle_length]);
+        _wrapped_dialog_text.push_back(text[text_length]);
     }
 
-    if (subtitle_length <= MAX_SUBTITLE_CHARS_PER_LINE)
+    const int max_chars_per_line = _active_dialog_type == dialog_command_type::TUTORIAL ?
+                                   MAX_TUTORIAL_CHARS_PER_LINE : MAX_SUBTITLE_CHARS_PER_LINE;
+
+    if (text_length <= max_chars_per_line)
     {
         return;
     }
 
-    _wrapped_subtitle_text.clear();
+    _wrapped_dialog_text.clear();
 
     int line_length = 0;
     int word_start_index = -1;
     int word_length = 0;
 
-    for (int input_index = 0; subtitle[input_index] != '\0'; input_index++)
+    for (int input_index = 0; text[input_index] != '\0'; input_index++)
     {
-        char character = subtitle[input_index];
+        char character = text[input_index];
 
         if (character == ' ')
         {
             word_start_index = -1;
             word_length = 0;
-            _wrapped_subtitle_text.push_back(character);
+            _wrapped_dialog_text.push_back(character);
             line_length++;
             continue;
         }
 
         if (word_start_index < 0)
         {
-            word_start_index = _wrapped_subtitle_text.size();
+            word_start_index = _wrapped_dialog_text.size();
             word_length = 0;
         }
 
-        _wrapped_subtitle_text.push_back(character);
+        _wrapped_dialog_text.push_back(character);
         line_length++;
         word_length++;
 
-        if (line_length > MAX_SUBTITLE_CHARS_PER_LINE && word_start_index > 0)
+        if (line_length > max_chars_per_line && word_start_index > 0)
         {
-            _wrapped_subtitle_text[word_start_index - 1] = '\n';
+            _wrapped_dialog_text[word_start_index - 1] = '\n';
             line_length = word_length;
         }
     }
 }
 
-void dialog_manager::_render_subtitle_text()
+void dialog_manager::_render_dialog_text()
 {
     bn::string<64> first_line;
     bn::string<64> second_line;
     bool second_line_active = false;
 
-    for (char character : _subtitle_text)
+    for (char character : _dialog_text)
     {
         if (character == '\n')
         {
@@ -424,22 +499,40 @@ void dialog_manager::_render_subtitle_text()
         }
     }
 
-    _subtitle_text_sprites.clear();
+    _dialog_text_sprites.clear();
     if (!second_line.empty())
     {
-        _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y - SUBTITLE_LINE_HEIGHT / 2, first_line,
-                                          _subtitle_text_sprites);
-        _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y + SUBTITLE_LINE_HEIGHT / 2, second_line,
-                                          _subtitle_text_sprites);
+        int text_x = SUBTITLE_X;
+        int text_y = SUBTITLE_Y;
+        int line_height = SUBTITLE_LINE_HEIGHT;
+        if (_active_dialog_type == dialog_command_type::TUTORIAL)
+        {
+            text_x = TUTORIAL_X;
+            text_y = TUTORIAL_Y;
+            line_height = TUTORIAL_LINE_HEIGHT;
+        }
+
+        _dialog_text_generator.generate(text_x, text_y - line_height / 2, first_line,
+                        _dialog_text_sprites);
+        _dialog_text_generator.generate(text_x, text_y + line_height / 2, second_line,
+                        _dialog_text_sprites);
     }
     else
     {
-        _subtitle_text_generator.generate(SUBTITLE_X, SUBTITLE_Y, first_line, _subtitle_text_sprites);
+        int text_x = SUBTITLE_X;
+        int text_y = SUBTITLE_Y;
+        if (_active_dialog_type == dialog_command_type::TUTORIAL)
+        {
+            text_x = TUTORIAL_X;
+            text_y = TUTORIAL_Y;
+        }
+
+        _dialog_text_generator.generate(text_x, text_y, first_line, _dialog_text_sprites);
     }
 
     if (_dialog_state == dialog_state::OPENING || _dialog_state == dialog_state::CLOSING)
     {
-        for (bn::sprite_ptr& sprite : _subtitle_text_sprites)
+        for (bn::sprite_ptr& sprite : _dialog_text_sprites)
         {
             sprite.set_blending_enabled(true);
         }
@@ -448,28 +541,16 @@ void dialog_manager::_render_subtitle_text()
 
 void dialog_manager::add_subtitle_command(const char* subtitle, int start_time, int duration)
 {
-    if (_subtitle_commands.size() < MAX_SUBTITLE_COMMANDS)
+    if (_dialog_commands.size() < MAX_DIALOG_COMMANDS)
     {
-        _subtitle_commands.push_back({ subtitle, start_time, duration });
+        _dialog_commands.push_back({ subtitle, start_time, duration, dialog_command_type::SUBTITLE });
     }
 }
 
-void dialog_manager::show_subtitle(const char* subtitle, int duration)
+void dialog_manager::add_tutorial_command(const char* text, int start_time, int duration)
 {
-    _active_subtitle_command_index = -1;
-    _pending_subtitle_command_index = -1;
-    _start_subtitle_text(subtitle, duration);
-
-    if (_dialog_state == dialog_state::HIDDEN)
+    if (_dialog_commands.size() < MAX_DIALOG_COMMANDS)
     {
-        _transition_frame = 0;
-        _hide_dialog_frame = -1;
-        _dialog_state = dialog_state::OPENING;
-    }
-    else if (_dialog_state == dialog_state::CLOSING)
-    {
-        _transition_frame = TRANSITION_FRAMES - _transition_frame;
-        _hide_dialog_frame = -1;
-        _dialog_state = dialog_state::OPENING;
+        _dialog_commands.push_back({ text, start_time, duration, dialog_command_type::TUTORIAL });
     }
 }

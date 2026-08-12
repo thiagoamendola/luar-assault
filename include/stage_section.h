@@ -4,7 +4,7 @@
 #include "static_model_3d_item.h"
 #include "enemy_def.h"
 #include "colliders.h"
-#include "subtitle_command.h"
+#include "dialog_command.h"
 
 class stage_section
 {
@@ -13,7 +13,7 @@ class stage_section
         const int starting_pos, const int ending_pos,
         const std::initializer_list<fr::model_3d_item> &static_model_items,
         const std::initializer_list<enemy_def> &enemies,
-        const std::initializer_list<subtitle_command> &subtitles,
+        const std::initializer_list<dialog_command> &subtitles,
         const bool end_section = false)
         : _static_model_items(static_model_items.begin()),
           _static_model_count(static_model_items.size()),
@@ -32,7 +32,7 @@ class stage_section
         const int starting_pos, const int ending_pos,
         const std::initializer_list<fr::model_3d_item> &static_model_items,
         const std::initializer_list<enemy_def> &enemies,
-        const std::initializer_list<subtitle_command> &subtitles,
+        const std::initializer_list<dialog_command> &subtitles,
         const sphere_collider *static_colliders, int static_collider_count,
         const bool end_section = false)
         : _static_model_items(static_model_items.begin()),
@@ -78,7 +78,7 @@ class stage_section
       return _enemies_count;
     }
 
-    constexpr const subtitle_command *subtitles() const
+    constexpr const dialog_command *subtitles() const
     {
       return _subtitles;
     }
@@ -108,7 +108,7 @@ class stage_section
     const int _static_model_count;
     const enemy_def* _enemies;
     const int _enemies_count;
-    const subtitle_command* _subtitles;
+    const dialog_command* _subtitles;
     const int _subtitles_count;
     int _starting_pos;
     int _ending_pos;

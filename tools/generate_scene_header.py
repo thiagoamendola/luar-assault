@@ -259,7 +259,7 @@ def generate_header(scene: Dict[str, Any]) -> str:
             text = _cpp_string_literal(subtitle['text'])
             start_time = subtitle.get('startTime', 0)
             duration = subtitle['duration']
-            subtitle_lines.append(f"    subtitle_command{{{text}, {start_time}, {duration}}},")
+            subtitle_lines.append(f"    dialog_command{{{text}, {start_time}, {duration}}},")
 
         if subtitle_lines:
             subtitle_lines[-1] = subtitle_lines[-1].rstrip(',')
@@ -286,11 +286,11 @@ def generate_header(scene: Dict[str, Any]) -> str:
             section_src.append(f"constexpr std::initializer_list<enemy_def> _section_{sid}_enemies = {{}};")
         section_src.append("")
         if subtitle_lines:
-            section_src.append(f"constexpr std::initializer_list<subtitle_command> _section_{sid}_subtitles = {{")
+            section_src.append(f"constexpr std::initializer_list<dialog_command> _section_{sid}_subtitles = {{")
             section_src.extend(subtitle_lines)
             section_src.append("};")
         else:
-            section_src.append(f"constexpr std::initializer_list<subtitle_command> _section_{sid}_subtitles = {{}};")
+            section_src.append(f"constexpr std::initializer_list<dialog_command> _section_{sid}_subtitles = {{}};")
         section_src.append("")
         # Emit collider array if any colliders were found
         if has_colliders:

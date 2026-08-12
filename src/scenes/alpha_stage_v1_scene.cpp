@@ -84,6 +84,7 @@ alpha_stage_v1_scene::alpha_stage_v1_scene()
     // _base_game_scene.get_dialog_manager()->add_subtitle_command("This is another subtitle to test", 230, 120);
     
     // _base_game_scene.get_dialog_manager()->add_subtitle_command("Another subtitle to test in our game here", 500, 120);
+    _base_game_scene.get_dialog_manager()->add_tutorial_command("Use the D-pad to move and dodge enemy fire.", 60, 150);
 
 
 #if HIDE_INTRO
