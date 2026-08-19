@@ -40,6 +40,7 @@ void dialog_manager::update(stage_section_list_ptr sections, size_t sections_cou
 
     _update_dialog_transition();
     _update_dialog_text();
+    _update_portrait_animation();
 
     if (_active_dialog_end_frame >= 0)
     {
@@ -104,8 +105,10 @@ void dialog_manager::_build_subtitle_dialog_box()
 {
     const bool blending_enabled = _dialog_state != dialog_state::OPEN;
     _subtitle_dialog_sprites.emplace();
+    _portrait_animation_frame_counter = 0;
+    _portrait_graphics_index = 0;
 
-    bn::sprite_ptr portrait_sprite = bn::sprite_items::test_portrait.create_sprite(PORTRAIT_X, PORTRAIT_Y);
+    bn::sprite_ptr portrait_sprite = bn::sprite_items::test_portrait.create_sprite(PORTRAIT_X, PORTRAIT_Y, 0);
     portrait_sprite.set_bg_priority(0);
     portrait_sprite.set_z_order(-1);
     portrait_sprite.set_blending_enabled(blending_enabled);
@@ -193,6 +196,8 @@ void dialog_manager::_hide_dialog()
     _active_dialog_end_frame = -1;
     _hide_dialog_frame = -1;
     _transition_frame = 0;
+    _portrait_animation_frame_counter = 0;
+    _portrait_graphics_index = 0;
     _dialog_character_index = 0;
     _dialog_frame_counter = 0;
     _dialog_state = dialog_state::HIDDEN;
@@ -434,6 +439,25 @@ void dialog_manager::_update_dialog_text()
     _dialog_character_index++;
 
     _render_dialog_text();
+}
+
+void dialog_manager::_update_portrait_animation()
+{
+    if (!_subtitle_dialog_sprites.has_value() || _active_dialog_end_frame < 0 ||
+        _dialog_character_index >= _wrapped_dialog_text.size())
+    {
+        return;
+    }
+
+    ++_portrait_animation_frame_counter;
+    if (_portrait_animation_frame_counter < PORTRAIT_ANIMATION_FRAME_DELAY)
+    {
+        return;
+    }
+
+    _portrait_animation_frame_counter = 0;
+    _portrait_graphics_index = 1 - _portrait_graphics_index;
+    _subtitle_dialog_sprites.value()[0].set_tiles(bn::sprite_items::test_portrait.tiles_item(), _portrait_graphics_index);
 }
 
 void dialog_manager::_wrap_dialog_text(const char* text)

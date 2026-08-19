@@ -60,6 +60,7 @@ private:
     static constexpr int DIALOG_START_Y = 38;
     static constexpr int PORTRAIT_X = -80;
     static constexpr int PORTRAIT_Y = 62;
+    static constexpr int PORTRAIT_ANIMATION_FRAME_DELAY = 7;
     static constexpr int DIALOG_COLS = 12;
     static constexpr int DIALOG_ROWS = 3;
     static constexpr int DIALOG_INNER_SPRITES = (DIALOG_COLS - 2) * (DIALOG_ROWS - 2);
@@ -94,6 +95,8 @@ private:
     int _hide_dialog_frame = -1;
     int _transition_frame = 0;
     bn::fixed _last_section_start_y = bn::fixed(32767);
+    int _portrait_animation_frame_counter = 0;
+    int _portrait_graphics_index = 0;
     int _dialog_character_index = 0;
     int _dialog_frame_counter = 0;
     bool _suspended_for_pause = false;
@@ -111,6 +114,7 @@ private:
 
     void _start_dialog_text(const dialog_command& command);
     void _update_dialog_text();
+    void _update_portrait_animation();
     void _wrap_dialog_text(const char* text);
     void _render_dialog_text();
 
