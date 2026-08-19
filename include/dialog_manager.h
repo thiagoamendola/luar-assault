@@ -56,10 +56,10 @@ private:
     static constexpr int SUBTITLE_LINE_HEIGHT = 10;
 
     // Subtitle dialog build constants
-    static constexpr int DIALOG_START_X = -65;
+    static constexpr int DIALOG_START_X = -63;
     static constexpr int DIALOG_START_Y = 38;
-    static constexpr int PORTRAIT_X = -88;
-    static constexpr int PORTRAIT_Y = 52;
+    static constexpr int PORTRAIT_X = -80;
+    static constexpr int PORTRAIT_Y = 62;
     static constexpr int DIALOG_COLS = 12;
     static constexpr int DIALOG_ROWS = 3;
     static constexpr int DIALOG_INNER_SPRITES = (DIALOG_COLS - 2) * (DIALOG_ROWS - 2);
