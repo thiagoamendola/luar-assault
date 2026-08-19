@@ -2,6 +2,7 @@
 
 #include "bn_blending.h"
 #include "bn_sprite_items_dialog_bg.h"
+#include "bn_sprite_items_test_portrait.h"
 #include "bn_sprite_items_tutorial_bg.h"
 #include "bn_utility.h"
 
@@ -103,6 +104,12 @@ void dialog_manager::_build_subtitle_dialog_box()
 {
     const bool blending_enabled = _dialog_state != dialog_state::OPEN;
     _subtitle_dialog_sprites.emplace();
+
+    bn::sprite_ptr portrait_sprite = bn::sprite_items::test_portrait.create_sprite(PORTRAIT_X, PORTRAIT_Y);
+    portrait_sprite.set_bg_priority(0);
+    portrait_sprite.set_z_order(-1);
+    portrait_sprite.set_blending_enabled(blending_enabled);
+    _subtitle_dialog_sprites.value().push_back(bn::move(portrait_sprite));
 
     // Create lambda for tile creation
     auto add_dialog_sprite = [this, blending_enabled](int col, int row, int graphics_index, int z_order)

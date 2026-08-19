@@ -58,12 +58,14 @@ private:
     // Subtitle dialog build constants
     static constexpr int DIALOG_START_X = -65;
     static constexpr int DIALOG_START_Y = 38;
+    static constexpr int PORTRAIT_X = -88;
+    static constexpr int PORTRAIT_Y = 52;
     static constexpr int DIALOG_COLS = 12;
     static constexpr int DIALOG_ROWS = 3;
     static constexpr int DIALOG_INNER_SPRITES = (DIALOG_COLS - 2) * (DIALOG_ROWS - 2);
     static constexpr int SUBTITLE_DIALOG_MAX_SPRITES = DIALOG_INNER_SPRITES + (DIALOG_ROWS - 1) +
                                              (DIALOG_COLS - 2) + (DIALOG_COLS - 1) +
-                                             (DIALOG_ROWS - 1) + 2;
+                                             (DIALOG_ROWS - 1) + 3;
     static constexpr int DIALOG_TILE_SPACING = 15;
     static constexpr int UPPER_LEFT_BORDER_GRAPHICS_INDEX = 0;
     static constexpr int LOWER_RIGHT_BORDER_GRAPHICS_INDEX = 1;
