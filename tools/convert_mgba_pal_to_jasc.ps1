@@ -7,7 +7,7 @@ param(
     [Parameter(Position = 1)]
     [string] $OutputDir,
 
-    [switch] $NoSlotFiles
+    [switch] $SlotFiles
 )
 
 $ErrorActionPreference = 'Stop'
@@ -124,7 +124,7 @@ Write-JascPalette $colors $fullPalettePath
 $writtenFiles = New-Object 'System.Collections.Generic.List[string]'
 $writtenFiles.Add($fullPalettePath)
 
-if(-not $NoSlotFiles)
+if($SlotFiles)
 {
     $slotCount = [Math]::Floor($entriesCount / 16)
 
