@@ -76,6 +76,13 @@ def _cpp_string_literal(value: str) -> str:
     return json.dumps(value)
 
 
+def _dialog_character_literal(value: str) -> str:
+    character = value.upper()
+    if character not in {'TEST', 'MC'}:
+        raise ValueError(f"Unsupported dialog character: {value}")
+    return f"dialog_character::{character}"
+
+
 def generate_header(scene: Dict[str, Any]) -> str:
     name = scene['name']
     palette: List[str] = scene.get('palette', [])
@@ -260,7 +267,9 @@ def generate_header(scene: Dict[str, Any]) -> str:
             text = _cpp_string_literal(subtitle['text'])
             start_time = subtitle.get('startTime', 0)
             duration = subtitle['duration']
-            dialog_command_lines.append(f"    dialog_command{{{text}, {start_time}, {duration}}},")
+            character = _dialog_character_literal(subtitle.get('character', 'TEST'))
+            dialog_command_lines.append(
+                f"    dialog_command{{{text}, {start_time}, {duration}, dialog_command_type::SUBTITLE, {character}}},")
 
         for tutorial in tutorials:
             text = _cpp_string_literal(tutorial['text'])

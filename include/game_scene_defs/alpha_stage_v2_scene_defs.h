@@ -91,8 +91,8 @@ constexpr std::initializer_list<enemy_def> _section_4_enemies = {
 };
 
 constexpr std::initializer_list<dialog_command> _section_4_dialog_commands = {
-    dialog_command{"This is my subtitle.", 0, 120},
-    dialog_command{"This is another subtitle to test.", 130, 120}
+    dialog_command{"This is my subtitle.", 0, 120, dialog_command_type::SUBTITLE, dialog_character::TEST},
+    dialog_command{"This is another subtitle to test.", 130, 120, dialog_command_type::SUBTITLE, dialog_character::MC}
 };
 
 constexpr int _section_4_start = 50;
@@ -130,7 +130,7 @@ constexpr std::initializer_list<fr::model_3d_item> _section_5_1_static_model_ite
 constexpr std::initializer_list<enemy_def> _section_5_1_enemies = {};
 
 constexpr std::initializer_list<dialog_command> _section_5_1_dialog_commands = {
-    dialog_command{"Another subtitle to test in our game here.", 0, 120}
+    dialog_command{"Another subtitle to test in our game here.", 0, 120, dialog_command_type::SUBTITLE, dialog_character::TEST}
 };
 
 constexpr int _section_5_1_start = -750;

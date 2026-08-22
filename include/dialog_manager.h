@@ -88,6 +88,7 @@ private:
 
     dialog_state _dialog_state = dialog_state::HIDDEN;
     dialog_command_type _active_dialog_type = dialog_command_type::SUBTITLE;
+    dialog_character _active_dialog_character = dialog_character::TEST;
 
     int _pending_dialog_command_index = -1;
     int _elapsed_frames = 0;
@@ -101,28 +102,31 @@ private:
     int _dialog_frame_counter = 0;
     bool _suspended_for_pause = false;
 
-    void _show_dialog(dialog_command_type type);
+    void _show_dialog(dialog_command_type type, dialog_character character);
     void _hide_dialog();
     void _build_subtitle_dialog_box();
     void _build_tutorial_dialog_box();
-    void _add_dialog_command(const char* text, int start_time, int duration, dialog_command_type type);
+    void _add_dialog_command(const char* text, int start_time, int duration, dialog_command_type type,
+                             dialog_character character);
     void _start_dialog_command(int command_index);
     void _set_visible(bool visible);
+    void _update_dialog_transition();
+    void _start_closing_dialog();
 
     void _process_section(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y);
     void _resume_from_pause();
 
     void _start_dialog_text(const dialog_command& command);
     void _update_dialog_text();
-    void _update_portrait_animation();
     void _wrap_dialog_text(const char* text);
     void _render_dialog_text();
 
+    bn::sprite_ptr _create_portrait_sprite() const;
+    void _set_portrait_graphics_index(int graphics_index);
+    void _update_portrait_animation();
+
     void _set_blending_enabled(bool blending_enabled);
     void _clear_blending();
-    
-    void _update_dialog_transition();
-    void _start_closing_dialog();
 };
 
 #endif

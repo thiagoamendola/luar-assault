@@ -2,6 +2,7 @@
 
 #include "bn_blending.h"
 #include "bn_sprite_items_dialog_bg.h"
+#include "bn_sprite_items_mc_portrait.h"
 #include "bn_sprite_items_test_portrait.h"
 #include "bn_sprite_items_tutorial_bg.h"
 #include "bn_utility.h"
@@ -72,15 +73,16 @@ void dialog_manager::_process_section(stage_section_list_ptr sections, size_t se
             {
                 const dialog_command& command = section->dialog_commands()[command_index];
                 _add_dialog_command(command.text, _elapsed_frames + command.start_time,
-                                    command.duration, command.type);
+                                    command.duration, command.type, command.character);
             }
         }
     }
 }
 
-void dialog_manager::_show_dialog(dialog_command_type type)
+void dialog_manager::_show_dialog(dialog_command_type type, dialog_character character)
 {
-    if (_dialog_state != dialog_state::HIDDEN && _active_dialog_type == type)
+    if (_dialog_state != dialog_state::HIDDEN && _active_dialog_type == type &&
+        (type == dialog_command_type::TUTORIAL || _active_dialog_character == character))
     {
         return;
     }
@@ -89,6 +91,7 @@ void dialog_manager::_show_dialog(dialog_command_type type)
     _subtitle_dialog_sprites.reset();
     _tutorial_dialog_sprites.reset();
     _active_dialog_type = type;
+    _active_dialog_character = character;
 
     // Create dialog of the given type.
     if (type == dialog_command_type::TUTORIAL)
@@ -108,7 +111,7 @@ void dialog_manager::_build_subtitle_dialog_box()
     _portrait_animation_frame_counter = 0;
     _portrait_graphics_index = 0;
 
-    bn::sprite_ptr portrait_sprite = bn::sprite_items::test_portrait.create_sprite(PORTRAIT_X, PORTRAIT_Y, 0);
+    bn::sprite_ptr portrait_sprite = _create_portrait_sprite();
     portrait_sprite.set_bg_priority(0);
     portrait_sprite.set_z_order(-1);
     portrait_sprite.set_blending_enabled(blending_enabled);
@@ -260,11 +263,12 @@ void dialog_manager::_set_visible(bool visible)
     }
 }
 
-void dialog_manager::_add_dialog_command(const char* text, int start_time, int duration, dialog_command_type type)
+void dialog_manager::_add_dialog_command(const char* text, int start_time, int duration, dialog_command_type type,
+                                         dialog_character character)
 {
     if (_dialog_commands.size() < MAX_DIALOG_COMMANDS)
     {
-        _dialog_commands.push_back({ text, start_time, duration, type });
+        _dialog_commands.push_back({ text, start_time, duration, type, character });
     }
 }
 
@@ -274,7 +278,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 
     if (_dialog_state == dialog_state::HIDDEN)
     {
-        _show_dialog(command.type);
+        _show_dialog(command.type, command.character);
         _pending_dialog_command_index = command_index;
         _transition_frame = 0;
         _hide_dialog_frame = -1;
@@ -284,7 +288,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 
     if (_dialog_state == dialog_state::CLOSING)
     {
-        _show_dialog(command.type);
+        _show_dialog(command.type, command.character);
         _pending_dialog_command_index = command_index;
         _transition_frame = TRANSITION_FRAMES - _transition_frame;
         _hide_dialog_frame = -1;
@@ -294,7 +298,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 
     if (_dialog_state == dialog_state::OPENING)
     {
-        _show_dialog(command.type);
+        _show_dialog(command.type, command.character);
         _pending_dialog_command_index = command_index;
         _hide_dialog_frame = -1;
         return;
@@ -307,7 +311,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 void dialog_manager::_start_dialog_text(const dialog_command& command)
 {
     // Show the dialog box if it's not already shown.
-    _show_dialog(command.type);
+    _show_dialog(command.type, command.character);
     // Clear existing text.
     _dialog_text_sprites.clear();
     _dialog_text.clear();
@@ -457,7 +461,35 @@ void dialog_manager::_update_portrait_animation()
 
     _portrait_animation_frame_counter = 0;
     _portrait_graphics_index = 1 - _portrait_graphics_index;
-    _subtitle_dialog_sprites.value()[0].set_tiles(bn::sprite_items::test_portrait.tiles_item(), _portrait_graphics_index);
+    _set_portrait_graphics_index(_portrait_graphics_index);
+}
+
+bn::sprite_ptr dialog_manager::_create_portrait_sprite() const
+{
+    switch (_active_dialog_character)
+    {
+    case dialog_character::MC:
+        return bn::sprite_items::mc_portrait.create_sprite(PORTRAIT_X, PORTRAIT_Y, 0);
+
+    case dialog_character::TEST:
+    default:
+        return bn::sprite_items::test_portrait.create_sprite(PORTRAIT_X, PORTRAIT_Y, 0);
+    }
+}
+
+void dialog_manager::_set_portrait_graphics_index(int graphics_index)
+{
+    switch (_active_dialog_character)
+    {
+    case dialog_character::MC:
+        _subtitle_dialog_sprites.value()[0].set_tiles(bn::sprite_items::mc_portrait.tiles_item(), graphics_index);
+        break;
+
+    case dialog_character::TEST:
+    default:
+        _subtitle_dialog_sprites.value()[0].set_tiles(bn::sprite_items::test_portrait.tiles_item(), graphics_index);
+        break;
+    }
 }
 
 void dialog_manager::_wrap_dialog_text(const char* text)
@@ -581,10 +613,10 @@ void dialog_manager::_render_dialog_text()
 
 void dialog_manager::add_subtitle_command(const char* subtitle, int start_time, int duration)
 {
-    _add_dialog_command(subtitle, start_time, duration, dialog_command_type::SUBTITLE);
+    _add_dialog_command(subtitle, start_time, duration, dialog_command_type::SUBTITLE, dialog_character::TEST);
 }
 
 void dialog_manager::add_tutorial_command(const char* text, int start_time, int duration)
 {
-    _add_dialog_command(text, start_time, duration, dialog_command_type::TUTORIAL);
+    _add_dialog_command(text, start_time, duration, dialog_command_type::TUTORIAL, dialog_character::TEST);
 }
