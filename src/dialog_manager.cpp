@@ -21,7 +21,7 @@ dialog_manager::dialog_manager() :
 
 void dialog_manager::update(stage_section_list_ptr sections, size_t sections_count, bn::fixed camera_y)
 {
-    _resume_from_pause();
+    resume_from_pause();
 
     if (_suspended_for_pause)
     {
@@ -54,7 +54,7 @@ void dialog_manager::update(stage_section_list_ptr sections, size_t sections_cou
 
     if (_hide_dialog_frame >= 0 && _elapsed_frames >= _hide_dialog_frame)
     {
-        _start_closing_dialog();
+        _close_dialog();
     }
 
     ++_elapsed_frames;
@@ -79,7 +79,7 @@ void dialog_manager::_process_section(stage_section_list_ptr sections, size_t se
     }
 }
 
-void dialog_manager::_show_dialog(dialog_command_type type, dialog_character character)
+void dialog_manager::_open_dialog(dialog_command_type type, dialog_character character)
 {
     if (_dialog_state != dialog_state::HIDDEN && _active_dialog_type == type &&
         (type == dialog_command_type::TUTORIAL || _active_dialog_character == character))
@@ -184,6 +184,7 @@ void dialog_manager::_build_tutorial_dialog_box()
     }
 }
 
+// Instantly removes dialog box/portrait from screen.
 void dialog_manager::_hide_dialog()
 {
     _clear_blending();
@@ -217,7 +218,7 @@ void dialog_manager::suspend_for_pause()
     _set_visible(false);
 }
 
-void dialog_manager::_resume_from_pause()
+void dialog_manager::resume_from_pause()
 {
     if (!_suspended_for_pause)
     {
@@ -239,6 +240,7 @@ void dialog_manager::_resume_from_pause()
     }
 }
 
+// Toggle visibility of dialog box (for pausing/unpausing).
 void dialog_manager::_set_visible(bool visible)
 {
     if (_subtitle_dialog_sprites.has_value())
@@ -278,7 +280,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 
     if (_dialog_state == dialog_state::HIDDEN)
     {
-        _show_dialog(command.type, command.character);
+        _open_dialog(command.type, command.character);
         _pending_dialog_command_index = command_index;
         _transition_frame = 0;
         _hide_dialog_frame = -1;
@@ -288,7 +290,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 
     if (_dialog_state == dialog_state::CLOSING)
     {
-        _show_dialog(command.type, command.character);
+        _open_dialog(command.type, command.character);
         _pending_dialog_command_index = command_index;
         _transition_frame = TRANSITION_FRAMES - _transition_frame;
         _hide_dialog_frame = -1;
@@ -298,7 +300,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 
     if (_dialog_state == dialog_state::OPENING)
     {
-        _show_dialog(command.type, command.character);
+        _open_dialog(command.type, command.character);
         _pending_dialog_command_index = command_index;
         _hide_dialog_frame = -1;
         return;
@@ -311,7 +313,7 @@ void dialog_manager::_start_dialog_command(int command_index)
 void dialog_manager::_start_dialog_text(const dialog_command& command)
 {
     // Show the dialog box if it's not already shown.
-    _show_dialog(command.type, command.character);
+    _open_dialog(command.type, command.character);
     // Clear existing text.
     _dialog_text_sprites.clear();
     _dialog_text.clear();
@@ -403,7 +405,7 @@ void dialog_manager::_clear_blending()
     bn::blending::set_transparency_alpha(1.0);
 }
 
-void dialog_manager::_start_closing_dialog()
+void dialog_manager::_close_dialog()
 {
     if (_dialog_state != dialog_state::OPEN)
     {
