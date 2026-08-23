@@ -128,53 +128,56 @@ intro_cutscene_scene::intro_cutscene_scene() :
             *_model,
             fr::point_3d(-180, -950, 50), // start
             fr::point_3d(-145, -660, 47),
-            take_start_time + 180, 30, easing::EASE_IN));
+            take_start_time + 210, 30, easing::EASE_IN));
         _timeline.add(new move_model_cmd(
             *_model,
             fr::point_3d(-125, -370, 40),
-            take_start_time + 210, 30, easing::LINEAR));
-        _timeline.add(new move_model_cmd(
-            *_model,
-            fr::point_3d(-85, -270, 34),
             take_start_time + 240, 30, easing::LINEAR));
         _timeline.add(new move_model_cmd(
             *_model,
+            fr::point_3d(-85, -270, 34),
+            take_start_time + 270, 30, easing::LINEAR));
+        _timeline.add(new move_model_cmd(
+            *_model,
             fr::point_3d(-55, -200, 30),
-            take_start_time + 270, 40, easing::EASE_OUT));
+            take_start_time + 300, 40, easing::EASE_OUT));
         _timeline.add(new move_model_cmd(
             *_model,
             fr::point_3d(120, -150, -25),     // end
-            take_start_time + 300, 30, easing::EASE_IN));
+            take_start_time + 330, 30, easing::EASE_IN));
 
         _timeline.add(new rotate_model_combined_cmd(
             *_model,
             model_rotation{.phi = 5000, .theta = -5000, .psi = -16383}, // start
             model_rotation{.phi = -3000, .theta = -5000, .psi = -16383},
-            take_start_time + 180, 110, easing::EASE_IN_OUT));
+            take_start_time + 210, 110, easing::EASE_IN_OUT));
         _timeline.add(new rotate_model_combined_cmd(
             *_model,
             model_rotation{.phi = -3000, .theta = -5000, .psi = -16383},
             model_rotation{.phi = -8000, .theta = -5000, .psi = -22383}, // end
-            take_start_time + 300, 30, easing::EASE_IN));
+            take_start_time + 330, 30, easing::EASE_IN));
 
-        // _timeline.add(new play_sound_cmd(
-        //     bn::sound_items::mc_test_04, 1, take_start_time + 0));
+        _timeline.add(new play_sound_cmd(
+            bn::sound_items::mc_1_1_1, 1, take_start_time + 50));
         _timeline.add(new subtitle_cmd(
             _subtitle_text_sprites, _text_generator,
-            "Our planet is being attacked!", take_start_time + 50, 130));
+            "Warning! Planetary threat detected!", take_start_time + 50, 130));
 
-        // _timeline.add(new play_sound_cmd(
-        //     bn::sound_items::mc_test_05, 1, take_start_time + 100));
+        _timeline.add(new play_sound_cmd(
+            bn::sound_items::mc_1_1_4, 1, take_start_time + 200));
         _timeline.add(new subtitle_cmd(
             _subtitle_text_sprites, _text_generator,
-            "You're our last hope.", take_start_time + 200, 100));
+            "ARU-01, you're our last hope!", take_start_time + 200, 100));
+
+        _timeline.add(new play_sound_cmd(
+            bn::sound_items::player_death, 1, take_start_time + 330));
     }
 
     // <-- Maybe do a fade in between takes
 
     // ----- Take 2 -----
     {
-        take_start_time = TAKE_2_START_TIME;
+        take_start_time = 400;
 
         // Previous cleanup.
         _timeline.add(new lambda_cmd(take_start_time, [&] {
@@ -205,47 +208,56 @@ intro_cutscene_scene::intro_cutscene_scene() :
             take_start_time + 50, 70, easing::EASE_OUT);
         _timeline.add(_cmd_move);
 
+        _timeline.add(new play_sound_cmd(
+            bn::sound_items::mc_1_1_6, 1, take_start_time + 0));
+        _timeline.add(new subtitle_cmd(
+            _subtitle_text_sprites, _text_generator,
+            "Destroy the enemy moon!", take_start_time + 0, 100));
+
+        _timeline.add(new play_sound_cmd(
+            bn::sound_items::mc_1_1_7, 1, take_start_time + 120));
+        _timeline.add(new subtitle_cmd(
+            _subtitle_text_sprites, _text_generator,
+            "This mission's codename will be", take_start_time + 120, 100));
+
+        _timeline.add(new play_sound_cmd(
+            bn::sound_items::mc_1_1_8, 1, take_start_time + 240));
+        _timeline.add(new subtitle_cmd(
+            _subtitle_text_sprites, _text_generator,
+            "Luar Assault!", take_start_time + 240, 75));
+
+        // Barrel Roll
         _cmd_rotate = new rotate_model_combined_cmd(
             *_model,
             model_rotation{.phi = -8000, .theta = 0, .psi = -16383},     // start
             model_rotation{.phi = -8000, .theta = 67000, .psi = -16383}, // end
-            take_start_time + 130, 30, easing::EASE_IN_OUT);
+            take_start_time + 270, 30, easing::EASE_IN_OUT);
         _timeline.add(_cmd_rotate);
 
+        // Final dash
         _cmd_move = new move_model_cmd(
             *_model,
             fr::point_3d(0, -180, 0),   // start
             fr::point_3d(150, -30, -0), // end
-            take_start_time + 170, 50, easing::EASE_IN_OUT_BACK_QUAD);
+            take_start_time + 310, 50, easing::EASE_IN_OUT_BACK_QUAD);
         _timeline.add(_cmd_move);
 
         _cmd_rotate_camera = new rotate_camera_cmd(
             _camera,
             model_rotation{.phi = 0, .theta = 3000, .psi = 0}, // start
             model_rotation{.phi = 0, .theta = 2500, .psi = -6000}, // end
-            take_start_time + 170, 30, easing::EASE_IN_OUT);
+            take_start_time + 310, 30, easing::EASE_IN_OUT);
         _timeline.add(_cmd_rotate_camera);
 
         _cmd_move_camera = new move_camera_cmd(
             _camera,
             fr::point_3d(-50, 0, -35),
-            take_start_time + 170, 30, easing::EASE_IN_OUT);
+            take_start_time + 310, 30, easing::EASE_IN_OUT);
         _timeline.add(_cmd_move_camera);
 
+        // Boost VFX
         _timeline.add(new play_sound_cmd(
-            bn::sound_items::mc_test_04, 1, take_start_time + 0));
-        _timeline.add(new subtitle_cmd(
-            _subtitle_text_sprites, _text_generator,
-            "This mission's codename will be", take_start_time + 0, 100));
-
-        _timeline.add(new play_sound_cmd(
-            bn::sound_items::mc_test_05, 1, take_start_time + 100));
-        _timeline.add(new subtitle_cmd(
-            _subtitle_text_sprites, _text_generator,
-            "Luar Assault!", take_start_time + 100, 75));
-
-        _timeline.add(new play_sound_cmd(
-            bn::sound_items::player_death, 1, take_start_time + 160));
+            bn::sound_items::player_death, 1, take_start_time + 310));
     }
 
     // Letterbox
