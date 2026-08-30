@@ -1,6 +1,5 @@
 CREDITS
 
-
 - Programming
 Thiago Amendola
 
@@ -19,6 +18,10 @@ Thiago Amendola
 André Tuffo
 
 
+- Dubbing
+Mission Control: Laise Aquino
+
+
 - Fonts
 Vonwaon Bitmap by Haoyu Qiu
 k12x8 from littlelimit.net
@@ -30,6 +33,7 @@ GValiente
 João Baptista de Paula e Silva
 nikku4211
 simon-paris
+Elisa Uhura
 
 gba-free-fonts by laqieer
 Dithering Brushes by pixelglade
