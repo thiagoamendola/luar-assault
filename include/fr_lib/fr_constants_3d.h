@@ -66,7 +66,17 @@
 
 // Hides intro sequence. Useful for skipping to gameplay.
 #ifndef HIDE_INTRO
-#define HIDE_INTRO true
+#define HIDE_INTRO false
+#endif
+
+// Hides tutorial.
+#ifndef HIDE_TUTORIAL
+#define HIDE_TUTORIAL true
+#endif
+
+// Hides gameplay dialogs.
+#ifndef HIDE_DIALOG
+#define HIDE_DIALOG true
 #endif
 
 // Enables infinite missiles

@@ -81,6 +81,7 @@ void dialog_manager::_process_section(stage_section_list_ptr sections, size_t se
 
 void dialog_manager::_open_dialog(dialog_command_type type, dialog_character character)
 {
+    // If the dialog is already open and the type and character match, do nothing.
     if (_dialog_state != dialog_state::HIDDEN && _active_dialog_type == type &&
         (type == dialog_command_type::TUTORIAL || _active_dialog_character == character))
     {
@@ -277,6 +278,20 @@ void dialog_manager::_add_dialog_command(const char* text, int start_time, int d
 void dialog_manager::_start_dialog_command(int command_index)
 {
     const dialog_command& command = _dialog_commands[command_index];
+
+    // Check if flag disables each.
+#if HIDE_DIALOG
+    if (command.type == dialog_command_type::SUBTITLE)
+    {
+        return;
+    }
+#endif
+#if HIDE_TUTORIAL
+    if (command.type == dialog_command_type::TUTORIAL)
+    {
+        return;
+    }
+#endif
 
     if (_dialog_state == dialog_state::HIDDEN)
     {
