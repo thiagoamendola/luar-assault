@@ -115,7 +115,7 @@ title_scene::title_scene() : _prepare_to_leave(false)
     // crazy after. Prob a instrument! (.it, BB)
     // bn::music_items::title2.play(0.3); // WORKS!!! (.it, BB)
     
-    bn::music_items::title_v2.play(0.6); // WORKS!!! With lower HH (.it, BB)
+    bn::music_items::title_v2.play(0.3); // WORKS!!! With lower HH (.it, BB)
     // bn::music_items::gameplay2.play(0.3); 
     // bn::music_items::gameplay2c1.play(0.3); // WORKS!!!
 
