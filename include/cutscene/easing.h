@@ -16,7 +16,6 @@ enum class easing
 
 /**
  * Maps a normalised time value t in [0, 1] through the chosen easing curve.
- * All curves are quadratic (cheap on GBA) and guarantee f(0)=0, f(1)=1.
  *
  *  LINEAR       : t
  *  EASE_IN      : t²              (slow start, fast end)
