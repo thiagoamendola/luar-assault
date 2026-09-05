@@ -366,11 +366,15 @@ void models_3d::_process_models(const camera_3d &camera)
             auto scale = sprite_scale >> 3;
             sprite_3d_item &sprite_item = sprite.item();
             const bn::sprite_shape_size& sprite_shape_size = sprite_item.shape_size();
-            int sprite_half_width = sprite_shape_size.width() / 2;
-            int sprite_half_height = sprite_shape_size.height() / 2;
+            bool sprite_double_size = sprite_item.double_size();
+            int sprite_dimensions_multiplier = sprite_double_size ? 2 : 1;
+            int sprite_width = sprite_shape_size.width() * sprite_dimensions_multiplier;
+            int sprite_height = sprite_shape_size.height() * sprite_dimensions_multiplier;
+            int sprite_half_width = sprite_width / 2;
+            int sprite_half_height = sprite_height / 2;
             int sprite_x = ((vcx * scale) >> 16) + (display_width / 2) - sprite_half_width;
 
-            if (sprite_x < display_width && sprite_x + sprite_shape_size.width() > 0) [[likely]]
+            if (sprite_x < display_width && sprite_x + sprite_width > 0) [[likely]]
             {
                 int vcy = -(vrx.unsafe_multiplication(camera_v_x) +
                             vry.unsafe_multiplication(camera_v_y) +
@@ -379,7 +383,7 @@ void models_3d::_process_models(const camera_3d &camera)
                 int sprite_y =
                     ((vcy * scale) >> 16) + (display_height / 2) - sprite_half_height;
 
-                if (sprite_y < display_height && sprite_y + sprite_shape_size.height() > 0) [[likely]]
+                if (sprite_y < display_height && sprite_y + sprite_height > 0) [[likely]]
                 {
                     bn::fixed affine_scale =
                         bn::fixed::from_data(sprite_scale)
@@ -405,7 +409,7 @@ void models_3d::_process_models(const camera_3d &camera)
 
                         int attr0 = bn::hw::sprites::first_attributes(
                             sprite_y, sprite_shape_size.shape(),
-                            bn::bpp_mode::BPP_4, 1 << 8, true, false, false,
+                            bn::bpp_mode::BPP_4, (1 << 8) | (int(sprite_double_size) << 9), true, false, false,
                             false);
                         int attr1 = bn::hw::sprites::second_attributes(
                             sprite_x, sprite_shape_size.size(),

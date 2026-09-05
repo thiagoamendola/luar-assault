@@ -5,8 +5,8 @@
 explosion_effect::explosion_effect(fr::point_3d position, fr::models_3d *models)
     : _position(position), 
       _models(models),
-      _sprite_3d_item_1(bn::sprite_items::boom, 1),
-      _sprite_3d_item_2(bn::sprite_items::boom, 0),
+      _sprite_3d_item_1(bn::sprite_items::boom, 1, true),
+      _sprite_3d_item_2(bn::sprite_items::boom, 0, true),
       _current_frame(TOTAL_FRAMES),
       _theta_1(INITIAL_THETA_1),
       _theta_2(INITIAL_THETA_2)

@@ -25,11 +25,12 @@ public:
     static constexpr int MAX_FRAMES = 8;
 
     // Single-frame constructor
-    sprite_3d_item(const bn::sprite_item& item, int graphics_index) :
+    sprite_3d_item(const bn::sprite_item& item, int graphics_index, bool double_size = false) :
         _tiles_item(item.tiles_item()),
         _shape_size(item.shape_size()),
         _palette(item.palette_item().create_palette()),
-        _affine_mat(bn::sprite_affine_mat_ptr::create())
+        _affine_mat(bn::sprite_affine_mat_ptr::create()),
+        _double_size(double_size)
     {
         BN_ASSERT(item.shape_size().shape() == bn::sprite_shape::SQUARE, "Invalid shape");
         BN_ASSERT(graphics_index >= 0, "Invalid graphics index");
@@ -100,6 +101,11 @@ public:
     [[nodiscard]] const bn::sprite_shape_size& shape_size() const
     {
         return _shape_size;
+    }
+
+    [[nodiscard]] bool double_size() const
+    {
+        return _double_size;
     }
 
     [[nodiscard]] const bn::sprite_palette_ptr& palette() const
@@ -175,6 +181,7 @@ private:
     int _current_frame = 0;
     bn::sprite_palette_ptr _palette;
     bn::sprite_affine_mat_ptr _affine_mat;
+    bool _double_size = false;
 };
 
 }
