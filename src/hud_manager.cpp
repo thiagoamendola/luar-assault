@@ -111,7 +111,7 @@ void hud_manager::update(fr::models_3d *models)
             _update_lifebar(health);
             _text_sprites.clear();
             _text_generator.set_right_alignment();
-            _text_generator.generate(115, -72,
+            _text_generator.generate(110, -68,
                          bn::to_string<64>(missile_charge) + "%",
                          _text_sprites);
             _text_generator.set_left_alignment();

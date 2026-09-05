@@ -37,7 +37,7 @@ private:
     fr::camera_3d _camera;
     fr::models_3d _models;
     fr::model_3d *_model = nullptr;
-    bn::optional<bn::regular_bg_ptr> _floor_bg;
+    bn::optional<bn::regular_bg_ptr> _bg;
     bn::optional<bn::affine_bg_ptr> _earth_bg;
     bn::optional<bn::sprite_ptr> _luar_sprite;
     bn::optional<bn::sprite_ptr> _explosion_sprite;

@@ -68,18 +68,18 @@ intro_cutscene_scene::intro_cutscene_scene() :
         take_start_time = 0;
 
         _timeline.add(new lambda_cmd(take_start_time, [&] {
-            _floor_bg.emplace(bn::regular_bg_items::cutscene_bg_1.create_bg(0, 0));
-            _floor_bg->set_priority(3);
+            _bg.emplace(bn::regular_bg_items::cutscene_bg_1.create_bg(0, 0));
+            _bg->set_priority(3);
 
             _earth_bg.emplace(bn::affine_bg_items::earth.create_bg(-40, 110));
             _earth_bg->set_scale(1.2);
             _earth_bg->set_priority(2);
             _earth_bg->set_wrapping_enabled(false);
 
-            _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
-            _luar_sprite->set_bg_priority(2);
-            _luar_sprite->set_z_order(1);
-            _luar_sprite->set_scale(0.7);
+            // _luar_sprite.emplace(bn::sprite_items::luar_small.create_sprite(75, -20));
+            // _luar_sprite->set_bg_priority(2);
+            // _luar_sprite->set_z_order(1);
+            // _luar_sprite->set_scale(0.7);
 
             _explosion_sprite.emplace(bn::sprite_items::explosion_cutscene.create_sprite(5, 0));
             _explosion_sprite->set_bg_priority(2);
@@ -89,9 +89,9 @@ intro_cutscene_scene::intro_cutscene_scene() :
             _explosion_sprite->set_scale(0.4);
         }));
 
-        // Move Luar slowly.
-        _timeline.add(new move_sprite_cmd(
-            _luar_sprite, bn::fixed_point(73, -20), take_start_time, 300, easing::LINEAR));
+        // // Move Luar slowly.
+        // _timeline.add(new move_sprite_cmd(
+        //     _luar_sprite, bn::fixed_point(73, -20), take_start_time, 300, easing::LINEAR));
 
         // Explosions fade in/out.
         _timeline.add(new sprite_fade_cmd(
@@ -181,7 +181,7 @@ intro_cutscene_scene::intro_cutscene_scene() :
 
         // Previous cleanup.
         _timeline.add(new lambda_cmd(take_start_time, [&] {
-            _floor_bg.reset();
+            _bg.reset();
             _earth_bg.reset();
             _luar_sprite.reset();
             _explosion_sprite.reset();
@@ -190,7 +190,7 @@ intro_cutscene_scene::intro_cutscene_scene() :
         // Take setup.
         _timeline.add(new lambda_cmd(take_start_time + 1, [&] {
             // Create BG
-            _hyperlight_bg.emplace(bn::fixed_point(-4, -.5), 6);
+            // _hyperlight_bg.emplace(bn::fixed_point(-4, -.5), 6);
             // Position camera
             _camera.set_position(fr::point_3d(0, 0, -50));
             _camera.set_theta(3000);
