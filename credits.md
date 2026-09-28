@@ -1,31 +1,32 @@
-CREDITS
+# CREDITS
 
-- Programming
+## Programming
 Thiago Amendola
 
 
-- 3D Models
+## 3D Models
 André Amorim
 Thiago Amendola
 
 
-- Sprites
+## Sprites
 Laise Aquino
 Thiago Amendola
 
 
-- Music/Sound FX
+## Music/Sound FX
 André Tuffo
 
 
-- Dubbing
+## Dubbing
 Mission Control: Laise Aquino
+Luar: Gabriel Taneko
 
 
 - Fonts
-Vonwaon Bitmap by Haoyu Qiu
-k12x8 from littlelimit.net
-Tanklager from Tunera. Copyright © 2024, Ariel Martín Pérez <contact@tainome.com>
+Vonwaon Bitmap by Haoyu Qiu (CC0 1.0 license)
+k12x8 from littlelimit.net (Free for personal/commercial use)
+Tanklager from Tunera (SIL Open Font License). Copyright © 2024, Ariel Martín Pérez <contact@tainome.com>
 
 
 - Additional Thanks

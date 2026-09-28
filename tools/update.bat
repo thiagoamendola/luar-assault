@@ -11,6 +11,8 @@ set "SCRIPT_DIR=%~dp0"
 pushd "%SCRIPT_DIR%.."
 set "PROJECT_DIR=%CD%"
 popd
+set "UPDATE_URL=https://github.com/thiagoamendola/luar-assault.git"
+set "UPDATE_BRANCH=main"
 
 echo [INFO] Repository: "%PROJECT_DIR%"
 echo.
@@ -20,15 +22,22 @@ cd /d "%PROJECT_DIR%"
 :: ------------------------------------------------------------
 :: 1. Check for local changes
 :: ------------------------------------------------------------
-git status --porcelain > nul 2>&1
-for /f "tokens=*" %%l in ('git status --porcelain 2^>nul') do (
+git -c "safe.directory=%PROJECT_DIR%" rev-parse --is-inside-work-tree >nul 2>&1
+if !errorlevel! neq 0 (
+    echo [ERROR] This folder is not a Git repository.
+    echo         Download or clone the project again, then retry the update.
+    pause
+    exit /b 1
+)
+
+for /f "tokens=*" %%l in ('git -c "safe.directory=%PROJECT_DIR%" status --porcelain 2^>nul') do (
     set "HAS_CHANGES=1"
 )
 
 if defined HAS_CHANGES (
     echo [WARN] You have uncommitted local changes:
     echo.
-    git status --short
+    git -c "safe.directory=%PROJECT_DIR%" status --short
     echo.
     set /p "CONFIRM=Local changes will be stashed before pulling. Continue? [y/N]: "
     if /i "!CONFIRM!" neq "y" (
@@ -39,7 +48,7 @@ if defined HAS_CHANGES (
 
     echo.
     echo [INFO] Stashing local changes...
-    git stash push -m "auto-stash before update"
+    git -c "safe.directory=%PROJECT_DIR%" stash push -m "auto-stash before update"
     if !errorlevel! neq 0 (
         echo [ERROR] Failed to stash changes.
         pause
@@ -53,13 +62,13 @@ if defined HAS_CHANGES (
 :: 2. Pull latest changes
 :: ------------------------------------------------------------
 echo [INFO] Pulling latest changes...
-git pull --force
+git -c "safe.directory=%PROJECT_DIR%" pull --ff-only "%UPDATE_URL%" "%UPDATE_BRANCH%"
 if !errorlevel! neq 0 (
     echo.
     echo [ERROR] git pull failed. Review the errors above.
     if defined HAS_CHANGES (
         echo [INFO] Restoring your stashed changes...
-        git stash pop
+        git -c "safe.directory=%PROJECT_DIR%" stash pop
     )
     pause
     exit /b 1

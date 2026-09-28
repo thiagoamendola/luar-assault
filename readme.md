@@ -1,7 +1,7 @@
 
 # Setup
 
-- Clone this repo.
+- Clone this repo. Make sure this repository and its dependencies are placed in a path without spaces.
 - Clone in the same folder and setup [Butano](https://gvaliente.github.io/butano/getting_started.html) and all its requirements.
 - Install the following packets:
 ```
